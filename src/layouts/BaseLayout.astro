@@ -1,0 +1,56 @@
+---
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <SEO title={title} description={description} />
+    <script is:inline>
+      (function () {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <script is:inline>
+      (function () {
+        var toggles = document.querySelectorAll('#theme-toggle');
+        function updateIcons() {
+          var isDark = document.documentElement.classList.contains('dark');
+          document.querySelectorAll('#theme-icon-light').forEach(function (el) {
+            el.classList.toggle('hidden', isDark);
+          });
+          document.querySelectorAll('#theme-icon-dark').forEach(function (el) {
+            el.classList.toggle('hidden', !isDark);
+          });
+        }
+        updateIcons();
+        toggles.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateIcons();
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

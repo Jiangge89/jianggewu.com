@@ -1,0 +1,103 @@
+---
+import { mainNavItems } from '../config/navigation';
+import { siteConfig } from '../config/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 border-b border-surface-200 bg-white/80 backdrop-blur-md dark:border-surface-800 dark:bg-surface-950/80">
+  <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6" aria-label="Main navigation">
+    <a href="/" class="text-lg font-semibold text-surface-900 transition-colors hover:text-primary-600 dark:text-surface-100 dark:hover:text-primary-400">
+      {siteConfig.name}
+    </a>
+
+    {/* Desktop navigation */}
+    <div class="hidden items-center gap-1 md:flex">
+      {mainNavItems.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+            currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+              ? 'text-primary-600 dark:text-primary-400'
+              : 'text-surface-600 hover:text-surface-900 dark:text-surface-400 dark:hover:text-surface-100',
+          ]}
+          aria-current={currentPath === item.href ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href={siteConfig.resumePath}
+        download
+        class="ml-2 inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700"
+      >
+        Resume
+      </a>
+      <ThemeToggle />
+    </div>
+
+    {/* Mobile menu button */}
+    <div class="flex items-center gap-2 md:hidden">
+      <ThemeToggle />
+      <button
+        type="button"
+        id="mobile-menu-button"
+        class="rounded-md p-2 text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900 dark:text-surface-400 dark:hover:bg-surface-800 dark:hover:text-surface-100"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Toggle navigation menu"
+      >
+        <svg id="menu-icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+        <svg id="menu-icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  {/* Mobile menu */}
+  <div id="mobile-menu" class="hidden border-t border-surface-200 bg-white dark:border-surface-800 dark:bg-surface-950 md:hidden">
+    <div class="space-y-1 px-4 py-3">
+      {mainNavItems.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            'block rounded-md px-3 py-2 text-base font-medium transition-colors',
+            currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+              ? 'text-primary-600 dark:text-primary-400'
+              : 'text-surface-600 hover:bg-surface-50 hover:text-surface-900 dark:text-surface-400 dark:hover:bg-surface-900 dark:hover:text-surface-100',
+          ]}
+          aria-current={currentPath === item.href ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href={siteConfig.resumePath}
+        download
+        class="block rounded-md bg-primary-600 px-3 py-2 text-center text-base font-medium text-white transition-colors hover:bg-primary-700"
+      >
+        Download Resume
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const button = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
+  button?.addEventListener('click', () => {
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+    menu?.classList.toggle('hidden');
+    iconOpen?.classList.toggle('hidden');
+    iconClose?.classList.toggle('hidden');
+  });
+</script>

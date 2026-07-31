@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="Learn about Jiangge Wu — a backend software engineer based in Singapore with 10+ years of experience in Go, Java, and cloud technologies."
+>
+  <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <SectionHeading title="About Me" />
+
+    <div class="space-y-6 text-surface-700 leading-relaxed dark:text-surface-300">
+      <p>
+        I'm a software engineer based in Singapore. I've been working in software development since 2014,
+        primarily building backend systems with Go and Java. Over the years, I've gained experience across
+        a range of domains including API design, database architecture, payment systems, and cloud infrastructure.
+      </p>
+
+      <p>
+        Beyond backend development, I also work with Swift and SwiftUI to build iOS applications,
+        and I've integrated AI APIs into products to deliver intelligent features to end users.
+        I enjoy the process of turning ideas into functional, well-structured software —
+        whether it's a backend service handling high-throughput traffic or a mobile app solving a personal need.
+      </p>
+
+      <p>
+        I'm drawn to work that involves system design, pragmatic engineering trade-offs, and building things
+        that people actually use. I care about writing clear code, designing maintainable systems,
+        and continuously improving my craft.
+      </p>
+
+      <h3 class="pt-4 text-lg font-semibold text-surface-900 dark:text-surface-100">How I Work</h3>
+
+      <p>
+        I believe in keeping things simple until complexity is justified. I prefer clear documentation
+        over tribal knowledge, automated tests over manual verification, and incremental delivery over
+        big-bang releases. I value collaboration and direct communication, and I try to approach
+        every problem with curiosity and pragmatism.
+      </p>
+
+      <h3 class="pt-4 text-lg font-semibold text-surface-900 dark:text-surface-100">Technical Focus</h3>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
+          <h4 class="font-medium text-surface-900 dark:text-surface-100">Backend Engineering</h4>
+          <p class="mt-1 text-sm text-surface-600 dark:text-surface-400">
+            Go, Java, REST APIs, system design, microservices
+          </p>
+        </div>
+        <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
+          <h4 class="font-medium text-surface-900 dark:text-surface-100">Data & Storage</h4>
+          <p class="mt-1 text-sm text-surface-600 dark:text-surface-400">
+            MySQL, Redis, database design, data modeling
+          </p>
+        </div>
+        <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
+          <h4 class="font-medium text-surface-900 dark:text-surface-100">Mobile & Product</h4>
+          <p class="mt-1 text-sm text-surface-600 dark:text-surface-400">
+            Swift, SwiftUI, iOS development, product thinking
+          </p>
+        </div>
+        <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
+          <h4 class="font-medium text-surface-900 dark:text-surface-100">Infrastructure</h4>
+          <p class="mt-1 text-sm text-surface-600 dark:text-surface-400">
+            Docker, AWS, CI/CD, monitoring, cloud deployment
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

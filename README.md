@@ -1,43 +1,125 @@
-# Astro Starter Kit: Minimal
+# jianggewu.com
 
-```sh
-npm create astro@latest -- --template minimal
+Personal portfolio website for Jiangge Wu — a backend software engineer based in Singapore.
+
+Built with [Astro](https://astro.build), TypeScript, and Tailwind CSS. Deployed to GitHub Pages.
+
+## Pages
+
+- **Home** — Hero introduction, featured projects, experience overview
+- **About** — Background, technical focus, work philosophy
+- **Projects** — Detailed project cards with problem/approach/result
+- **Experience** — Professional timeline (reverse chronological)
+- **Blog** — Link to external blog
+- **Contact** — Email, GitHub, LinkedIn, location
+
+## Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Deployment
 
-## 🚀 Project Structure
+This site deploys to GitHub Pages via GitHub Actions. Every push to `main` triggers an automatic build and deploy.
 
-Inside of your Astro project, you'll see the following folders and files:
+### GitHub Repository Setup
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+1. Go to your repository **Settings** → **Pages**
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**
+3. The workflow at `.github/workflows/deploy.yml` handles the rest
+
+### Custom Domain (GoDaddy + GitHub Pages)
+
+1. In your GitHub repository **Settings** → **Pages** → **Custom domain**, enter `jianggewu.com`
+2. In GoDaddy DNS settings, add these records:
+
+   **For apex domain (`jianggewu.com`):**
+   | Type | Name | Value |
+   |------|------|-------|
+   | A | @ | 185.199.108.153 |
+   | A | @ | 185.199.109.153 |
+   | A | @ | 185.199.110.153 |
+   | A | @ | 185.199.111.153 |
+
+   **For www subdomain (optional):**
+   | Type | Name | Value |
+   |------|------|-------|
+   | CNAME | www | jianggewu.com |
+
+3. Back in GitHub Pages settings, check **Enforce HTTPS** (may take a few minutes after DNS propagates)
+4. DNS changes can take up to 48 hours to fully propagate
+
+The `public/CNAME` file is already configured with `jianggewu.com`.
+
+## Content Updates
+
+### Resume
+
+Place your PDF resume at:
+
+```
+public/resume/jiangge-wu-resume.pdf
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+All "Download Resume" buttons link to this file.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### Contact Information
 
-Any static assets, like images, can be placed in the `public/` directory.
+Edit `src/config/site.ts` and replace the TODO values:
 
-## 🧞 Commands
+```typescript
+email: 'your-actual@email.com',
+githubUrl: 'https://github.com/your-username',
+linkedinUrl: 'https://linkedin.com/in/your-profile',
+```
 
-All commands are run from the root of the project, from a terminal:
+### Blog URL
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Edit `src/config/site.ts` and replace:
 
-## 👀 Want to learn more?
+```typescript
+blogUrl: 'https://your-actual-blog-url.com',
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Work Experience
+
+Edit `src/data/experience.ts` — replace the placeholder entries with your real employment history.
+
+### Projects
+
+Edit `src/data/projects.ts` — update or add projects. Each project has these fields:
+
+- `slug` — URL-friendly identifier
+- `title` — Project name
+- `description` — Short summary
+- `problem` — What problem it solved
+- `role` — Your role
+- `approach` — Technical approach
+- `keyDecisions` — Important technical decisions
+- `techStack` — Technologies used
+- `result` — Outcome
+- `learned` — Key takeaways
+- `featured` — Show on homepage
+
+### Open Graph Image
+
+Replace `public/images/og-default.png` with a 1200x630 image for social media previews.
+
+## Tech Stack
+
+- **Astro** — Static site generator
+- **TypeScript** — Type safety
+- **Tailwind CSS v4** — Utility-first styling
+- **GitHub Pages** — Hosting
+- **GitHub Actions** — CI/CD

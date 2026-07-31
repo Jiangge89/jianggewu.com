@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { siteConfig } from '../config/site';
+---
+
+<BaseLayout
+  title="Blog"
+  description="Thoughts on backend engineering, system design, and software development by Jiangge Wu."
+>
+  <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <SectionHeading title="Blog" />
+
+    <div class="space-y-6 text-surface-700 dark:text-surface-300">
+      <p>
+        I write about backend engineering, system design, product development, and things I learn along the way.
+        My blog is a record of my growth as an engineer — a mix of technical deep-dives, project retrospectives,
+        and long-term thinking about software and career.
+      </p>
+
+      <p>
+        Posts are currently hosted on my existing blog. I plan to bring some of them here in the future.
+      </p>
+
+      <div class="mt-8">
+        <a
+          href={siteConfig.blogUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-700"
+        >
+          Visit My Blog
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

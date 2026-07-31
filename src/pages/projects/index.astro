@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { projects } from '../../data/projects';
+---
+
+<BaseLayout
+  title="Projects"
+  description="Selected projects by Jiangge Wu — iOS apps, backend systems, subscription platforms, and more."
+>
+  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+    <SectionHeading
+      title="Projects"
+      subtitle="A selection of projects that reflect my technical interests and approach to building software."
+    />
+
+    <div class="grid gap-6 sm:grid-cols-2">
+      {projects.map((project) => (
+        <ProjectCard project={project} showDetails={true} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

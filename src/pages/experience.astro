@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ExperienceItem from '../components/ExperienceItem.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { experiences } from '../data/experience';
+---
+
+<BaseLayout
+  title="Experience"
+  description="Professional experience of Jiangge Wu — backend engineering roles across Singapore and beyond."
+>
+  <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <SectionHeading
+      title="Experience"
+      subtitle="My professional journey in software engineering."
+    />
+
+    <p class="mb-8 rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
+      Note: The experience entries below are placeholders. Replace them with your real employment history
+      in <code class="rounded bg-yellow-100 px-1 dark:bg-yellow-900/40">src/data/experience.ts</code>.
+    </p>
+
+    <div>
+      {experiences.map((exp) => (
+        <ExperienceItem experience={exp} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jianggewu.com/sitemap-index.xml
