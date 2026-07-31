@@ -1,3 +1,8 @@
+export interface ProjectLink {
+  label: string;
+  url: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -13,6 +18,7 @@ export interface Project {
   result: string;
   learned: string;
   featured: boolean;
+  links?: ProjectLink[];
 }
 
 export const projects: Project[] = [
@@ -245,27 +251,47 @@ export const projects: Project[] = [
     featured: false,
   },
 
-  // --- Personal Projects ---
+  // --- Duftee (Independent) ---
   {
     slug: 'moma-app',
     title: 'Moma',
-    company: 'Personal',
+    company: 'Duftee',
     description:
-      'TODO: Add a description of the Moma application.',
-    problem: 'TODO: Describe the problem Moma solves.',
-    role: 'TODO: Describe your role.',
-    approach: 'TODO: Describe the technical approach.',
-    keyDesign: ['TODO: Key design point'],
-    keyDecisions: ['TODO: Key decision'],
-    techStack: ['TODO: Add technologies'],
-    result: 'TODO: Describe the outcome.',
-    learned: 'TODO: What did you learn?',
-    featured: false,
+      'A budget management iOS app designed for multi-currency expense tracking, helping users monitor spending across different currencies and accounts without touching their real money.',
+    problem:
+      'People living or working across countries need to track expenses in multiple currencies. Most budgeting apps assume a single currency, making cross-border expense management cumbersome and error-prone.',
+    role:
+      'Responsible for architecture and feature design, and all backend development. Worked on the product from concept to App Store launch.',
+    approach:
+      'Built a native iOS app with Swift and SwiftUI for a smooth, responsive user experience. Designed a Go backend to handle multi-currency data, account management, and user sync. Focused on making daily expense recording as fast and frictionless as possible.',
+    keyDesign: [
+      'Multi-currency support with per-transaction currency selection (SGD, CNY, etc.)',
+      'Three transaction types: Expense, Income, and Transfer between accounts',
+      'Category-based expense classification for spending analysis',
+      'Multiple account management (Cash, PayPal, Debit, etc.)',
+      'Monthly and daily statistics with visual breakdowns',
+      'Budget setting and tracking',
+    ],
+    keyDecisions: [
+      'Chose native Swift/SwiftUI over cross-platform to deliver the best iOS experience',
+      'Designed the data model to be currency-agnostic so adding new currencies requires no schema changes',
+      'Prioritized recording speed — users can log an expense in a few taps',
+    ],
+    techStack: ['Swift', 'SwiftUI', 'Go', 'iOS'],
+    result:
+      'Shipped to the App Store as a fully functional budgeting app with multi-currency tracking, account management, and spending analytics.',
+    learned:
+      'Gained end-to-end experience shipping an iOS product — from architecture design and backend API development through App Store review and launch. Learned how product decisions around UX simplicity directly affect user adoption.',
+    featured: true,
+    links: [
+      { label: 'App Store', url: 'https://apps.apple.com/sg/app/id6448210631' },
+      { label: 'Website', url: 'https://duftee.com/' },
+    ],
   },
   {
     slug: 'chill-app',
     title: 'Chill',
-    company: 'Personal',
+    company: 'Duftee',
     description:
       'TODO: Add a description of the Chill application.',
     problem: 'TODO: Describe the problem Chill solves.',

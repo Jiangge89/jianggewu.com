@@ -3,8 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import { projects } from '../../data/projects';
 
-const workProjects = projects.filter((p) => p.company !== 'Personal');
-const personalProjects = projects.filter((p) => p.company === 'Personal');
+const workCompanies = ['TikTok', 'Shopee'];
+const workProjects = projects.filter((p) => workCompanies.includes(p.company));
+const independentProjects = projects.filter((p) => !workCompanies.includes(p.company));
 ---
 
 <BaseLayout
@@ -65,9 +66,9 @@ const personalProjects = projects.filter((p) => p.company === 'Personal');
       })}
     </div>
 
-    <h3 class="mb-4 mt-12 text-lg font-semibold text-surface-900 dark:text-surface-100">Personal Projects</h3>
+    <h3 class="mb-4 mt-12 text-lg font-semibold text-surface-900 dark:text-surface-100">Independent Projects</h3>
     <div class="grid gap-4 sm:grid-cols-2">
-      {personalProjects.map((project) => {
+      {independentProjects.map((project) => {
         const isTodo = project.description.startsWith('TODO');
         return (
           <a
