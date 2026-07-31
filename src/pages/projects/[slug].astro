@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import MermaidDiagram from '../../components/MermaidDiagram.astro';
 import { projects } from '../../data/projects';
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -12,6 +13,8 @@ export const getStaticPaths: GetStaticPaths = () => {
 
 const { project } = Astro.props;
 const isTodo = project.description.startsWith('TODO');
+const hasDiagrams = project.diagrams && project.diagrams.length > 0;
+const hasImages = project.images && project.images.length > 0;
 ---
 
 <BaseLayout
@@ -98,6 +101,38 @@ const isTodo = project.description.startsWith('TODO');
           </ul>
         )}
       </section>
+
+      {hasDiagrams && (
+        <section>
+          <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Architecture Diagrams</h2>
+          {project.diagrams!.map((diagram) => (
+            <MermaidDiagram chart={diagram.mermaid} title={diagram.title} />
+          ))}
+        </section>
+      )}
+
+      {hasImages && (
+        <section>
+          <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Screenshots</h2>
+          <div class="mt-4 space-y-6">
+            {project.images!.map((image) => (
+              <figure>
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  class="w-full rounded-lg border border-surface-200 dark:border-surface-700"
+                  loading="lazy"
+                />
+                {image.caption && (
+                  <figcaption class="mt-2 text-sm text-surface-500 dark:text-surface-400">
+                    {image.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Key Decisions</h2>

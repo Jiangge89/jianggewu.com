@@ -3,6 +3,17 @@ export interface ProjectLink {
   url: string;
 }
 
+export interface ProjectDiagram {
+  title: string;
+  mermaid: string;
+}
+
+export interface ProjectImage {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -19,6 +30,8 @@ export interface Project {
   learned: string;
   featured: boolean;
   links?: ProjectLink[];
+  diagrams?: ProjectDiagram[];
+  images?: ProjectImage[];
 }
 
 export const projects: Project[] = [
@@ -52,6 +65,47 @@ export const projects: Project[] = [
     learned:
       'Deepened understanding of cache design trade-offs at scale — when to serve stale data, how to protect backends with singleflight and async refresh, and how to build degradation strategies that keep services available during partial outages.',
     featured: true,
+    diagrams: [
+      {
+        title: 'Metadata Control Plane Architecture',
+        mermaid: `flowchart LR
+    Gateway[Storage Gateway API]
+    subgraph Meta[Metadata Control Plane]
+        Cache[Local Memory Cache]
+        Logic[Metadata APIs / Business Logic]
+        Auth[ZTI Authentication]
+        Encrypt[Credential Encryption]
+        Validate[Validation]
+        Cache --> Logic
+        Logic --> Auth
+        Logic --> Encrypt
+        Logic --> Validate
+    end
+    Gateway --> Cache
+    Logic --> KV[(KV Store)]
+    Logic -. legacy / migration .-> SQL[(SQL / RDS)]`,
+      },
+      {
+        title: 'Cache Flow',
+        mermaid: `flowchart TD
+    A[Request Metadata] --> B{Cache Exists?}
+    B -- No --> C[SingleFlight Sync Load from DB/KV]
+    C --> D[Update Cache]
+    D --> E[Return Metadata]
+    B -- Yes --> F{Age < TTL/2?}
+    F -- Yes --> E
+    F -- No --> G{Age < TTL?}
+    G -- Yes --> H[Return Cached Immediately]
+    H --> I[Trigger Async Refresh]
+    I --> J[SingleFlight Async Load]
+    J --> D
+    G -- No --> K[SingleFlight Sync Refresh]
+    K --> D
+    C -. DB/KV Error .-> M[Return Internal Error]
+    J -. DB/KV Error .-> L[Extend Cache / Return Old]
+    K -. DB/KV Error .-> L`,
+      },
+    ],
   },
   {
     slug: 'rds-to-kv-online-migration',
@@ -88,6 +142,25 @@ export const projects: Project[] = [
     learned:
       'Gained deep experience in online migration patterns — dual-write, staged rollout, consistency verification, and the importance of rollback-safe design in mission-critical systems.',
     featured: true,
+    diagrams: [
+      {
+        title: 'Migration Rollout Stages',
+        mermaid: `flowchart LR
+    S0["Stage 0\\nRDS Only"]
+    S1["Stage 1\\nMigration Wrapper\\nRead/Write: RDS"]
+    S2["Stage 2\\nDual Write\\nWrite: RDS → KV\\nRead: RDS"]
+    S3["Stage 3\\nBackfill\\nExisting Data"]
+    S4["Stage 4\\nKV Primary\\nWrite: KV → RDS\\nRead: KV"]
+    S5["Stage 5\\nConsistency\\nVerification"]
+    S6["Stage 6\\nKV Only"]
+    S0 --> S1 --> S2 --> S3 --> S4 --> S5 --> S6
+    R["Rollback to RDS"]
+    S1 -. rollback .-> R
+    S2 -. rollback .-> R
+    S4 -. rollback .-> R
+    S5 -. rollback .-> R`,
+      },
+    ],
   },
   {
     slug: 'credentials-encryption',
@@ -123,6 +196,19 @@ export const projects: Project[] = [
     learned:
       'Learned the value of backward-compatible security rollouts — applying encryption incrementally with always-on decryption avoids the fragility of big-bang security migrations.',
     featured: false,
+    diagrams: [
+      {
+        title: 'Credential Encryption Flow',
+        mermaid: `flowchart LR
+    Caller[Admin / Gateway / Authorized Service]
+    Caller --> Meta[Metadata Service]
+    Meta --> Policy[Credential Security Layer]
+    Policy --> Enc[Encrypt Before Persistence]
+    Policy --> Dec[Conditional Decryption]
+    Enc --> KV[(KV Store)]
+    Dec --> Caller2[Authorized Caller]`,
+      },
+    ],
   },
   {
     slug: 'quota-automation-traffic-governance',
@@ -153,6 +239,27 @@ export const projects: Project[] = [
     learned:
       'Learned that automation in capacity management needs both prediction intelligence and human override — fully automated systems without guardrails or manual escape hatches create operational risk.',
     featured: false,
+    diagrams: [
+      {
+        title: 'Quota Automation Flow',
+        mermaid: `flowchart LR
+    Metrics[Traffic Metrics]
+    Predict[Traffic Prediction]
+    Quota[Quota Automation]
+    Guard[Safety Rules / Guardrail]
+    Manual[Whitelist / Override]
+    Meta[Metadata Control Plane]
+    Gateway[Storage Gateway API]
+    RL[Distributed Rate Limiter]
+    Metrics --> Predict
+    Predict --> Quota
+    Quota --> Guard
+    Guard --> Meta
+    Manual --> Meta
+    Meta --> Gateway
+    Gateway --> RL`,
+      },
+    ],
   },
   {
     slug: 'bytekv-zti-authentication',
@@ -187,6 +294,22 @@ export const projects: Project[] = [
     learned:
       'Reinforced the pattern of staged security rollouts — compatibility mode before enforcement is essential for zero-downtime security changes in production systems.',
     featured: false,
+    diagrams: [
+      {
+        title: 'Staged Authentication Rollout',
+        mermaid: `flowchart LR
+    S0[Stage 0\\nNo Auth]
+    S1[Stage 1\\nDeploy ZTI\\nAuth Disabled]
+    S2[Stage 2\\nRegister\\nService Identity]
+    S3[Stage 3\\nCompatibility Mode\\nAuth Optional]
+    S4[Stage 4\\nGradual Rollout]
+    S5[Stage 5\\nAuth Enforced]
+    S0 --> S1 --> S2 --> S3 --> S4 --> S5
+    R[Rollback]
+    S3 -. rollback .-> R
+    S4 -. rollback .-> R`,
+      },
+    ],
   },
 
   // --- Shopee ---
@@ -219,6 +342,21 @@ export const projects: Project[] = [
     learned:
       'Learned the effectiveness of multi-layer caching for high-traffic scenarios — local memory cache absorbs burst traffic that would otherwise overwhelm even distributed caches.',
     featured: true,
+    diagrams: [
+      {
+        title: 'Promotion Gateway Architecture',
+        mermaid: `flowchart LR
+    Client[Shopee App Homepage]
+    Client --> Gateway[Gateway API\\nAggregation Layer]
+    Gateway --> L1[Local Memory Cache]
+    L1 -->|cache miss| L2[Distributed Cache\\nRedis / Memcached]
+    L2 -->|cache miss| P[Promotion Service]
+    P --> PDB[(Promotion DB)]
+    Gateway --> V[Voucher Service]
+    V --> ADB[(Account DB)]
+    Gateway --> R[Other Services]`,
+      },
+    ],
   },
   {
     slug: 'platform-library-engineering',
@@ -249,6 +387,25 @@ export const projects: Project[] = [
     learned:
       'Learned that reusable libraries succeed when paired with visibility tooling — teams adopt shared libraries more readily when they can see version usage, track dependencies, and plan upgrades safely.',
     featured: false,
+    diagrams: [
+      {
+        title: 'Platform Library System',
+        mermaid: `flowchart LR
+    PT[Platform Team]
+    PT --> DLL[Double Layer Cache Lib]
+    PT --> CB[Circuit Breaker Lib]
+    PT --> RL[Rate Limiter Lib]
+    DLL --> LMS[Library Management System]
+    CB --> LMS
+    RL --> LMS
+    LMS --> A[Service A]
+    LMS --> B[Service B]
+    LMS --> C[Service C]
+    LMS --> V[Version Tracking]
+    LMS --> U[Upgrade Visibility]
+    LMS --> D[Dependency Mapping]`,
+      },
+    ],
   },
 
   // --- Duftee (Independent) ---
@@ -286,6 +443,23 @@ export const projects: Project[] = [
     links: [
       { label: 'App Store', url: 'https://apps.apple.com/sg/app/id6448210631' },
       { label: 'Website', url: 'https://duftee.com/' },
+    ],
+    images: [
+      {
+        src: '/images/projects/moma/homepage.png',
+        alt: 'Moma app homepage showing monthly expense and income summary, account balances, and recent transactions',
+        caption: 'Dashboard with monthly balance overview, multiple accounts (Cash, PayPal, Debit), and 7-day transaction history',
+      },
+      {
+        src: '/images/projects/moma/track.png',
+        alt: 'Moma app transaction recording screens for Expense, Income, and Transfer with multi-currency support',
+        caption: 'Three transaction types — Expense, Income, and Transfer between accounts — with per-transaction currency selection (SGD, CNY) and category classification',
+      },
+      {
+        src: '/images/projects/moma/statistics.png',
+        alt: 'Moma app statistics view with donut chart showing spending breakdown by category',
+        caption: 'Monthly spending analytics with category breakdown and percentage visualization',
+      },
     ],
   },
   {
