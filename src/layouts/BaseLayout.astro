@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import SEO from '../components/SEO.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -15,6 +16,7 @@ const { title, description } = Astro.props;
 <html lang="en">
   <head>
     <SEO title={title} description={description} />
+    <ClientRouter />
     <script is:inline>
       (function () {
         var theme = localStorage.getItem('theme');
@@ -30,8 +32,8 @@ const { title, description } = Astro.props;
       <slot />
     </main>
     <Footer />
-    <script is:inline>
-      (function () {
+    <script>
+      function initThemeToggle() {
         var toggles = document.querySelectorAll('#theme-toggle');
         function updateIcons() {
           var isDark = document.documentElement.classList.contains('dark');
@@ -50,7 +52,9 @@ const { title, description } = Astro.props;
             updateIcons();
           });
         });
-      })();
+      }
+      initThemeToggle();
+      document.addEventListener('astro:after-swap', initThemeToggle);
     </script>
   </body>
 </html>
