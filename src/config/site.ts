@@ -1,21 +1,17 @@
 export const siteConfig = {
   name: 'Jiangge Wu',
-  title: 'Jiangge Wu — Backend Software Engineer',
+  title: 'Jiangge Wu — Senior Backend Engineer',
   description:
-    'Personal website of Jiangge Wu, a backend software engineer based in Singapore specializing in Go, Java, system design, and cloud technologies.',
+    'Personal website of Jiangge Wu, a senior backend engineer based in Singapore with 10+ years of experience building large-scale distributed systems with Go and Java.',
   url: 'https://jianggewu.com',
   author: 'Jiangge Wu',
-  role: 'Backend Software Engineer',
+  role: 'Senior Backend Engineer',
   location: 'Singapore',
 
-  // TODO: Replace with your actual email address
-  email: 'TODO@example.com',
-  // TODO: Replace with your actual GitHub profile URL
-  githubUrl: 'https://github.com/TODO',
-  // TODO: Replace with your actual LinkedIn profile URL
-  linkedinUrl: 'https://linkedin.com/in/TODO',
-  // TODO: Replace with your actual blog URL (e.g., your jacksite URL)
-  blogUrl: 'https://TODO-your-blog-url.com',
+  email: 'jack11130311@gmail.com',
+  githubUrl: 'https://github.com/Jiangge89',
+  linkedinUrl: 'https://www.linkedin.com/in/jiangge-wu-19b6b5103/',
+  blogUrl: 'https://jiangge89.github.io/jacksite/',
 
   resumePath: '/resume/jiangge-wu-resume.pdf',
 

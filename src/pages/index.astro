@@ -7,7 +7,7 @@ import { projects } from '../data/projects';
 import { experiences } from '../data/experience';
 
 const featuredProjects = projects.filter((p) => p.featured);
-const primaryTechnologies = ['Go', 'Java', 'Python', 'Swift', 'MySQL', 'Redis', 'Docker', 'AWS'];
+const primaryTechnologies = ['Go', 'Java', 'Python', 'Distributed Systems', 'Redis', 'Kafka', 'MySQL', 'Docker'];
 ---
 
 <BaseLayout>
@@ -20,11 +20,12 @@ const primaryTechnologies = ['Go', 'Java', 'Python', 'Swift', 'MySQL', 'Redis', 
       Hi, I'm {siteConfig.name}.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-surface-600 dark:text-surface-400">
-      I'm a backend software engineer based in Singapore with more than 10 years of software engineering experience.
-      I build reliable backend systems and practical digital products using Go, Java, Swift and cloud technologies.
+      I'm a senior backend engineer based in Singapore with over 10 years of experience building
+      large-scale distributed systems and backend infrastructure using Go and Java.
     </p>
     <p class="mt-4 max-w-2xl text-lg leading-relaxed text-surface-600 dark:text-surface-400">
-      I'm particularly interested in backend architecture, API design, distributed systems, AI integration and independent product development.
+      I specialize in scalable storage platforms, distributed services, caching systems, and backend
+      platform reliability. I'm also interested in AI integration and independent product development.
     </p>
 
     {/* Tech stack */}
