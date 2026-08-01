@@ -447,13 +447,18 @@ export const projects: Project[] = [
     images: [
       {
         src: '/images/projects/moma/homepage.png',
-        alt: 'Moma app homepage showing monthly expense and income summary, account balances, and recent transactions',
-        caption: 'Dashboard with monthly balance overview, multiple accounts (Cash, PayPal, Debit), and 7-day transaction history',
+        alt: 'Moma app homepage showing monthly expense and income summary with account balances',
+        caption: 'Dashboard with monthly expense/income overview, multiple accounts (Cash, PayPal), and recent transaction history',
       },
       {
-        src: '/images/projects/moma/track.png',
-        alt: 'Moma app transaction recording screens for Expense, Income, and Transfer with multi-currency support',
-        caption: 'Three transaction types — Expense, Income, and Transfer between accounts — with per-transaction currency selection (SGD, CNY) and category classification',
+        src: '/images/projects/moma/recording.png',
+        alt: 'Moma app expense recording screen with category selection and numeric keypad',
+        caption: 'Quick expense recording with category classification (Food, Home, Dressing, etc.) and per-transaction currency selection',
+      },
+      {
+        src: '/images/projects/moma/multi_currency.png',
+        alt: 'Moma app multi-currency selection screen showing available currencies with country flags',
+        caption: 'Multi-currency support — add and switch between currencies (SGD, EUR, USD, CNY, and more) for cross-border expense tracking',
       },
       {
         src: '/images/projects/moma/statistics.png',
@@ -467,15 +472,53 @@ export const projects: Project[] = [
     title: 'Chill',
     company: 'Duftee',
     description:
-      'TODO: Add a description of the Chill application.',
-    problem: 'TODO: Describe the problem Chill solves.',
-    role: 'TODO: Describe your role.',
-    approach: 'TODO: Describe the technical approach.',
-    keyDesign: ['TODO: Key design point'],
-    keyDecisions: ['TODO: Key decision'],
-    techStack: ['TODO: Add technologies'],
-    result: 'TODO: Describe the outcome.',
-    learned: 'TODO: What did you learn?',
+      'A Kegel exercise training app that helps users create customized workout plans — either manually or via AI-generated recommendations based on personal preferences — and guides them through each session.',
+    problem:
+      'Kegel exercises are medically recommended for improving urinary incontinence, postpartum recovery, pelvic organ prolapse prevention, prostate health, and overall pelvic floor strength. However, most people lack structured guidance on how to train effectively, and generic plans don\'t account for individual needs.',
+    role:
+      'Responsible for architecture design, feature design, backend development, and some frontend work. Led the product from concept through development toward App Store launch.',
+    approach:
+      'Built a native iOS app with Swift and SwiftUI for guided exercise sessions with real-time feedback. Designed a Go backend to handle user data, training plans, and AI integration. Integrated an AI API to generate personalized training plans with dietary and lifestyle suggestions based on user preferences.',
+    keyDesign: [
+      'Guided exercise sessions with configurable sets, gaps, and reps',
+      'AI-powered plan generation based on personal preferences and goals',
+      'AI suggestions including dietary, resting, and lifestyle recommendations',
+      'Training history tracking with 7-day summary, completion rates, and habit calendar',
+      'Apple Watch companion app for hands-free workouts',
+      'Discovery Hub with educational content on Kegel exercise benefits',
+    ],
+    keyDecisions: [
+      'Integrated AI API for personalized plan generation rather than only offering preset templates',
+      'Designed exercise data model to support both custom and AI-generated plans with the same structure',
+      'Built Apple Watch companion for convenience during exercises',
+    ],
+    techStack: ['Swift', 'SwiftUI', 'Go', 'AI API', 'iOS', 'watchOS'],
+    result:
+      'In active development, approaching App Store launch. Core features — guided exercises, AI plan generation, training history, and Apple Watch support — are functional.',
+    learned:
+      'Gained experience integrating AI APIs into a consumer product — learned how to design the prompt and response pipeline to generate structured, actionable training plans from user preferences. Also deepened understanding of building companion watchOS apps.',
     featured: false,
+    images: [
+      {
+        src: '/images/projects/chill/homepage.png',
+        alt: 'Chill app homepage with exercise configuration, AI training feature, and Apple Watch integration',
+        caption: 'Home screen with configurable sets/gaps/reps, AI-powered training plan creation, and Apple Watch companion app',
+      },
+      {
+        src: '/images/projects/chill/exercise.png',
+        alt: 'Chill app exercise session in progress with animated mascot guiding the user',
+        caption: 'Guided exercise session with real-time rep and set tracking, animated mascot providing visual feedback',
+      },
+      {
+        src: '/images/projects/chill/aiplan.png',
+        alt: 'Chill app AI-generated training plan with dietary suggestions',
+        caption: 'AI-generated personalized training plan with exercise parameters and dietary/lifestyle recommendations',
+      },
+      {
+        src: '/images/projects/chill/trending.png',
+        alt: 'Chill app trending page showing training summary, habits, and monthly calendar',
+        caption: 'Training history with 7-day summary, completion tracking, habit analysis, and monthly activity calendar',
+      },
+    ],
   },
 ];
