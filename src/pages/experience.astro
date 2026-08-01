@@ -28,16 +28,15 @@ import { experiences, education } from '../data/experience';
 
       <div class="space-y-6">
         {education.map((edu) => (
-          <div class="relative overflow-hidden rounded-lg border border-surface-200 p-5 dark:border-surface-700">
+          <div class="flex gap-4 rounded-lg border border-surface-200 p-5 dark:border-surface-700">
             {edu.logo && (
               <img
                 src={edu.logo}
-                alt=""
-                aria-hidden="true"
-                class="pointer-events-none absolute right-4 top-1/2 h-16 w-auto -translate-y-1/2 opacity-[0.08] dark:opacity-[0.12] sm:h-20"
+                alt={edu.institution}
+                class="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
               />
             )}
-            <div class="relative">
+            <div class="min-w-0 flex-1">
               <h3 class="font-semibold text-surface-900 dark:text-surface-100">{edu.degree}</h3>
               <p class="mt-1 text-sm font-medium text-primary-600 dark:text-primary-400">
                 {edu.institution} &middot; {edu.location}
