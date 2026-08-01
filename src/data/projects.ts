@@ -44,7 +44,7 @@ export const projects: Project[] = [
     description:
       'Owned and evolved TMeta, the metadata control plane for TikTok Object Storage (TOS), supporting globally distributed storage infrastructure with cache-first serving and graceful degradation.',
     problem:
-      'Object storage metadata was a critical dependency for every read/write request. The workload was read-heavy and write-light, with high metadata lookup traffic. The system needed to serve metadata at scale while tolerating backend failures gracefully.',
+      'Object storage metadata was a critical dependency for every read/write request. The workload was extremely read-heavy (peaking at ~160k reads/s per region) and write-light (<1k writes/s). The system needed to serve metadata at scale across dozens of virtual regions (US, Southeast Asia, China, Europe) while tolerating backend failures gracefully.',
     role:
       'System owner responsible for the metadata control plane — designing cache logic, credential security, authentication integration, and leading the backend migration from RDS to KV.',
     approach:
@@ -62,7 +62,7 @@ export const projects: Project[] = [
     ],
     techStack: ['Go', 'Redis', 'KV Store', 'Distributed Systems', 'Object Storage'],
     result:
-      'Maintained and improved a business-critical metadata control plane serving multiple large-scale product teams across globally distributed storage infrastructure.',
+      'Maintained and improved a business-critical metadata control plane handling ~160k reads/s per region across dozens of virtual regions globally, serving multiple large-scale product teams with high availability.',
     learned:
       'Deepened understanding of cache design trade-offs at scale — when to serve stale data, how to protect backends with singleflight and async refresh, and how to build degradation strategies that keep services available during partial outages.',
     featured: true,
