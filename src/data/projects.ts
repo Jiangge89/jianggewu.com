@@ -29,6 +29,7 @@ export interface Project {
   result: string;
   learned: string;
   featured: boolean;
+  icon?: string;
   links?: ProjectLink[];
   diagrams?: ProjectDiagram[];
   images?: ProjectImage[];
@@ -440,6 +441,7 @@ export const projects: Project[] = [
     learned:
       'Gained end-to-end experience shipping an iOS product — from architecture design and backend API development through App Store review and launch. Learned how product decisions around UX simplicity directly affect user adoption.',
     featured: true,
+    icon: '/images/projects/moma/icon.jpg',
     links: [
       { label: 'App Store', url: 'https://apps.apple.com/sg/app/id6448210631' },
       { label: 'Website', url: 'https://duftee.com/' },
@@ -498,6 +500,7 @@ export const projects: Project[] = [
     learned:
       'Gained experience integrating AI APIs into a consumer product — learned how to design the prompt and response pipeline to generate structured, actionable training plans from user preferences. Also deepened understanding of building companion watchOS apps.',
     featured: false,
+    icon: '/images/projects/chill/icon.jpg',
     images: [
       {
         src: '/images/projects/chill/homepage.png',

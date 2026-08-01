@@ -80,9 +80,18 @@ const independentProjects = projects.filter((p) => !workCompanies.includes(p.com
                 TODO
               </span>
             )}
-            <h4 class:list={['font-semibold text-surface-900 dark:text-surface-100', !isTodo && 'mt-0']}>
-              {project.title}
-            </h4>
+            <div class="flex items-center gap-2.5">
+              {project.icon && (
+                <img
+                  src={project.icon}
+                  alt={`${project.title} icon`}
+                  class="h-8 w-8 shrink-0 rounded-lg"
+                />
+              )}
+              <h4 class="font-semibold text-surface-900 dark:text-surface-100">
+                {project.title}
+              </h4>
+            </div>
             <p class="mt-1.5 line-clamp-2 text-sm text-surface-600 dark:text-surface-400">
               {project.description}
             </p>
