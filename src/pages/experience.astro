@@ -28,18 +28,28 @@ import { experiences, education } from '../data/experience';
 
       <div class="space-y-6">
         {education.map((edu) => (
-          <div class="rounded-lg border border-surface-200 p-5 dark:border-surface-700">
-            <h3 class="font-semibold text-surface-900 dark:text-surface-100">{edu.degree}</h3>
-            <p class="mt-1 text-sm font-medium text-primary-600 dark:text-primary-400">
-              {edu.institution} &middot; {edu.location}
-            </p>
-            <div class="mt-2 flex items-center justify-between">
-              <span class="text-sm text-surface-500 dark:text-surface-400">
-                {edu.startDate} &mdash; {edu.endDate}
-              </span>
-              <span class="text-sm text-surface-600 dark:text-surface-400">
-                GPA: {edu.gpa}
-              </span>
+          <div class="relative overflow-hidden rounded-lg border border-surface-200 p-5 dark:border-surface-700">
+            {edu.logo && (
+              <img
+                src={edu.logo}
+                alt=""
+                aria-hidden="true"
+                class="pointer-events-none absolute right-4 top-1/2 h-16 w-auto -translate-y-1/2 opacity-[0.08] dark:opacity-[0.12] sm:h-20"
+              />
+            )}
+            <div class="relative">
+              <h3 class="font-semibold text-surface-900 dark:text-surface-100">{edu.degree}</h3>
+              <p class="mt-1 text-sm font-medium text-primary-600 dark:text-primary-400">
+                {edu.institution} &middot; {edu.location}
+              </p>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="text-sm text-surface-500 dark:text-surface-400">
+                  {edu.startDate} &mdash; {edu.endDate}
+                </span>
+                <span class="text-sm text-surface-600 dark:text-surface-400">
+                  GPA: {edu.gpa}
+                </span>
+              </div>
             </div>
           </div>
         ))}

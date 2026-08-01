@@ -69,6 +69,7 @@ export interface Education {
   startDate: string;
   endDate: string;
   gpa: string;
+  logo?: string;
 }
 
 export const education: Education[] = [
@@ -79,6 +80,7 @@ export const education: Education[] = [
     startDate: 'Aug 2015',
     endDate: 'Jul 2016',
     gpa: '4.05 / 5.00',
+    logo: '/images/education/ntu.png',
   },
   {
     institution: 'Tianjin University',
@@ -87,5 +89,6 @@ export const education: Education[] = [
     startDate: 'Sep 2009',
     endDate: 'Jul 2013',
     gpa: '3.15 / 4.00',
+    logo: '/images/education/tju.png',
   },
 ];
