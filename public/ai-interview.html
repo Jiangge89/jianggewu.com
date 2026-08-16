@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Interview — Wu Jiangge</title>
+<style>
+:root {
+  --bg: #0B1120;
+  --surface: #141D2F;
+  --surface-raised: #1A2540;
+  --accent: #5B9BF8;
+  --accent-2: #34D399;
+  --accent-3: #F59E0B;
+  --text: #E1E7EF;
+  --text-dim: #7B8BA4;
+  --border: #1F2E47;
+  --code-bg: #0D1526;
+  --tag-bg: rgba(91,155,248,0.12);
+  --tag-text: #5B9BF8;
+  --highlight-bg: rgba(245,158,11,0.10);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F5F7FA; --surface: #FFFFFF; --surface-raised: #EEF1F6;
+    --accent: #3B7AE8; --accent-2: #0EA572; --accent-3: #D97706;
+    --text: #1A2332; --text-dim: #6B7B8D; --border: #DEE4EC;
+    --code-bg: #F0F2F5; --tag-bg: rgba(59,122,232,0.08); --tag-text: #3B7AE8;
+    --highlight-bg: rgba(217,119,6,0.08);
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F5F7FA; --surface: #FFFFFF; --surface-raised: #EEF1F6;
+  --accent: #3B7AE8; --accent-2: #0EA572; --accent-3: #D97706;
+  --text: #1A2332; --text-dim: #6B7B8D; --border: #DEE4EC;
+  --code-bg: #F0F2F5; --tag-bg: rgba(59,122,232,0.08); --tag-text: #3B7AE8;
+  --highlight-bg: rgba(217,119,6,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"SF Pro Text","Inter",system-ui,-apple-system,sans-serif;font-size:18px;line-height:1.55;overflow:hidden;height:100vh;width:100vw;-webkit-font-smoothing:antialiased}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden}
+.slides{display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);height:100%;will-change:transform}
+.slide{min-width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 10vw 80px;position:relative}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:100;background:linear-gradient(transparent,var(--bg))}
+.nav-dots{display:flex;gap:6px;align-items:center}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--text-dim);opacity:0.35;border:none;cursor:pointer;transition:all 0.3s;padding:0}
+.nav-dot.active{opacity:1;background:var(--accent);width:24px;border-radius:4px}
+.nav-dot:hover{opacity:0.7}
+.slide-counter{font-family:"SF Mono","Fira Code",monospace;font-size:13px;color:var(--text-dim);letter-spacing:0.05em}
+.nav-arrows{display:flex;gap:8px}
+.nav-arrows button{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
+.nav-arrows button:hover{border-color:var(--accent);color:var(--accent)}
+.nav-arrows button:disabled{opacity:0.3;cursor:default}
+.badge{position:absolute;top:28px;right:10vw;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--tag-text);background:var(--tag-bg);padding:5px 14px;border-radius:4px}
+h1{font-family:"SF Pro Display","Inter",system-ui,sans-serif;font-size:clamp(40px,5vw,64px);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--text);text-wrap:balance}
+h2{font-family:"SF Pro Display","Inter",system-ui,sans-serif;font-size:clamp(28px,3.5vw,42px);font-weight:700;letter-spacing:-0.025em;line-height:1.15;color:var(--text);margin-bottom:24px;text-wrap:balance}
+h3{font-size:20px;font-weight:600;letter-spacing:-0.01em;color:var(--text);margin-bottom:12px}
+.subtitle{font-size:clamp(18px,2vw,22px);color:var(--text-dim);margin-top:16px;line-height:1.5;max-width:600px}
+.label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:32px}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}.slide{padding:40px 6vw 80px}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px}
+.card h3{margin-bottom:10px}
+.card p,.card li{font-size:15px;color:var(--text-dim);line-height:1.55}
+.card ul{list-style:none;padding:0}
+.card ul li{padding:4px 0;padding-left:16px;position:relative}
+.card ul li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0.6}
+.bullet-list{list-style:none;padding:0;margin-top:20px}
+.bullet-list li{padding:8px 0;padding-left:20px;position:relative;font-size:17px;color:var(--text)}
+.bullet-list li::before{content:"";position:absolute;left:0;top:16px;width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0.5}
+.bullet-list li strong{color:var(--text);font-weight:600}
+.bullet-list.green li::before{background:var(--accent-2)}
+.bullet-list.amber li::before{background:var(--accent-3)}
+code,.mono{font-family:"SF Mono","Fira Code","JetBrains Mono",monospace;font-size:0.88em;background:var(--code-bg);padding:2px 7px;border-radius:4px;color:var(--accent)}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:var(--tag-bg);color:var(--tag-text);margin:3px 4px 3px 0}
+.tag.green{background:rgba(52,211,153,0.12);color:var(--accent-2)}
+.tag.amber{background:var(--highlight-bg);color:var(--accent-3)}
+.highlight-box{background:var(--highlight-bg);border-left:3px solid var(--accent-3);padding:14px 20px;border-radius:0 8px 8px 0;margin-top:20px;font-size:15px;color:var(--text)}
+.cover{justify-content:center;padding-bottom:120px}
+.cover .overline{font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.cover h1{margin-bottom:8px}
+.cover .role{font-size:clamp(20px,2.5vw,28px);color:var(--text-dim);font-weight:400;margin-top:12px}
+.cover .meta{margin-top:40px;display:flex;gap:24px;flex-wrap:wrap}
+.cover .meta-item{font-size:14px;color:var(--text-dim)}
+.cover .meta-item strong{color:var(--text);font-weight:600}
+.accent-line{width:60px;height:3px;background:var(--accent);border-radius:2px;margin-bottom:24px}
+.diagram{display:flex;flex-direction:column;align-items:center;gap:12px;margin:20px 0}
+.diagram-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+.d-box{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--text);min-width:100px}
+.d-box.accent{border-color:var(--accent);background:rgba(91,155,248,0.08);color:var(--accent)}
+.d-box.green{border-color:var(--accent-2);background:rgba(52,211,153,0.08);color:var(--accent-2)}
+.d-box.amber{border-color:var(--accent-3);background:rgba(245,158,11,0.08);color:var(--accent-3)}
+.d-box.primary{border-color:var(--accent);background:var(--accent);color:#fff}
+.d-arrow{color:var(--text-dim);font-size:18px;line-height:1}
+.d-arrow-down{color:var(--text-dim);font-size:20px;text-align:center}
+.pipeline{display:flex;gap:4px;margin:24px 0;overflow-x:auto;padding-bottom:8px}
+.phase{flex:1;min-width:110px;padding:14px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border);text-align:center}
+.phase .phase-num{font-family:"SF Mono","Fira Code",monospace;font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px}
+.phase .phase-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.phase .phase-detail{font-size:10px;color:var(--text-dim);line-height:1.3}
+.phase.active{border-color:var(--accent);background:rgba(91,155,248,0.06)}
+.align-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:15px}
+.align-table th{text-align:left;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:10px 16px;border-bottom:1px solid var(--border)}
+.align-table td{padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.45}
+.align-table td:first-child{color:var(--text-dim);font-size:14px;width:45%}
+.align-table td:last-child{color:var(--text);font-weight:500}
+.align-table tr:last-child td{border-bottom:none}
+.thankyou{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.thankyou h1{margin-bottom:12px}
+.thankyou .contact{margin-top:32px;font-size:15px;color:var(--text-dim)}
+.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}.mt-32{margin-top:32px}
+.slide-body{max-height:calc(100vh - 160px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.slide-body::-webkit-scrollbar{width:4px}.slide-body::-webkit-scrollbar-track{background:transparent}.slide-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+@media(prefers-reduced-motion:reduce){.slides{transition:none}}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="slides" id="slides">
+    <section class="slide cover">
+      <div class="overline">AI Interview Presentation</div>
+      <div class="accent-line"></div>
+      <h1>Wu Jiangge</h1>
+      <div class="role">AI Agent Development Engineer</div>
+      <div class="meta">
+        <div class="meta-item"><strong>Experience</strong>&ensp;5+ years backend &amp; infra</div>
+        <div class="meta-item"><strong>Stack</strong>&ensp;Go, Python, LangGraph, PostgreSQL</div>
+        <div class="meta-item"><strong>Date</strong>&ensp;August 2026</div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">Introduction</span>
+      <span class="label">About Me</span>
+      <h2>Backend Engineer &rarr; AI Agent Builder</h2>
+      <div class="two-col">
+        <div>
+          <h3>Career Path</h3>
+          <ul class="bullet-list">
+            <li><strong>Shopee</strong> (2020&ndash;2021) &mdash; Promotion &amp; Platform Libraries. High-QPS homepage traffic, reusable infra (cache, circuit breaker, rate limiter).</li>
+            <li><strong>TikTok / ByteDance</strong> (2021&ndash;2025) &mdash; TOS Object Storage team, Singapore. Metadata control plane, storage gateway, zero-downtime migrations at 200K QPS.</li>
+            <li><strong>Independent</strong> (2025&ndash;now) &mdash; AI Agent systems. Multi-agent investment research platform with RAG, tool calling, and human-in-the-loop trading.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Engineering Focus</h3>
+          <div class="three-col" style="grid-template-columns:1fr;gap:12px;margin-top:8px">
+            <div class="card"><h3 style="color:var(--accent)">Traffic &amp; Reliability</h3><p>High-QPS metadata serving (200K), cache-first architecture, graceful degradation</p></div>
+            <div class="card"><h3 style="color:var(--accent-2)">Migration Safety</h3><p>Staged rollout, dual-write, verification/repair, dynamic config rollback</p></div>
+            <div class="card"><h3 style="color:var(--accent-3)">AI Agent Systems</h3><p>Multi-agent orchestration, RAG, tool calling, context engineering, human-in-the-loop</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">AI Agent Project</span>
+      <span class="label">Project Overview</span>
+      <h2>AI Investment Research &amp; Trading Agent</h2>
+      <p class="subtitle">Multi-agent system that researches stocks, analyzes SEC filings, and executes paper trades &mdash; with human approval for every order.</p>
+      <div class="three-col mt-32">
+        <div class="card"><h3>Multi-Agent</h3><p>Supervisor router + 2 specialized agents (Research &amp; Trading) built on LangGraph</p><div class="mt-8"><span class="tag">LangGraph</span><span class="tag">Structured Output</span></div></div>
+        <div class="card"><h3>Hybrid RAG</h3><p>Dense (pgvector) + Sparse (PostgreSQL FTS) &rarr; RRF fusion &rarr; Cohere reranker</p><div class="mt-8"><span class="tag green">Embedding</span><span class="tag green">Retrieval</span></div></div>
+        <div class="card"><h3>Tool Calling</h3><p>11 tools with Pydantic validation, structured errors, and human-in-the-loop confirmation</p><div class="mt-8"><span class="tag amber">11 Tools</span><span class="tag amber">Risk Checks</span></div></div>
+      </div>
+      <div class="highlight-box mt-24"><strong>Core principle:</strong> LLM reasons and synthesizes; deterministic code calculates all financial metrics (margins, ratios, z-scores). Every claim requires a citation.</div>
+    </section>
+    <section class="slide">
+      <span class="badge">AI Agent Project</span>
+      <span class="label">Architecture</span>
+      <h2>Multi-Agent Supervisor Pattern</h2>
+      <div class="two-col">
+        <div>
+          <div class="diagram">
+            <div class="diagram-row"><div class="d-box">User Query</div></div>
+            <div class="d-arrow-down">&darr;</div>
+            <div class="diagram-row"><div class="d-box primary">Supervisor<br><span style="font-weight:400;font-size:11px">LLM Router &middot; Structured Output</span></div></div>
+            <div class="d-arrow-down">&swarr; &emsp;&emsp;&emsp; &searr;</div>
+            <div class="diagram-row">
+              <div class="d-box accent" style="min-width:150px">Research Agent<br><span style="font-weight:400;font-size:11px">6 tools &middot; 16K tokens</span></div>
+              <div class="d-box green" style="min-width:150px">Trading Agent<br><span style="font-weight:400;font-size:11px">5 tools &middot; 8K tokens</span></div>
+            </div>
+            <div class="d-arrow-down">&searr; &emsp;&emsp;&emsp; &swarr;</div>
+            <div class="diagram-row"><div class="d-box">Back to Supervisor</div><div class="d-arrow">&rarr;</div><div class="d-box" style="border-style:dashed">Respond or Delegate Again</div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Why Multi-Agent?</h3>
+          <ul class="bullet-list">
+            <li><strong>Focused prompts</strong> &mdash; each agent knows only its domain, reducing confusion and hallucination</li>
+            <li><strong>Clean tool routing</strong> &mdash; research tools never leak into trade decisions</li>
+            <li><strong>Structured output routing</strong> &mdash; Pydantic model (RouteDecision), not free-form text</li>
+          </ul>
+          <h3 class="mt-24">Context Engineering</h3>
+          <ul class="bullet-list">
+            <li><strong>Token budgets</strong> &mdash; Supervisor 4K, Research 16K, Trading 8K</li>
+            <li><strong>Pre-model hooks</strong> &mdash; trim LLM input without losing graph state</li>
+            <li><strong>Message filtering</strong> &mdash; supervisor sees only human/AI text, not tool calls</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">AI Agent Project</span>
+      <span class="label">RAG Pipeline</span>
+      <h2>Hybrid Retrieval: Dense + Sparse + Reranker</h2>
+      <div class="two-col">
+        <div>
+          <div class="diagram">
+            <div class="diagram-row"><div class="d-box">User Query</div></div>
+            <div class="d-arrow-down">&darr;</div>
+            <div class="diagram-row"><div class="d-box accent">Query Parser<br><span style="font-weight:400;font-size:11px">Extract tickers, filing types</span></div></div>
+            <div class="d-arrow-down">&swarr; &emsp;&emsp; &searr;</div>
+            <div class="diagram-row">
+              <div class="d-box accent">Dense Search<br><span style="font-weight:400;font-size:11px">pgvector cosine similarity</span></div>
+              <div class="d-box green">Sparse Search<br><span style="font-weight:400;font-size:11px">PostgreSQL FTS &middot; ts_rank_cd</span></div>
+            </div>
+            <div class="d-arrow-down">&searr; &emsp;&emsp; &swarr;</div>
+            <div class="diagram-row"><div class="d-box amber">RRF Fusion<br><span style="font-weight:400;font-size:11px">k=60 &middot; parameter-free</span></div></div>
+            <div class="d-arrow-down">&darr;</div>
+            <div class="diagram-row"><div class="d-box amber">Cohere Reranker<br><span style="font-weight:400;font-size:11px">Top-K final results</span></div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Why Hybrid over Pure Vector?</h3>
+          <ul class="bullet-list">
+            <li><strong>Exact match matters</strong> &mdash; "NVDA revenue growth" needs literal ticker match</li>
+            <li><strong>Financial terms</strong> &mdash; "10-K" or "gross margin" are keyword problems</li>
+            <li><strong>RRF fusion</strong> &mdash; parameter-free, well-studied, within a few % of learned fusion</li>
+          </ul>
+          <h3 class="mt-24">Single PostgreSQL for Everything</h3>
+          <ul class="bullet-list green">
+            <li>Structured data (companies, financials)</li>
+            <li>Vector embeddings (pgvector)</li>
+            <li>Full-text search (tsvector/tsquery)</li>
+            <li>Long-term memory (notes table)</li>
+          </ul>
+          <div class="highlight-box mt-16"><strong>Fallback:</strong> If embedding fails, gracefully degrades to sparse-only search.</div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">AI Agent Project</span>
+      <span class="label">Tool System</span>
+      <h2>Tool Calling &amp; Human-in-the-Loop</h2>
+      <div class="two-col">
+        <div>
+          <h3>Research Agent &mdash; 6 Tools</h3>
+          <div class="card mt-8"><ul><li>get_companies &mdash; find companies by industry</li><li>get_financial_data &mdash; quarterly financials for a ticker</li><li>screen_companies &mdash; z-score ranking</li><li>search_filings &mdash; SEC 10-K/10-Q hybrid RAG search</li><li>save_note / recall_notes &mdash; long-term memory</li></ul></div>
+          <h3 class="mt-24">Trading Agent &mdash; 5 Tools</h3>
+          <div class="card mt-8"><ul><li>get_portfolio &mdash; current positions &amp; cash</li><li>get_trade_history &mdash; past paper trades</li><li>prepare_order &mdash; preview with risk checks</li><li>confirm_order &mdash; execute (after user approval)</li><li>reject_order &mdash; cancel pending order</li></ul></div>
+        </div>
+        <div>
+          <h3>Design Patterns</h3>
+          <ul class="bullet-list">
+            <li><strong>Pydantic args_schema</strong> &mdash; validates LLM-generated arguments before tool execution</li>
+            <li><strong>Structured errors</strong> &mdash; every error includes a retry_hint for agent self-correction</li>
+            <li><strong>Deterministic calculations</strong> &mdash; LLM never computes financial metrics; tools use pure math</li>
+          </ul>
+          <h3 class="mt-24">Human-in-the-Loop</h3>
+          <ul class="bullet-list amber">
+            <li><strong>interrupt()</strong> in confirm_order pauses the graph and asks for user approval</li>
+            <li>Propagates from trading subgraph to parent graph</li>
+            <li>Risk checks: position concentration limit, trade size cap, cash sufficiency</li>
+            <li>User must explicitly approve before any trade executes</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">AI Agent Project</span>
+      <span class="label">Design Philosophy</span>
+      <h2>Key Decisions &amp; Learnings</h2>
+      <div class="slide-body">
+        <div class="three-col">
+          <div class="card"><h3>Agent Harness</h3><ul><li>LangGraph StateGraph for orchestration</li><li>create_react_agent for sub-agents</li><li>MemorySaver checkpointer for state persistence</li><li>Async throughout &mdash; ainvoke, async DB sessions</li></ul></div>
+          <div class="card"><h3>Agent Loop</h3><ul><li>Supervisor routes via structured output</li><li>Sub-agent runs ReAct loop until done</li><li>Returns to supervisor &rarr; delegate again or FINISH</li><li>Skip redundant supervisor call when sub-agent already responded</li></ul></div>
+          <div class="card"><h3>Context Engineering</h3><ul><li>Per-agent token budgets (4K / 16K / 8K)</li><li>Pre-model hooks trim without losing state</li><li>Filter tool messages from supervisor input</li><li>Focused prompts reduce cross-domain confusion</li></ul></div>
+        </div>
+        <div class="two-col mt-24">
+          <div><h3>Architecture Choices</h3><table class="align-table"><tr><td>pgvector in PostgreSQL</td><td>Single DB for structured + vector + FTS</td></tr><tr><td>RRF fusion (k=60)</td><td>Parameter-free, well-studied, robust</td></tr><tr><td>Supervisor + sub-agents</td><td>Focused prompts/tools per domain</td></tr><tr><td>Deterministic scoring</td><td>Reproducible, auditable</td></tr></table></div>
+          <div><h3>Quality Assurance</h3><table class="align-table"><tr><td>Unit tests</td><td>127 tests covering tools, services, retrieval</td></tr><tr><td>Eval framework</td><td>18 cases across research, trade, edge scenarios</td></tr><tr><td>Guardrails</td><td>Prompt injection detection, input length limits</td></tr><tr><td>Multi-provider</td><td>DeepSeek (default), OpenAI, Ollama switchable</td></tr></table></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">TMeta Migration</span>
+      <span class="label">System Context</span>
+      <h2>TMeta: TOS Metadata Control Plane</h2>
+      <p class="subtitle">Critical dependency for TikTok Object Storage &mdash; every object read/write request queries TMeta for bucket metadata.</p>
+      <div class="two-col mt-32">
+        <div>
+          <div class="diagram">
+            <div class="diagram-row"><div class="d-box">Client SDK / URL</div></div>
+            <div class="d-arrow-down">&darr;</div>
+            <div class="diagram-row"><div class="d-box">Routing Layer (BNS)</div></div>
+            <div class="d-arrow-down">&darr;</div>
+            <div class="diagram-row"><div class="d-box primary" style="min-width:200px">Storage Gateway (TOSAPI)<br><span style="font-weight:400;font-size:11px">Stateless API gateway &middot; S3 compatible</span></div></div>
+            <div class="d-arrow-down">&darr; metadata queries</div>
+            <div class="diagram-row"><div class="d-box accent" style="min-width:200px">TMeta<br><span style="font-weight:400;font-size:11px">Metadata Control Plane &middot; ~200K QPS</span></div></div>
+            <div class="d-arrow-down">&darr;</div>
+            <div class="diagram-row"><div class="d-box" style="border-style:dashed">RDS (MySQL)</div><div class="d-arrow">&rarr;</div><div class="d-box green" style="border-style:dashed">ByteKV</div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Traffic Profile</h3>
+          <ul class="bullet-list">
+            <li><strong>~200K QPS</strong> &mdash; read requests (every TOSAPI call triggers a TMeta query)</li>
+            <li><strong>&lt;100 writes/day</strong> &mdash; bucket config changes via admin platform</li>
+            <li><strong>Freshness tolerance</strong> &mdash; TTL 30s acceptable</li>
+          </ul>
+          <h3 class="mt-24">Cache Architecture</h3>
+          <ul class="bullet-list green">
+            <li><strong>Age &lt; TTL/2</strong> &rarr; return cached immediately</li>
+            <li><strong>TTL/2 &lt; Age &lt; TTL</strong> &rarr; return cached + async refresh</li>
+            <li><strong>Age &ge; TTL</strong> &rarr; singleflight sync load from DB</li>
+            <li><strong>DB error?</strong> &rarr; extend cache TTL, serve stale</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">TMeta Migration</span>
+      <span class="label">Motivation</span>
+      <h2>Why Migrate from RDS to KV?</h2>
+      <div class="two-col mt-24">
+        <div>
+          <h3>Problems with RDS</h3>
+          <ul class="bullet-list">
+            <li><strong>Full-table scan</strong> &mdash; slow queries under load on cache miss paths</li>
+            <li><strong>Architecture divergence</strong> &mdash; internal/external used different DB backends</li>
+            <li><strong>Operational overhead</strong> &mdash; MySQL schema management, index tuning</li>
+          </ul>
+          <h3 class="mt-24">Target: ByteKV</h3>
+          <ul class="bullet-list green">
+            <li>Company-internal distributed KV store</li>
+            <li>Better suited for key-based lookup patterns</li>
+            <li>Unified architecture across deployments</li>
+            <li>Simpler operational model at scale</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Constraints</h3>
+          <div class="card mt-8"><ul>
+            <li><strong>Zero downtime</strong> &mdash; TMeta is on the critical path for all TOS operations</li>
+            <li><strong>~200K QPS</strong> must be maintained throughout</li>
+            <li><strong>Data consistency</strong> must be verified before cutover</li>
+            <li><strong>Rollback</strong> must be possible at every phase</li>
+          </ul></div>
+          <div class="highlight-box mt-24"><strong>Principle:</strong> Safety over rollout simplicity. No big-bang cutover &mdash; every phase must be independently reversible via dynamic config.</div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">TMeta Migration</span>
+      <span class="label">Strategy</span>
+      <h2>7-Phase Staged Rollout</h2>
+      <div class="slide-body">
+        <div class="pipeline">
+          <div class="phase"><div class="phase-num">01</div><div class="phase-title">RDS Only</div><div class="phase-detail">Original state<br>R: RDS &middot; W: RDS</div></div>
+          <div class="phase"><div class="phase-num">02</div><div class="phase-title">Wrapper</div><div class="phase-detail">MigrationDB abstraction<br>R: RDS &middot; W: RDS</div></div>
+          <div class="phase active"><div class="phase-num">03</div><div class="phase-title">Dual Write</div><div class="phase-detail">Catch new writes<br>R: RDS &middot; W: RDS&rarr;KV</div></div>
+          <div class="phase"><div class="phase-num">04</div><div class="phase-title">Backfill</div><div class="phase-detail">Migration tool<br>Copy RDS &rarr; KV</div></div>
+          <div class="phase active"><div class="phase-num">05</div><div class="phase-title">KV Shadow</div><div class="phase-detail">Validate KV reads<br>R: KV &middot; W: KV&rarr;RDS</div></div>
+          <div class="phase"><div class="phase-num">06</div><div class="phase-title">Verify &amp; Repair</div><div class="phase-detail">Compare updatedAt<br>Sync newer records</div></div>
+          <div class="phase"><div class="phase-num">07</div><div class="phase-title">KV Only</div><div class="phase-detail">Final cutover<br>R: KV &middot; W: KV</div></div>
+        </div>
+        <div class="two-col mt-24">
+          <div>
+            <h3>Key Implementation Details</h3>
+            <ul class="bullet-list">
+              <li><strong>Interface abstraction</strong> &mdash; BucketDB, AccountDB decouple business logic from storage backend</li>
+              <li><strong>DBHub factory</strong> &mdash; assembles SQL / KV / MigrationDB mode via dynamic config</li>
+              <li><strong>MigrationDB wrapper</strong> &mdash; same interface, orchestrates dual-write and read delegation</li>
+              <li><strong>Write strategy</strong> &mdash; primary first, secondary async; secondary failure: log + alert, don't fail request</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Consistency Verification</h3>
+            <ul class="bullet-list amber">
+              <li><strong>Full scan</strong> &mdash; migration tool compares all records in RDS and KV</li>
+              <li><strong>updatedAt-based repair</strong> &mdash; newer record wins, sync to older store</li>
+              <li><strong>Re-verify</strong> &mdash; repeat until zero mismatches</li>
+              <li><strong>Canary rollout</strong> &mdash; one region first, monitor error rate &amp; latency</li>
+            </ul>
+            <div class="highlight-box mt-16"><strong>Rollback at every phase:</strong> Switch dynamic config (TCM) to revert read/write targets. No deployment needed.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">TMeta Migration</span>
+      <span class="label">Results &amp; Additional Work</span>
+      <h2>Impact &amp; Complementary Projects</h2>
+      <div class="two-col">
+        <div>
+          <h3>Migration Results</h3>
+          <ul class="bullet-list green">
+            <li><strong>Zero service downtime</strong> &mdash; all phases completed online</li>
+            <li><strong>Rollback safety</strong> &mdash; every phase independently reversible</li>
+            <li><strong>Architecture unified</strong> &mdash; internal/external deployments aligned</li>
+            <li><strong>Eliminated slow queries</strong> &mdash; KV key-based lookups replaced full-table scans</li>
+          </ul>
+          <h3 class="mt-24">What I Learned</h3>
+          <ul class="bullet-list">
+            <li>Interface abstraction is non-negotiable for migrations</li>
+            <li>Dual-write + verify + repair beats big-bang cutover every time</li>
+            <li>Dynamic config &gt; deployment-based switching for critical systems</li>
+            <li>Invest in verification tooling early &mdash; it pays for itself</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Related Work at TikTok/TOS</h3>
+          <div class="card mt-8"><h3 style="color:var(--accent)">Security &amp; Governance</h3><ul><li>AK/SK credential encryption with zero-downtime rollout</li><li>ZTI authentication for ByteKV access</li><li>Input/output validation layer</li></ul></div>
+          <div class="card mt-16"><h3 style="color:var(--accent-2)">Quota Automation</h3><ul><li>Traffic prediction + automated quota adjustment</li><li>Safety guardrails (max +100%, max -10%)</li><li>Whitelist support for expected traffic spikes</li></ul></div>
+          <div class="card mt-16"><h3 style="color:var(--accent-3)">Multi-Cloud Gateway</h3><ul><li>UnionBackend: routing to ByteStore, GCS, S3, Azure, OBS</li><li>RouteServer proxy mode with dynamic traffic splitting</li><li>Cross-compliance-zone encryption (DES architecture)</li></ul></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <span class="badge">Fit</span>
+      <span class="label">Role Alignment</span>
+      <h2>Why I'm a Fit for This Role</h2>
+      <div class="slide-body">
+        <table class="align-table">
+          <thead><tr><th>JD Requirement</th><th>My Experience</th></tr></thead>
+          <tbody>
+            <tr><td>Lead architectural design of enterprise-grade AI Agent systems</td><td>Designed multi-agent supervisor architecture with LangGraph; 4 years enterprise infra at TikTok (200K QPS)</td></tr>
+            <tr><td>RAG, tool calling, multi-agent collaboration</td><td>Built hybrid RAG (dense + sparse + RRF + reranker), 11-tool system, supervisor-routed multi-agent</td></tr>
+            <tr><td>Agent context engineering, high-performance optimization</td><td>Token budget management, pre-model hooks, structured output routing, message filtering</td></tr>
+            <tr><td>Deep knowledge of Agent Harness and Agent Loop</td><td>Hands-on LangGraph StateGraph, create_react_agent, MemorySaver, interrupt() human-in-the-loop</td></tr>
+            <tr><td>In-depth understanding of LangChain/Dify/etc.</td><td>Built from scratch with LangChain/LangGraph &mdash; understanding internal routing, state management, tool dispatch</td></tr>
+            <tr><td>High-concurrency, reliable delivery</td><td>4 years on 200K QPS metadata control plane; cache-first, graceful degradation, zero-downtime migrations</td></tr>
+            <tr><td>Python, 3+ years engineering experience</td><td>5+ years backend (Go primary at TikTok, Python for AI agent systems); additionally TypeScript</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight-box mt-24"><strong>Unique value:</strong> I bring both deep enterprise infrastructure experience (high-QPS, migration safety, security) and hands-on AI Agent development (multi-agent, RAG, tool calling, context engineering).</div>
+      </div>
+    </section>
+    <section class="slide thankyou">
+      <div class="accent-line" style="margin:0 auto 24px"></div>
+      <h1>Thank You</h1>
+      <p class="subtitle" style="text-align:center;max-width:none">Questions &amp; Discussion</p>
+      <div class="contact"><p>Wu Jiangge &middot; jack11130311@gmail.com</p></div>
+    </section>
+  </div>
+  <nav class="nav-bar">
+    <div class="nav-dots" id="navDots"></div>
+    <div class="slide-counter" id="counter">1 / 13</div>
+    <div class="nav-arrows">
+      <button id="prevBtn" aria-label="Previous slide">&larr;</button>
+      <button id="nextBtn" aria-label="Next slide">&rarr;</button>
+    </div>
+  </nav>
+</div>
+<script>
+(function(){
+  var slides=document.querySelectorAll('.slide'),container=document.getElementById('slides'),dotsC=document.getElementById('navDots'),counter=document.getElementById('counter'),prevBtn=document.getElementById('prevBtn'),nextBtn=document.getElementById('nextBtn'),total=slides.length,current=0;
+  for(var i=0;i<total;i++){var d=document.createElement('button');d.className='nav-dot'+(i===0?' active':'');d.setAttribute('aria-label','Go to slide '+(i+1));(function(idx){d.addEventListener('click',function(){goTo(idx)})})(i);dotsC.appendChild(d)}
+  var dots=dotsC.querySelectorAll('.nav-dot');
+  function goTo(n){if(n<0||n>=total)return;current=n;container.style.transform='translateX(-'+current*100+'vw)';dots.forEach(function(dd,ii){dd.classList.toggle('active',ii===current)});counter.textContent=(current+1)+' / '+total;prevBtn.disabled=current===0;nextBtn.disabled=current===total-1}
+  prevBtn.addEventListener('click',function(){goTo(current-1)});nextBtn.addEventListener('click',function(){goTo(current+1)});
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')goTo(current+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')goTo(current-1)});
+  var tx=0;document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});document.addEventListener('touchend',function(e){var diff=tx-e.changedTouches[0].clientX;if(Math.abs(diff)>50){if(diff>0)goTo(current+1);else goTo(current-1)}});
+  goTo(0);
+})();
+</script>
+</body>
+</html>
