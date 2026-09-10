@@ -50,12 +50,15 @@ export const projects: Project[] = [
     role:
       'System owner responsible for the metadata control plane — designing cache logic, credential security, authentication integration, and leading the backend migration from RDS to KV.',
     approach:
-      'Built a cache-first serving strategy with stale-tolerant refresh. Used async refresh combined with singleflight to protect the backend store under high read traffic. Implemented graceful degradation so the service could continue serving cached metadata when the underlying DB/KV experienced failures.',
+      'Built a cache-first serving strategy with multiple layers of backend protection. Cache warmup on startup prevented cold-start stampedes during large-scale restarts. TTL jitter randomized expiration times to prevent cache avalanche. Singleflight coalesced concurrent requests for the same key to prevent cache breakdown on hot-key expiry. Negative caching (caching 404 responses) prevented cache penetration from queries on non-existent buckets. Async refresh combined with singleflight kept hot entries fresh without blocking callers. Graceful degradation extended cache timestamps and returned stale data when the underlying DB/KV experienced failures.',
     keyDesign: [
       'Cache-first serving with stale-tolerant refresh and configurable TTL tiers',
-      'Async refresh + singleflight to coalesce concurrent cache misses',
+      'Cache warmup on startup to prevent cold-start stampede when instances restart at scale',
+      'TTL jitter to randomize expiration times and prevent cache avalanche (mass simultaneous expiry)',
+      'Singleflight to coalesce concurrent requests for the same key, preventing cache breakdown on hot-key expiry',
+      'Negative caching (cache 404 responses) to prevent cache penetration from queries on non-existent buckets',
+      'Async refresh for warm-but-aging entries, sync load for cold misses',
       'Graceful degradation: extend cache timestamps and return stale data on backend errors',
-      'Sync load for cold misses, async refresh for warm-but-aging entries',
     ],
     keyDecisions: [
       'Favored availability and resilience over strict metadata freshness',
@@ -66,7 +69,7 @@ export const projects: Project[] = [
     result:
       'Maintained and improved a business-critical metadata control plane handling ~160k reads/s per region across dozens of virtual regions globally, serving multiple large-scale product teams with high availability.',
     learned:
-      'Deepened understanding of cache design trade-offs at scale — when to serve stale data, how to protect backends with singleflight and async refresh, and how to build degradation strategies that keep services available during partial outages.',
+      'Deepened understanding of cache design trade-offs at scale — defending against the classic cache failure modes (avalanche, breakdown, penetration), knowing when to serve stale data, and how to build degradation strategies that keep services available during partial outages.',
     featured: true,
     diagrams: [
       {
