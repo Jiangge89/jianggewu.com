@@ -216,49 +216,65 @@ export const projects: Project[] = [
     title: 'Quota Automation & Traffic Governance',
     company: 'TikTok',
     description:
-      'Built an automated quota management system with traffic prediction, safety guardrails, and enforcement through the metadata control plane and distributed rate limiter.',
+      'Designed and built an automated quota management service from scratch to address TOS throughput overselling risk — automatically adjusting bucket quotas based on traffic predictions with differentiated safety guardrails for scale-down vs. scale-up, plus tidal throttling for peak hours.',
     problem:
-      'Manual quota tuning could not scale with dynamic traffic growth across storage tenants. Incorrect quota settings risked either throttling legitimate traffic or allowing overload on storage backends.',
+      'TOS had significantly oversold throughput capacity, creating systemic risk. Many storage buckets had large quota allocations but low actual usage. Manual quota tuning could not scale, and the gap between allocated and real usage amplified the risk of system overload during traffic spikes.',
     role:
-      'Participated in the quota automation workflow, worked on metadata integration and enforcement path, and improved traffic governance reliability.',
+      'Owned the entire project end-to-end — designed the service architecture, implemented all core logic, and drove it to production. Traffic predictions (based on 21-day historical data) were provided by another team; all other logic was built within this service.',
     approach:
-      'Built a pipeline that predicts traffic based on historical metrics, generates automated quota recommendations with safety buffers and guardrails, and enforces quotas through the metadata control plane and a distributed rate limiter. Manual override and whitelist support preserved operational flexibility.',
+      'Built an automated quota adjustment service that ingests 21-day traffic predictions, filters out whitelisted buckets and anomalous predictions (values below the 7-day max traffic), then applies differentiated adjustment strategies for scale-down vs. scale-up scenarios. Added a tidal throttling feature to automatically reduce quota for high-throughput buckets during peak hours. All quota changes trigger Lark notifications to bucket owners with before/after values.',
     keyDesign: [
-      'Traffic prediction based on historical metrics',
-      'Automated quota generation with safety buffer and guardrails',
-      'Manual override and whitelist for operational flexibility',
-      'Enforcement through metadata control plane and distributed rate limiter',
+      'Ingest 21-day traffic predictions from upstream team, filter whitelisted buckets, discard predictions below 7-day max traffic',
+      'Scale-down (user-sensitive): at most once per day, maximum 5% reduction per adjustment',
+      'Scale-up split by throughput tier (1GB threshold): small-traffic buckets auto-execute for ≤20% increase, otherwise require TOS review; large-traffic buckets always require TOS review',
+      'Tidal throttling: automatically lower quota for high-throughput buckets during configurable peak-hour windows',
+      'Lark notification to bucket owners on every quota change with old and new values',
     ],
     keyDecisions: [
-      'Favored safe over-aggressive scaling to avoid throttling legitimate traffic',
-      'Introduced safety guardrails to reduce prediction risk',
-      'Preserved manual override for operational flexibility during incidents',
+      'Treated scale-down as user-sensitive — conservative rate limits (once/day, max 5%) to avoid disrupting legitimate traffic',
+      'Treated scale-up as TOS-sensitive — tiered review gates to prevent re-inflating oversold capacity',
+      'Used 7-day max traffic as a floor filter for predictions to avoid acting on anomalous low forecasts',
+      'Added tidal throttling as a complementary mechanism to handle peak-hour risk beyond static quota adjustment',
     ],
-    techStack: ['Go', 'Distributed Rate Limiter', 'Metrics', 'Object Storage'],
+    techStack: ['Go', 'Distributed Rate Limiter', 'Kafka', 'Lark API', 'Object Storage'],
     result:
-      'Reduced manual operational burden for quota management, improved quota rollout safety, and achieved better resilience against traffic spikes.',
+      'Progressively mitigated TOS throughput overselling risk after launch. Automated quota adjustments brought bucket allocations in line with actual usage, significantly reducing systemic overload risk. Tidal throttling provided additional safety during peak-hour traffic surges.',
     learned:
-      'Learned that automation in capacity management needs both prediction intelligence and human override — fully automated systems without guardrails or manual escape hatches create operational risk.',
+      'Learned that capacity governance requires asymmetric safety strategies — scale-down must protect users while scale-up must protect the platform. Combining static quota automation with dynamic tidal throttling provides layered defense against both chronic overselling and acute traffic spikes.',
     featured: false,
     diagrams: [
       {
         title: 'Quota Automation Flow',
+        mermaid: `flowchart TD
+    Pred[21-Day Traffic Predictions\\nfrom upstream team]
+    Filter1[Filter Whitelisted Buckets]
+    Filter2[Filter Predictions Below\\n7-Day Max Traffic]
+    Decision{Scale Down\\nor Scale Up?}
+    Down[Scale Down\\nMax 1x/day, ≤5% reduction]
+    Up{Bucket Throughput\\n≥ 1GB?}
+    SmallCheck{Adjustment\\n≤ 20%?}
+    SmallAuto[Auto Execute]
+    SmallReview[TOS Review]
+    LargeReview[TOS Review]
+    Apply[Apply Quota Change]
+    Notify[Lark Notification\\nold → new quota]
+    Pred --> Filter1 --> Filter2 --> Decision
+    Decision -- scale down --> Down --> Apply
+    Decision -- scale up --> Up
+    Up -- small traffic --> SmallCheck
+    Up -- large traffic --> LargeReview --> Apply
+    SmallCheck -- yes --> SmallAuto --> Apply
+    SmallCheck -- no --> SmallReview --> Apply
+    Apply --> Notify`,
+      },
+      {
+        title: 'Tidal Throttling',
         mermaid: `flowchart LR
-    Metrics[Traffic Metrics]
-    Predict[Traffic Prediction]
-    Quota[Quota Automation]
-    Guard[Safety Rules / Guardrail]
-    Manual[Whitelist / Override]
-    Meta[Metadata Control Plane]
-    Gateway[Storage Gateway API]
-    RL[Distributed Rate Limiter]
-    Metrics --> Predict
-    Predict --> Quota
-    Quota --> Guard
-    Guard --> Meta
-    Manual --> Meta
-    Meta --> Gateway
-    Gateway --> RL`,
+    Clock[Peak Hour Trigger]
+    Select[Select High-Throughput Buckets]
+    Reduce[Temporarily Lower Quota]
+    Restore[Restore Quota After Peak]
+    Clock --> Select --> Reduce --> Restore`,
       },
     ],
   },
