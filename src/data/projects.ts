@@ -216,65 +216,93 @@ export const projects: Project[] = [
     title: 'Quota Automation & Traffic Governance',
     company: 'TikTok',
     description:
-      'Designed and built an automated quota management service from scratch to address TOS throughput overselling risk — automatically adjusting bucket quotas based on traffic predictions with differentiated safety guardrails for scale-down vs. scale-up, plus tidal throttling for peak hours.',
+      'Designed and built an automated capacity-governance system from scratch to address TOS throughput oversubscription risk. The system gradually reclaimed unused quota through conservative prediction validation, asymmetric scale-down/scale-up policies, progressive rollout with customer onboarding, and tidal throttling for peak-hour protection.',
     problem:
-      'TOS had significantly oversold throughput capacity, creating systemic risk. Many storage buckets had large quota allocations but low actual usage. Manual quota tuning could not scale, and the gap between allocated and real usage amplified the risk of system overload during traffic spikes.',
+      'The storage platform had accumulated a large amount of historically allocated quota. As customer workloads evolved, many buckets retained significantly more quota than their actual traffic required, and the sum of allocated quota eventually exceeded the physical capacity that the storage clusters could safely support. The core challenge was not simply identifying underutilized buckets — customer traffic could fluctuate significantly, and some buckets carried critical workloads. A prediction that underestimated legitimate peak traffic could result in an automated quota reduction that affected production traffic. At the same time, automatically increasing quota too aggressively could worsen the existing oversubscription. This created two asymmetric risks: scale-down risk (reducing quota too aggressively could affect customer traffic) and scale-up risk (increasing quota too aggressively could increase pressure on an already oversubscribed storage cluster). The system therefore needed to optimize for safe automation rather than maximum automation coverage.',
     role:
-      'Owned the entire project end-to-end — designed the service architecture, implemented all core logic, and drove it to production. Traffic predictions (based on 21-day historical data) were provided by another team; all other logic was built within this service.',
+      'Owned the project end-to-end — architecture design, quota adjustment logic, safety mechanisms, rollout strategy, production monitoring, customer communication, and onboarding. The traffic prediction model (based on 21-day historical data) was provided by another internal team; all other logic — prediction validation, policy evaluation, guardrails, execution, notification, and tidal throttling — was designed and implemented within this service.',
     approach:
-      'Built an automated quota adjustment service that ingests 21-day traffic predictions, filters out whitelisted buckets and anomalous predictions (values below the 7-day max traffic), then applies differentiated adjustment strategies for scale-down vs. scale-up scenarios. Added a tidal throttling feature to automatically reduce quota for high-throughput buckets during peak hours. All quota changes trigger Lark notifications to bucket owners with before/after values.',
+      'Built a daily scheduled quota-governance service that consumed 21-day traffic predictions, validated them against recent observed traffic, applied asymmetric policies for scale-down vs. scale-up, and enforced quota changes with bounded blast radius. Predictions were treated as a signal rather than ground truth — each prediction was compared against the maximum traffic observed in the previous 7 days, and if the prediction fell below this floor, the adjustment was skipped. This intentionally conservative approach preferred reclaiming slightly less capacity over incorrectly throttling valid customer traffic. Missing or stale prediction data was handled similarly: the bucket was skipped rather than acting on unreliable input. For scale-down, quota was reduced by at most 5% per day — an operational threshold chosen to keep each adjustment small enough to limit customer impact while remaining meaningful and observable, creating time for monitoring and customer feedback before further reductions. For scale-up, the system applied tiered review gates: small buckets could auto-approve increases within ~20%, while larger increases or larger buckets required human review — the objective was not to automate every possible change, but to automate changes where the blast radius was well understood. The system was rolled out progressively: V1 validated the architecture on internal test buckets including ones I owned directly; V2 introduced production scale-down with batch onboarding starting from lower-criticality workloads, requiring customer communication, documentation, and exemption processes; V3 expanded to controlled scale-up with stricter thresholds. Beyond static quota automation, the system included tidal traffic governance to temporarily restrict quota for high-throughput buckets during predictable peak periods — addressing acute traffic pressure that long-term quota governance alone could not handle.',
     keyDesign: [
-      'Ingest 21-day traffic predictions from upstream team, filter whitelisted buckets, discard predictions below 7-day max traffic',
-      'Scale-down (user-sensitive): at most once per day, maximum 5% reduction per adjustment',
-      'Scale-up split by throughput tier (1GB threshold): small-traffic buckets auto-execute for ≤20% increase, otherwise require TOS review; large-traffic buckets always require TOS review',
-      'Tidal throttling: automatically lower quota for high-throughput buckets during configurable peak-hour windows',
-      'Lark notification to bucket owners on every quota change with old and new values',
+      'Prediction validation: compare 21-day traffic prediction against 7-day observed max traffic; skip adjustment if prediction falls below the floor — prefer no action over unsafe action',
+      'Gradual scale-down: at most 5% reduction per day — an operational threshold balancing meaningful progress with bounded customer impact, creating time for monitoring and feedback',
+      'Tiered scale-up: small-traffic buckets auto-approve increases ≤20%; larger increases or larger buckets require human review — automate where blast radius is understood, review where it is not',
+      'Whitelist exemption: bucket owners can opt out of automatic adjustment for workloads that should not participate',
+      'Tidal throttling: temporarily lower quota for high-throughput buckets during configurable peak-hour windows, with alerts on restoration failures',
+      'Lark notification to bucket owners on every quota change with before/after values',
+      'Bucket-level metrics and monitoring for quota decisions, adjustments, and errors',
     ],
     keyDecisions: [
-      'Treated scale-down as user-sensitive — conservative rate limits (once/day, max 5%) to avoid disrupting legitimate traffic',
-      'Treated scale-up as TOS-sensitive — tiered review gates to prevent re-inflating oversold capacity',
-      'Used 7-day max traffic as a floor filter for predictions to avoid acting on anomalous low forecasts',
-      'Added tidal throttling as a complementary mechanism to handle peak-hour risk beyond static quota adjustment',
+      'Treated predictions as signals, not ground truth — conservative validation against recent observed traffic to avoid acting on anomalous forecasts',
+      'Applied asymmetric risk policies: scale-down protected customers (gradual, rate-limited), scale-up protected the platform (tiered review gates)',
+      'Constrained blast radius at multiple levels: daily adjustment limits, bucket-size tiers, manual review thresholds, whitelist exemptions, and progressive rollout',
+      'Deliberately chose not to automate every decision — low-risk changes were automated, high-risk changes remained under human review',
+      'Production rollout included people: customer communication, documentation, exemption processes, and operational onboarding were part of productionizing the system, not afterthoughts',
+    ],
+    challenges: [
+      'Rolling out a system that could automatically modify customer quota required organizational readiness beyond technical readiness — contacting bucket owners, explaining the governance mechanism, preparing documentation, and handling exemption requests',
+      'Balancing automation coverage against safety: maximizing reclaimed quota would increase the chance of disrupting legitimate traffic, while being too conservative would fail to address the oversubscription risk',
+      'Failure handling favored skipping over retrying — individual execution failures were skipped since the daily job would re-evaluate; tidal throttling restoration failures triggered alerts for manual intervention',
     ],
     techStack: ['Go', 'Distributed Rate Limiter', 'Kafka', 'Lark API', 'Object Storage'],
     result:
-      'Progressively mitigated TOS throughput overselling risk after launch. Automated quota adjustments brought bucket allocations in line with actual usage, significantly reducing systemic overload risk. Tidal throttling provided additional safety during peak-hour traffic surges.',
+      'Reduced the total amount of unnecessarily allocated quota and progressively mitigated storage-cluster oversubscription risk. Transformed quota governance from a largely manual and reactive process into a continuous automated mechanism with conservative prediction validation, gradual quota adjustment, bounded automatic scale-up, human override and review, progressive rollout, bucket-level observability, and customer-facing operational processes. Tidal throttling provided additional layered defense against acute traffic pressure during peak periods.',
     learned:
-      'Learned that capacity governance requires asymmetric safety strategies — scale-down must protect users while scale-up must protect the platform. Combining static quota automation with dynamic tidal throttling provides layered defense against both chronic overselling and acute traffic spikes.',
+      'Capacity governance requires asymmetric safety strategies because different actions introduce different types of production risk — scale-down must protect users while scale-up must protect the platform. Automation should be conservative when inputs are uncertain: predictions are signals, not ground truth, and no action is preferable to unsafe action. The blast radius of automated decisions must be constrained at multiple levels. And critically, production rollout includes people — a system can be technically ready before the organization and its users are ready for it. If I were evolving the system further, I would separate policy evaluation from quota execution with a durable execution layer, making individual operations independently recoverable with idempotent updates and bounded retries.',
     featured: false,
     diagrams: [
       {
-        title: 'Quota Automation Flow',
+        title: 'Quota Automation Pipeline',
         mermaid: `flowchart TD
     Pred[21-Day Traffic Predictions\\nfrom upstream team]
     Filter1[Filter Whitelisted Buckets]
-    Filter2[Filter Predictions Below\\n7-Day Max Traffic]
+    Validate{Prediction ≥\\n7-Day Max Traffic?}
+    Skip1[Skip Bucket]
     Decision{Scale Down\\nor Scale Up?}
-    Down[Scale Down\\nMax 1x/day, ≤5% reduction]
-    Up{Bucket Throughput\\n≥ 1GB?}
-    SmallCheck{Adjustment\\n≤ 20%?}
-    SmallAuto[Auto Execute]
-    SmallReview[TOS Review]
-    LargeReview[TOS Review]
+    Down[Gradual Scale Down\\nMax 1x/day, ≤5% reduction]
+    Up{Bucket Size\\nTier?}
+    SmallCheck{Increase\\n≤ 20%?}
+    SmallAuto[Auto Approve]
+    SmallReview[Human Review]
+    LargeReview[Human Review]
     Apply[Apply Quota Change]
+    Metrics[Record Metrics]
     Notify[Lark Notification\\nold → new quota]
-    Pred --> Filter1 --> Filter2 --> Decision
+    Pred --> Filter1 --> Validate
+    Validate -- no --> Skip1
+    Validate -- yes --> Decision
     Decision -- scale down --> Down --> Apply
     Decision -- scale up --> Up
-    Up -- small traffic --> SmallCheck
-    Up -- large traffic --> LargeReview --> Apply
+    Up -- small bucket --> SmallCheck
+    Up -- large bucket --> LargeReview --> Apply
     SmallCheck -- yes --> SmallAuto --> Apply
     SmallCheck -- no --> SmallReview --> Apply
-    Apply --> Notify`,
+    Apply --> Metrics --> Notify`,
       },
       {
-        title: 'Tidal Throttling',
+        title: 'Progressive Rollout Strategy',
         mermaid: `flowchart LR
-    Clock[Peak Hour Trigger]
-    Select[Select High-Throughput Buckets]
-    Reduce[Temporarily Lower Quota]
-    Restore[Restore Quota After Peak]
-    Clock --> Select --> Reduce --> Restore`,
+    V1["V1\\nInternal Validation\\nOwn test buckets"]
+    V2["V2\\nProduction Scale-Down\\nBatch onboarding\\nCustomer communication"]
+    V3["V3\\nControlled Scale-Up\\nStricter thresholds\\nHuman review gates"]
+    V1 --> V2 --> V3`,
+      },
+      {
+        title: 'Layered Capacity Defense',
+        mermaid: `flowchart TD
+    subgraph Long["Long-Term: Quota Automation"]
+        QA[Daily Scheduled Job]
+        QA --> Align[Gradually align allocated\\nquota with actual demand]
+    end
+    subgraph Short["Short-Term: Tidal Throttling"]
+        Peak[Peak Hour Trigger]
+        Peak --> Restrict[Temporarily restrict\\nhigh-throughput buckets]
+        Restrict --> Restore[Restore after peak]
+    end
+    Long --- Short
+    Risk[Platform Capacity Risk]
+    Long --> Risk
+    Short --> Risk`,
       },
     ],
   },
