@@ -2,7 +2,10 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MermaidDiagram from '../../components/MermaidDiagram.astro';
-import { projects } from '../../data/projects';
+import { projects, type TextBlock } from '../../data/projects';
+
+const toParas = (text: TextBlock): string[] =>
+  Array.isArray(text) ? text : [text];
 
 export const getStaticPaths: GetStaticPaths = () => {
   return projects.map((project) => ({
@@ -91,17 +94,23 @@ const hasImages = project.images && project.images.length > 0;
     <div class="space-y-8">
       <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Problem</h2>
-        <p class="mt-2 leading-relaxed text-surface-600 dark:text-surface-400">{project.problem}</p>
+        {toParas(project.problem).map((p, i) => (
+          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
+        ))}
       </section>
 
       <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">My Role</h2>
-        <p class="mt-2 leading-relaxed text-surface-600 dark:text-surface-400">{project.role}</p>
+        {toParas(project.role).map((p, i) => (
+          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
+        ))}
       </section>
 
       <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Architecture / Approach</h2>
-        <p class="mt-2 leading-relaxed text-surface-600 dark:text-surface-400">{project.approach}</p>
+        {toParas(project.approach).map((p, i) => (
+          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
+        ))}
         {project.keyDesign.length > 0 && (
           <ul class="mt-3 list-inside list-disc space-y-1.5 text-surface-600 dark:text-surface-400">
             {project.keyDesign.map((item) => (
@@ -166,12 +175,16 @@ const hasImages = project.images && project.images.length > 0;
 
       <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Result</h2>
-        <p class="mt-2 leading-relaxed text-surface-600 dark:text-surface-400">{project.result}</p>
+        {toParas(project.result).map((p, i) => (
+          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
+        ))}
       </section>
 
       <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">What I Learned</h2>
-        <p class="mt-2 leading-relaxed text-surface-600 dark:text-surface-400">{project.learned}</p>
+        {toParas(project.learned).map((p, i) => (
+          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
+        ))}
       </section>
     </div>
 
