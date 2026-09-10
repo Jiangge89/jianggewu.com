@@ -225,7 +225,7 @@ export const projects: Project[] = [
       'This created two asymmetric risks: scale-down risk (reducing quota too aggressively could affect customer traffic) and scale-up risk (increasing quota too aggressively could increase pressure on an already oversubscribed cluster). The system needed to optimize for safe automation rather than maximum automation coverage.',
     ],
     role:
-      'Owned the project end-to-end — architecture design, quota adjustment logic, safety mechanisms, rollout strategy, production monitoring, customer communication, and onboarding. The traffic prediction model (based on 21-day historical data) was provided by another internal team; all other logic — prediction validation, policy evaluation, guardrails, execution, notification, and tidal throttling — was designed and implemented within this service.',
+      'Owned the project end-to-end — architecture design, quota adjustment logic, safety mechanisms, rollout strategy, production monitoring, customer communication, and onboarding. The traffic prediction model (based on 21-day historical data) was provided by another internal team. I designed and implemented the service-side logic, including prediction validation, policy evaluation, guardrails, execution, notification, and tidal throttling.',
     approach: [
       'Built a daily scheduled quota-governance service that consumed 21-day traffic predictions, validated them against recent observed traffic, applied asymmetric policies for scale-down vs. scale-up, and enforced quota changes with bounded blast radius.',
       'Predictions were treated as a signal rather than ground truth. Each prediction was compared against the maximum traffic observed in the previous 7 days. If the prediction fell below this floor, the adjustment was skipped. Missing or stale prediction data was handled similarly — the bucket was skipped rather than acting on unreliable input. This intentionally conservative approach preferred reclaiming slightly less capacity over incorrectly throttling valid customer traffic.',
@@ -251,6 +251,7 @@ export const projects: Project[] = [
       'Production rollout included people: customer communication, documentation, exemption processes, and operational onboarding were part of productionizing the system, not afterthoughts',
     ],
     challenges: [
+      'The hardest part was not implementing the automation, but deciding what we could safely automate under uncertain traffic demand and imperfect predictions',
       'Rolling out a system that could automatically modify customer quota required organizational readiness beyond technical readiness — contacting bucket owners, explaining the governance mechanism, preparing documentation, and handling exemption requests',
       'Balancing automation coverage against safety: maximizing reclaimed quota would increase the chance of disrupting legitimate traffic, while being too conservative would fail to address the oversubscription risk',
       'Failure handling favored skipping over retrying — individual execution failures were skipped since the daily job would re-evaluate; tidal throttling restoration failures triggered alerts for manual intervention',
