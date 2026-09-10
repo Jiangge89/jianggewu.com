@@ -61,8 +61,8 @@ export const projects: Project[] = [
       'Graceful degradation: extend cache timestamps and return stale data on backend errors',
     ],
     keyDecisions: [
-      'Favored availability and resilience over strict metadata freshness',
-      'Metadata writes were infrequent and not latency-sensitive, enabling aggressive caching',
+      'Prioritized availability over consistency — when the DB was down, reads continued serving stale cached data while writes failed; this was acceptable because the workload was overwhelmingly read-heavy and metadata staleness was tolerable',
+      'Metadata writes were infrequent (<1k/s) and not latency-sensitive, making write failures during DB outages an acceptable trade-off for uninterrupted read availability',
       'Optimized backend protection under high read traffic rather than optimizing write paths',
     ],
     techStack: ['Go', 'Redis', 'KV Store', 'Distributed Systems', 'Object Storage'],
