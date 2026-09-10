@@ -258,7 +258,7 @@ export const projects: Project[] = [
     ],
     techStack: ['Go', 'Distributed Rate Limiter', 'Kafka', 'Lark API', 'Object Storage'],
     result: [
-      'Reduced the total amount of unnecessarily allocated quota and progressively mitigated storage-cluster oversubscription risk.',
+      'Onboarded ~60k buckets across three major regions (CN ~40k, SG ~10k, US ~10k) into automated quota governance. Reduced the total amount of unnecessarily allocated quota and progressively mitigated storage-cluster oversubscription risk.',
       'Transformed quota governance from a largely manual and reactive process into a continuous automated mechanism with conservative prediction validation, gradual quota adjustment, bounded automatic scale-up, human override and review, progressive rollout, bucket-level observability, and customer-facing operational processes. Tidal throttling provided additional layered defense against acute traffic pressure during peak periods.',
     ],
     learned: [
