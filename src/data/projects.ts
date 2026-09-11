@@ -30,7 +30,10 @@ export interface Project {
   techStack: string[];
   result: TextBlock;
   learned: TextBlock;
+  summary: { problem: string; role: string; result: string };
   featured: boolean;
+  highlighted?: boolean;
+  outcome?: string;
   icon?: string;
   links?: ProjectLink[];
   diagrams?: ProjectDiagram[];
@@ -41,6 +44,11 @@ export const projects: Project[] = [
   // --- TikTok ---
   {
     slug: 'tos-metadata-control-plane',
+    summary: {
+      problem: "Keep object-storage metadata available under heavy read traffic and backend failures.",
+      role: "Owned TMeta, including cache design, credential security, and the RDS-to-KV migration.",
+      result: "Supported ~160k reads/s per region across dozens of virtual regions.",
+    },
     title: 'TOS Metadata Control Plane',
     company: 'TikTok',
     description:
@@ -115,6 +123,13 @@ export const projects: Project[] = [
   },
   {
     slug: 'rds-to-kv-online-migration',
+    outcome: 'Zero downtime · Dozens of regions',
+    summary: {
+      problem: "Move critical metadata from RDS to KV without downtime or data loss.",
+      role: "Led the system design and implementation, partnered with SRE on the production rollout, and monitored system health throughout the migration.",
+      result: "Completed the online migration on clusters across dozens of regions, with zero downtime and rollback safety throughout.",
+    },
+    highlighted: true,
     title: 'RDS to KV Online Migration',
     company: 'TikTok',
     description:
@@ -122,7 +137,7 @@ export const projects: Project[] = [
     problem:
       'The metadata control plane needed to migrate its persistence layer from RDS to KV for better scalability, but the service was a critical dependency for object access — any downtime or data loss was unacceptable.',
     role:
-      'Designed the rollout strategy, implemented the migration wrapper and dual-write logic, built the consistency verification and repair flow, and participated in rollout and rollback planning.',
+      'Led the system design and implementation, partnered with SRE on the production rollout, and monitored system health throughout the migration.',
     approach:
       'Designed a 6-stage online migration: (1) introduce migration wrapper with RDS as sole backend, (2) enable dual-write from RDS to KV, (3) backfill historical data with a migration tool, (4) switch primary to KV with RDS as secondary, (5) run consistency verification and repair using updatedAt timestamps, (6) cut over to KV-only. Each stage supported rollback to RDS.',
     keyDesign: [
@@ -144,7 +159,7 @@ export const projects: Project[] = [
     ],
     techStack: ['Go', 'RDS', 'KV Store', 'Distributed Systems'],
     result:
-      'Successfully migrated the metadata backend online with zero downtime, preserving rollback safety throughout the migration and reducing migration risk without service disruption.',
+      'Successfully completed the online metadata backend migration on clusters across dozens of regions with zero downtime, preserving rollback safety throughout the migration and reducing migration risk without service disruption.',
     learned:
       'Gained deep experience in online migration patterns — dual-write, staged rollout, consistency verification, and the importance of rollback-safe design in mission-critical systems.',
     featured: true,
@@ -170,6 +185,11 @@ export const projects: Project[] = [
   },
   {
     slug: 'credentials-encryption',
+    summary: {
+      problem: "Protect plaintext AK/SK credentials against database exposure.",
+      role: "Led the project from system design and implementation through production rollout, monitoring system health throughout the rollout.",
+      result: "Rolled out credential protection to clusters across dozens of regions with zero downtime.",
+    },
     title: 'Credentials Encryption',
     company: 'TikTok',
     description:
@@ -177,7 +197,7 @@ export const projects: Project[] = [
     problem:
       'Sensitive credentials (AK/SK) were stored in plaintext in the metadata persistence layer. Security hardening was required to reduce the blast radius of potential database exposure.',
     role:
-      'Designed and implemented the credential encryption layer, including the rollout strategy for backward-compatible encryption adoption.',
+      'Led the project from system design and implementation through production rollout, monitoring system health throughout the rollout. Designed and implemented the credential encryption layer and a backward-compatible rollout strategy.',
     approach:
       'Introduced a credential security layer that encrypts credentials before persistence and conditionally decrypts on authorized read paths. Rolled out with a feature switch: decryption logic was always enabled for backward compatibility, encryption was enabled for new writes, and historical plaintext records were backfilled via a migration tool.',
     keyDesign: [
@@ -198,7 +218,7 @@ export const projects: Project[] = [
     ],
     techStack: ['Go', 'KV Store', 'Encryption'],
     result:
-      'Reduced blast radius of database exposure, improved metadata security posture, and achieved zero-downtime rollout for credential protection.',
+      'Reduced blast radius of database exposure, improved metadata security posture, and completed the credential protection rollout on clusters across dozens of regions with zero downtime.',
     learned:
       'Learned the value of backward-compatible security rollouts — applying encryption incrementally with always-on decryption avoids the fragility of big-bang security migrations.',
     featured: false,
@@ -218,6 +238,13 @@ export const projects: Project[] = [
   },
   {
     slug: 'quota-automation-traffic-governance',
+    outcome: '~60k buckets · 3 main regions',
+    summary: {
+      problem: "Reclaim excess quota safely while reducing manual requests and cluster oversubscription risk.",
+      role: "Led the service’s evolution and design across multiple versions, including safety policies, production rollout, and customer onboarding. Another internal team provided the prediction model.",
+      result: "Onboarded ~60k buckets across CN, SG, and US, reducing excess allocated quota.",
+    },
+    highlighted: true,
     title: 'Quota Automation & Traffic Governance',
     company: 'TikTok',
     description:
@@ -229,7 +256,7 @@ export const projects: Project[] = [
       'This created two asymmetric risks: scale-down risk (reducing quota too aggressively could affect customer traffic) and scale-up risk (increasing quota too aggressively could increase pressure on an already oversubscribed cluster). The system needed to optimize for safe automation rather than maximum automation coverage.',
     ],
     role:
-      'Owned the project end-to-end — architecture design, quota adjustment logic, safety mechanisms, rollout strategy, production monitoring, customer communication, and onboarding. The traffic prediction model (based on 21-day historical data) was provided by another internal team. I designed and implemented the service-side logic, including prediction validation, policy evaluation, guardrails, execution, notification, and tidal throttling.',
+      'Led the service’s evolution and design across multiple versions, including safety policies, production rollout, and customer onboarding. The traffic prediction model (based on 21-day historical data) was provided by another internal team. I designed and implemented the service-side logic, including prediction validation, policy evaluation, guardrails, execution, notification, and tidal throttling.',
     approach: [
       'Built a daily scheduled quota-governance service that consumed 21-day traffic predictions, validated them against recent observed traffic, applied asymmetric policies for scale-down vs. scale-up, and enforced quota changes with bounded blast radius.',
       'Predictions were treated as a signal rather than ground truth. Each prediction was compared against the maximum traffic observed in the previous 7 days. If the prediction fell below this floor, the adjustment was skipped. Missing or stale prediction data was handled similarly — the bucket was skipped rather than acting on unreliable input. This intentionally conservative approach preferred reclaiming slightly less capacity over incorrectly throttling valid customer traffic.',
@@ -330,6 +357,11 @@ export const projects: Project[] = [
   },
   {
     slug: 'bytekv-zti-authentication',
+    summary: {
+      problem: "Replace unauthenticated ByteKV access with secure service identity.",
+      role: "Evaluated authentication options and executed a staged ZTI rollout with rollback support.",
+      result: "Rolled out standardized database authentication to clusters across dozens of regions with zero downtime.",
+    },
     title: 'ByteKV ZTI Authentication',
     company: 'TikTok',
     description:
@@ -357,7 +389,7 @@ export const projects: Project[] = [
     ],
     techStack: ['Go', 'ZTI', 'ByteKV', 'Service Identity'],
     result:
-      'Standardized ByteKV authentication, improved access security posture, and completed the rollout with zero downtime.',
+      'Standardized ByteKV authentication, improved access security posture, and completed the rollout on clusters across dozens of regions with zero downtime.',
     learned:
       'Reinforced the pattern of staged security rollouts — compatibility mode before enforcement is essential for zero-downtime security changes in production systems.',
     featured: false,
@@ -382,6 +414,11 @@ export const projects: Project[] = [
   // --- Shopee ---
   {
     slug: 'promotion-gateway-cache',
+    summary: {
+      problem: "Reduce backend fan-out and latency spikes during homepage flash sales.",
+      role: "Worked on the gateway API and designed and optimized its two-layer caching strategy.",
+      result: "Reduced backend dependency during spikes and improved homepage serving resilience.",
+    },
     title: 'Promotion Gateway & Double-Layer Cache',
     company: 'Shopee',
     description:
@@ -427,6 +464,11 @@ export const projects: Project[] = [
   },
   {
     slug: 'platform-library-engineering',
+    summary: {
+      problem: "Reduce inconsistent caching, circuit breaking, and rate limiting across Go services.",
+      role: "Built shared libraries and tooling for dependency visibility and upgrade planning.",
+      result: "Improved engineering consistency, dependency visibility, and library rollout.",
+    },
     title: 'Platform Library Engineering & Adoption',
     company: 'Shopee',
     description:
@@ -478,6 +520,11 @@ export const projects: Project[] = [
   // --- Duftee (Independent) ---
   {
     slug: 'moma-app',
+    summary: {
+      problem: "Make expense tracking across multiple currencies and accounts easier.",
+      role: "Owned architecture, feature design, and backend development from concept to launch.",
+      result: "Shipped a budgeting app with multi-currency tracking and spending analytics to the App Store.",
+    },
     title: 'Moma',
     company: 'Duftee',
     description:
@@ -537,6 +584,11 @@ export const projects: Project[] = [
   },
   {
     slug: 'chill-app',
+    summary: {
+      problem: "Provide structured exercise guidance and plans tailored to individual preferences.",
+      role: "Led architecture, feature design, backend development, and part of the frontend.",
+      result: "Core training, AI plans, history, and Apple Watch features are functional; App Store launch is in progress.",
+    },
     title: 'Chill',
     company: 'Duftee',
     description:

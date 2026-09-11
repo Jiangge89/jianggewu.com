@@ -25,7 +25,12 @@ const independentProjects = projects.filter((p) => !workCompanies.includes(p.com
         return (
           <a
             href={`/projects/${project.slug}/`}
-            class="group rounded-lg border border-surface-200 bg-white p-5 transition-colors hover:border-primary-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-primary-600"
+            class:list={[
+              'group rounded-lg border p-5 transition-colors',
+              project.highlighted
+                ? 'project-card-highlighted'
+                : 'border-surface-200 bg-white hover:border-primary-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-primary-600',
+            ]}
           >
             <div class="flex items-center gap-2">
               <span class="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">

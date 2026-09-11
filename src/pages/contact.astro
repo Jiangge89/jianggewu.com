@@ -14,22 +14,36 @@ import { siteConfig } from '../config/site';
     <div class="space-y-6 text-surface-700 dark:text-surface-300">
       <p>
         I'm always open to discussing new opportunities, technical collaborations,
-        or just connecting with fellow engineers. Feel free to reach out through any of the channels below.
+        or just connecting with fellow engineers. Email is the best way to reach me.
       </p>
 
       <div class="space-y-4">
-        <a
-          href={`mailto:${siteConfig.email}`}
-          class="flex items-center gap-3 rounded-lg border border-surface-200 p-4 transition-colors hover:border-primary-300 hover:bg-surface-50 dark:border-surface-700 dark:hover:border-primary-600 dark:hover:bg-surface-800"
+        <div
+          class="rounded-lg border border-surface-200 p-4 dark:border-surface-700"
         >
-          <svg class="h-6 w-6 text-surface-500 dark:text-surface-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <a href={`mailto:${siteConfig.email}`} class="flex min-w-0 items-center gap-3 rounded-md hover:text-primary-600 dark:hover:text-primary-400">
+          <svg class="h-6 w-6 shrink-0 text-surface-500 dark:text-surface-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
           </svg>
-          <div>
-            <div class="font-medium text-surface-900 dark:text-surface-100">Email</div>
-            <div class="text-sm text-surface-500 dark:text-surface-400">{siteConfig.email}</div>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2 font-medium text-surface-900 dark:text-surface-100">
+              Email
+              <span class="rounded-full bg-primary-50 px-2 py-0.5 text-xs text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">Primary contact</span>
+            </div>
+            <div class="mt-1 break-all text-sm text-surface-600 dark:text-surface-400">{siteConfig.email}</div>
           </div>
-        </a>
+          </a>
+          <button
+            type="button"
+            id="copy-email"
+            aria-label="Copy email address"
+            data-email={siteConfig.email}
+            class="shrink-0 self-start rounded-md border border-surface-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-surface-50 disabled:opacity-60 dark:border-surface-600 dark:hover:bg-surface-800 sm:self-auto"
+          >Copy</button>
+          </div>
+          <p id="copy-email-status" role="status" aria-live="polite" class="mt-2 text-sm text-surface-600 empty:hidden dark:text-surface-400"></p>
+        </div>
 
         <a
           href={siteConfig.githubUrl}
@@ -42,7 +56,7 @@ import { siteConfig } from '../config/site';
           </svg>
           <div>
             <div class="font-medium text-surface-900 dark:text-surface-100">GitHub</div>
-            <div class="text-sm text-surface-500 dark:text-surface-400">{siteConfig.githubUrl}</div>
+            <div class="text-sm text-surface-500 dark:text-surface-400">@{new URL(siteConfig.githubUrl).pathname.split('/').filter(Boolean).pop()}</div>
           </div>
         </a>
 
@@ -57,7 +71,7 @@ import { siteConfig } from '../config/site';
           </svg>
           <div>
             <div class="font-medium text-surface-900 dark:text-surface-100">LinkedIn</div>
-            <div class="text-sm text-surface-500 dark:text-surface-400">{siteConfig.linkedinUrl}</div>
+            <div class="text-sm text-surface-500 dark:text-surface-400">{siteConfig.name} · View profile</div>
           </div>
         </a>
 
@@ -75,3 +89,30 @@ import { siteConfig } from '../config/site';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  function initCopyEmail() {
+    const button = document.querySelector<HTMLButtonElement>('#copy-email');
+    const status = document.querySelector<HTMLElement>('#copy-email-status');
+    if (!button || !status || button.dataset.initialized) return;
+    button.dataset.initialized = 'true';
+
+    button.addEventListener('click', async () => {
+      const email = button.dataset.email;
+      if (!email) return;
+      button.disabled = true;
+      status.textContent = '';
+      try {
+        await navigator.clipboard.writeText(email);
+        status.textContent = 'Email copied to clipboard.';
+      } catch {
+        status.textContent = 'Could not copy automatically. Please select and copy the email address above.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  initCopyEmail();
+  document.addEventListener('astro:page-load', initCopyEmail);
+</script>

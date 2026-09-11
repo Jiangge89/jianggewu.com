@@ -73,6 +73,10 @@ body {
     0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+.project-card-highlighted {
+  @apply border-primary-200 bg-primary-50/40 hover:border-primary-300 hover:bg-primary-50/70 dark:border-primary-900 dark:bg-primary-900/10 dark:hover:border-primary-800 dark:hover:bg-primary-900/20;
+}
+
 :where(.dark) .phone-frame {
   box-shadow:
     0 0 0 3px #333,
