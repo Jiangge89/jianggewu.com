@@ -271,7 +271,7 @@ export const projects: Project[] = [
       'Production rollout includes people — a system can be technically ready before the organization and its users are ready for it.',
       'If I were evolving the system further, I would separate policy evaluation from quota execution with a durable execution layer, making individual operations independently recoverable with idempotent updates and bounded retries.',
     ],
-    featured: false,
+    featured: true,
     diagrams: [
       {
         title: 'Quota Automation Pipeline',
@@ -408,7 +408,7 @@ export const projects: Project[] = [
       'Reduced backend dependency during traffic spikes, improved homepage serving resilience, and supported high-volume promotion traffic during flash sales.',
     learned:
       'Learned the effectiveness of multi-layer caching for high-traffic scenarios — local memory cache absorbs burst traffic that would otherwise overwhelm even distributed caches.',
-    featured: true,
+    featured: false,
     diagrams: [
       {
         title: 'Promotion Gateway Architecture',

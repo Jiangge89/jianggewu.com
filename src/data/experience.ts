@@ -8,6 +8,7 @@ export interface Experience {
   responsibilities: string[];
   achievements: string[];
   technologies: string[];
+  logo?: string;
 }
 
 export const experiences: Experience[] = [
@@ -28,6 +29,7 @@ export const experiences: Experience[] = [
     ],
     achievements: [],
     technologies: ['Go', 'Distributed Systems', 'Redis', 'Kafka', 'Cloud Infrastructure', 'Object Storage'],
+    logo: '/images/companies/tiktok.png',
   },
   {
     company: 'Shopee',
@@ -44,6 +46,7 @@ export const experiences: Experience[] = [
     ],
     achievements: [],
     technologies: ['Python', 'Go', 'Redis', 'Memcached', 'Distributed Systems', 'Microservices'],
+    logo: '/images/companies/shopee.jpg',
   },
   {
     company: 'Works Applications',
@@ -59,6 +62,7 @@ export const experiences: Experience[] = [
     ],
     achievements: [],
     technologies: ['Java', 'Kafka', 'Cassandra', 'Docker'],
+    logo: '/images/companies/works-applications.jpg',
   },
 ];
 
