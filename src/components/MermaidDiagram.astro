@@ -7,7 +7,7 @@ interface Props {
 const { chart, title } = Astro.props;
 ---
 
-<div class="mermaid-wrapper my-6 overflow-x-auto rounded-lg border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-800/50">
+<div class="mermaid-wrapper my-6 overflow-x-auto rounded-lg border border-surface-200 bg-white p-4 dark:border-surface-700 dark:bg-surface-900">
   {title && (
     <p class="mb-3 text-sm font-medium text-surface-500 dark:text-surface-400">{title}</p>
   )}
@@ -21,10 +21,61 @@ const { chart, title } = Astro.props;
 
     const { default: mermaid } = await import('mermaid');
     const isDark = document.documentElement.classList.contains('dark');
+
+    const lightTheme = {
+      primaryColor: '#dbeafe',
+      primaryTextColor: '#1e3a8a',
+      primaryBorderColor: '#93c5fd',
+      secondaryColor: '#f0fdf4',
+      secondaryTextColor: '#166534',
+      secondaryBorderColor: '#86efac',
+      tertiaryColor: '#fef3c7',
+      tertiaryTextColor: '#92400e',
+      tertiaryBorderColor: '#fcd34d',
+      lineColor: '#a1a1aa',
+      textColor: '#27272a',
+      mainBkg: '#dbeafe',
+      nodeBorder: '#93c5fd',
+      clusterBkg: '#f8fafc',
+      clusterBorder: '#e4e4e7',
+      titleColor: '#18181b',
+      edgeLabelBackground: '#ffffff',
+      nodeTextColor: '#1e3a8a',
+    };
+
+    const darkTheme = {
+      primaryColor: '#1e3a8a',
+      primaryTextColor: '#dbeafe',
+      primaryBorderColor: '#3b82f6',
+      secondaryColor: '#14532d',
+      secondaryTextColor: '#bbf7d0',
+      secondaryBorderColor: '#22c55e',
+      tertiaryColor: '#78350f',
+      tertiaryTextColor: '#fef3c7',
+      tertiaryBorderColor: '#f59e0b',
+      lineColor: '#71717a',
+      textColor: '#e4e4e7',
+      mainBkg: '#1e3a8a',
+      nodeBorder: '#3b82f6',
+      clusterBkg: '#18181b',
+      clusterBorder: '#3f3f46',
+      titleColor: '#f4f4f5',
+      edgeLabelBackground: '#27272a',
+      nodeTextColor: '#dbeafe',
+    };
+
     mermaid.initialize({
       startOnLoad: false,
-      theme: isDark ? 'dark' : 'default',
-      flowchart: { useMaxWidth: true, htmlLabels: true },
+      theme: 'base',
+      themeVariables: isDark ? darkTheme : lightTheme,
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis',
+        padding: 16,
+        nodeSpacing: 40,
+        rankSpacing: 50,
+      },
       securityLevel: 'loose',
     });
     await mermaid.run({ nodes: elements });
