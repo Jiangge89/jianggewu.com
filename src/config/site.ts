@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'Jiangge Wu',
   title: 'Jiangge Wu — Senior Backend Engineer',
   description:
-    'Personal website of Jiangge Wu, a senior backend engineer based in Singapore with 9+ years of backend engineering experience, including roles at TikTok and Shopee.',
+    'Personal website of Jiangge Wu, a senior backend engineer based in Singapore with 10+ years of backend engineering experience, including roles at TikTok and Shopee.',
   url: 'https://jianggewu.com',
   author: 'Jiangge Wu',
   role: 'Senior Backend Engineer',

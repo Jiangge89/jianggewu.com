@@ -34,13 +34,13 @@ const { title, description } = Astro.props;
     <Footer />
     <script>
       function initThemeToggle() {
-        var toggles = document.querySelectorAll('#theme-toggle');
+        var toggles = document.querySelectorAll('[data-theme-toggle]');
         function updateIcons() {
           var isDark = document.documentElement.classList.contains('dark');
-          document.querySelectorAll('#theme-icon-light').forEach(function (el) {
+          document.querySelectorAll('[data-theme-icon="light"]').forEach(function (el) {
             el.classList.toggle('hidden', isDark);
           });
-          document.querySelectorAll('#theme-icon-dark').forEach(function (el) {
+          document.querySelectorAll('[data-theme-icon="dark"]').forEach(function (el) {
             el.classList.toggle('hidden', !isDark);
           });
         }

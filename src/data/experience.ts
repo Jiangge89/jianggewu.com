@@ -25,7 +25,7 @@ export const experiences: Experience[] = [
       'Owned and evolved TMeta, the metadata control plane for TikTok Object Storage (TOS), supporting globally distributed storage infrastructure.',
     responsibilities: [
       'Delivered object storage API features, including storage-class-aware operations and multi-cloud support.',
-      'Maintained production storage clusters and improved failover mechanisms and SDK consistency across services.',
+      'Maintained production storage clusters, improved failover mechanisms, and unified SDKs across services.',
     ],
     achievements: [
       {

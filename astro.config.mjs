@@ -10,8 +10,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
     server: {
       strictPort: true,
-      // Polling also detects edits when native file events are missed by the local environment.
-      watch: { usePolling: true, interval: 500 },
     },
   },
   integrations: [sitemap()],
