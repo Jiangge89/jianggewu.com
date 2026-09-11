@@ -1,0 +1,58 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Tree from '../../components/blog/Tree.astro';
+import EntryCard from '../../components/blog/EntryCard.astro';
+import { blogEntries, visibleEntries, slug, href, parent, isSection, excerpt, dated, formatDate, sectionName, categoryDescriptions } from '../../lib/blog';
+import '../../styles/blog.css';
+export async function getStaticPaths() {
+  const all = await blogEntries();
+  const entries = visibleEntries(all);
+  // Empty sections keep a working URL, but don't clutter navigation.
+  return all.filter(entry => slug(entry)).map(entry => ({ params: { slug: slug(entry) }, props: { entry, entries } }));
+}
+const { entry, entries } = Astro.props;
+const { Content, headings } = await render(entry);
+const current = slug(entry);
+const section = isSection(entry);
+const children = entries.filter(child => parent(child) === current);
+const siblings = entries.filter(child => parent(child) === parent(entry) && !isSection(child));
+const position = siblings.findIndex(child => child.id === entry.id);
+const previous = !section && position > 0 ? siblings[position - 1] : undefined;
+const next = !section && position >= 0 ? siblings[position + 1] : undefined;
+const ancestors = current.split('/').slice(0, -1).map((_, i) => entries.find(item => slug(item) === current.split('/').slice(0, i + 1).join('/'))).filter(Boolean);
+const toc = headings.filter(heading => heading.depth <= 3);
+const date = dated(entry);
+---
+<BaseLayout title={entry.data.title} description={excerpt(entry) || categoryDescriptions[current] || `Explore ${entry.data.title} in Jiangge Wu’s notebook.`}>
+  <div class="blog-reading">
+    <aside class="reading-sidebar">
+      <a class="back-blog" href="/blog/">← The notebook</a>
+      <a class="sidebar-search" href="/blog/#blog-search-input">Search all notes <span aria-hidden="true">⌕</span></a>
+      <details class="browse-panel"><summary>Browse topics</summary><nav aria-label="Blog topics"><Tree entries={entries} current={current} /></nav></details>
+    </aside>
+    <div class="reading-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/blog/">Blog</a>{ancestors.map(ancestor => ancestor && <><span aria-hidden="true">/</span><a href={href(ancestor)}>{ancestor.data.title}</a></>)}<span aria-hidden="true">/</span><span aria-current="page">{entry.data.title}</span></nav>
+      <header class="article-header">
+        <div class="eyebrow">{section ? 'COLLECTION' : sectionName(entry)}</div>
+        <h1>{entry.data.title}</h1>
+        {categoryDescriptions[current] && <p>{categoryDescriptions[current]}</p>}
+        <div class="entry-meta">{date && <time datetime={date.toISOString()}>{entry.data.updated ? 'Updated ' : ''}{formatDate(date)}</time>}{entry.data.tags.map(tag => <span class="article-tag">{tag}</span>)}</div>
+      </header>
+      {toc.length > 0 && <details class="mobile-toc"><summary>On this page</summary><nav aria-label="Article sections">{toc.map(heading => <a href={`#${heading.slug}`}>{heading.text}</a>)}</nav></details>}
+      {section && children.length > 0 && <section class="collection-children" aria-label="In this collection">{children.map(child => <EntryCard entry={child} compact />)}</section>}
+      <article class="blog-prose"><Content /></article>
+      {section && children.length === 0 && !entry.body?.trim() && <p class="empty-collection">This part of the notebook is still taking shape. <a href="/blog/">Explore the other topics →</a></p>}
+      {(previous || next) && <nav class="article-pagination" aria-label="Adjacent notes">{previous ? <a href={href(previous)}><span>← Previous note</span>{previous.data.title}</a> : <div />}{next && <a href={href(next)}><span>Next note →</span>{next.data.title}</a>}</nav>}
+    </div>
+    <aside class="reading-toc">{toc.length > 0 && <nav aria-label="On this page"><h2>ON THIS PAGE</h2>{toc.map(heading => <a class:list={{ 'toc-sub': heading.depth === 3 }} href={`#${heading.slug}`}>{heading.text}</a>)}<a class="toc-top" href="#top">Back to top ↑</a></nav>}</aside>
+  </div>
+</BaseLayout>
+<script>
+  function setupBlog() {
+    const panel = document.querySelector<HTMLDetailsElement>('.browse-panel');
+    if (panel) panel.open = window.matchMedia('(min-width: 1024px)').matches;
+  }
+  setupBlog();
+  document.addEventListener('astro:page-load', setupBlog);
+</script>

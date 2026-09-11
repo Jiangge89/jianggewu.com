@@ -11,7 +11,7 @@ export const siteConfig = {
   email: 'jack11130311@gmail.com',
   githubUrl: 'https://github.com/Jiangge89',
   linkedinUrl: 'https://www.linkedin.com/in/jiangge-wu-19b6b5103/',
-  blogUrl: 'https://jiangge89.github.io/jacksite/',
+  blogUrl: '/blog/',
 
   resumePath: '/resume/jiangge-wu-resume.pdf',
 

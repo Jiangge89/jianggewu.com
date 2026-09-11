@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Q2 2026 13F Analysis — 9 Top Funds</title>
+<style>
+@font-face {
+  font-family: 'Charter';
+  src: local('Charter'), local('Georgia');
+}
+
+:root {
+  --bg: #F7F6F3;
+  --bg-card: #FFFFFF;
+  --bg-card-alt: #F0EFEC;
+  --text: #1A1A1A;
+  --text-muted: #6B665E;
+  --text-faint: #9B9688;
+  --border: #E0DDD6;
+  --border-strong: #C8C3B8;
+  --green: #16803C;
+  --green-bg: #DCFCE7;
+  --green-text: #14532D;
+  --red: #C0392B;
+  --red-bg: #FEE2E2;
+  --red-text: #7F1D1D;
+  --amber: #B45309;
+  --amber-bg: #FEF3C7;
+  --amber-text: #78350F;
+  --blue: #1D4ED8;
+  --blue-bg: #DBEAFE;
+  --blue-text: #1E3A5F;
+  --accent: #2563EB;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0C0E12;
+    --bg-card: #151920;
+    --bg-card-alt: #1A1F28;
+    --text: #E4E2DC;
+    --text-muted: #8D8B85;
+    --text-faint: #5C5A54;
+    --border: #2A2E36;
+    --border-strong: #3A3F4A;
+    --green: #4ADE80;
+    --green-bg: rgba(22,163,74,0.15);
+    --green-text: #86EFAC;
+    --red: #F87171;
+    --red-bg: rgba(220,38,38,0.12);
+    --red-text: #FCA5A5;
+    --amber: #FBBF24;
+    --amber-bg: rgba(245,158,11,0.12);
+    --amber-text: #FDE68A;
+    --blue: #60A5FA;
+    --blue-bg: rgba(59,130,246,0.12);
+    --blue-text: #93C5FD;
+    --accent: #60A5FA;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C0E12;
+  --bg-card: #151920;
+  --bg-card-alt: #1A1F28;
+  --text: #E4E2DC;
+  --text-muted: #8D8B85;
+  --text-faint: #5C5A54;
+  --border: #2A2E36;
+  --border-strong: #3A3F4A;
+  --green: #4ADE80;
+  --green-bg: rgba(22,163,74,0.15);
+  --green-text: #86EFAC;
+  --red: #F87171;
+  --red-bg: rgba(220,38,38,0.12);
+  --red-text: #FCA5A5;
+  --amber: #FBBF24;
+  --amber-bg: rgba(245,158,11,0.12);
+  --amber-text: #FDE68A;
+  --blue: #60A5FA;
+  --blue-bg: rgba(59,130,246,0.12);
+  --blue-text: #93C5FD;
+  --accent: #60A5FA;
+}
+:root[data-theme="light"] {
+  --bg: #F7F6F3;
+  --bg-card: #FFFFFF;
+  --bg-card-alt: #F0EFEC;
+  --text: #1A1A1A;
+  --text-muted: #6B665E;
+  --text-faint: #9B9688;
+  --border: #E0DDD6;
+  --border-strong: #C8C3B8;
+  --green: #16803C;
+  --green-bg: #DCFCE7;
+  --green-text: #14532D;
+  --red: #C0392B;
+  --red-bg: #FEE2E2;
+  --red-text: #7F1D1D;
+  --amber: #B45309;
+  --amber-bg: #FEF3C7;
+  --amber-text: #78350F;
+  --blue: #1D4ED8;
+  --blue-bg: #DBEAFE;
+  --blue-text: #1E3A5F;
+  --accent: #2563EB;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+header h1 {
+  font-family: Charter, Georgia, 'Times New Roman', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Fund overview grid */
+.fund-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .fund-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.fund-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+}
+
+.fund-card .fund-name {
+  font-family: Charter, Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.fund-card .fund-manager {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+
+.fund-card .aum-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fund-card .aum {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.fund-card .aum-change {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.fund-card .positions {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  margin-top: 0.25rem;
+}
+
+.positive { color: var(--green); }
+.negative { color: var(--red); }
+
+/* Category sections */
+.category {
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.category-header h2 {
+  font-family: Charter, Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.category-header .cat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  padding: 0.15rem 0.5rem;
+  background: var(--bg-card-alt);
+  border-radius: 3px;
+}
+
+/* Ticker blocks */
+.ticker-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.ticker-header {
+  display: flex;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ticker-header:hover {
+  background: var(--bg-card-alt);
+}
+
+.ticker-symbol {
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 4rem;
+}
+
+.ticker-name {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.signal-bar {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.signal-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.signal-dot.new, .signal-dot.add { background: var(--green); }
+.signal-dot.hold { background: var(--border-strong); }
+.signal-dot.cut { background: var(--amber); }
+.signal-dot.sold { background: var(--red); }
+
+.consensus-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.125rem 0.4rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.consensus-badge.bullish {
+  background: var(--green-bg);
+  color: var(--green-text);
+}
+
+.consensus-badge.bearish {
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.consensus-badge.mixed {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+
+.consensus-badge.neutral {
+  background: var(--bg-card-alt);
+  color: var(--text-muted);
+}
+
+.expand-icon {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  transition: transform 0.2s;
+}
+
+.ticker-block.open .expand-icon {
+  transform: rotate(90deg);
+}
+
+.ticker-details {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+.ticker-block.open .ticker-details {
+  display: block;
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-table th {
+  text-align: left;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  background: var(--bg-card-alt);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-table td {
+  padding: 0.375rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.detail-table tr:last-child td {
+  border-bottom: none;
+}
+
+.action-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.action-tag.new { background: var(--green-bg); color: var(--green-text); }
+.action-tag.add { background: var(--green-bg); color: var(--green-text); }
+.action-tag.hold { background: var(--bg-card-alt); color: var(--text-muted); }
+.action-tag.cut { background: var(--amber-bg); color: var(--amber-text); }
+.action-tag.sold { background: var(--red-bg); color: var(--red-text); }
+
+.val-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pct-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.arrow { color: var(--text-faint); margin: 0 0.15rem; }
+
+/* User holding marker */
+.user-hold {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+/* Highlight rows */
+.highlight-row td {
+  background: var(--blue-bg);
+}
+
+/* Summary section */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .summary-grid { grid-template-columns: 1fr; }
+}
+
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.summary-card h3 {
+  font-family: Charter, Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.summary-list {
+  list-style: none;
+  font-size: 0.8rem;
+}
+
+.summary-list li {
+  padding: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.summary-list .s-ticker {
+  font-weight: 700;
+  min-width: 3.5rem;
+}
+
+.summary-list .s-count {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expand-icon { transition: none; }
+}
+</style>
+
+<div class="container">
+  <header>
+    <h1>Q2 2026 13F Filing Analysis</h1>
+    <div class="subtitle">9 Funds &middot; Filed 2026-08-14 &middot; Positions as of 2026-06-30 &middot; Q1 &rarr; Q2 Comparison</div>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><span class="signal-dot new"></span> New / Add</div>
+    <div class="legend-item"><span class="signal-dot hold"></span> Hold</div>
+    <div class="legend-item"><span class="signal-dot cut"></span> Cut</div>
+    <div class="legend-item"><span class="signal-dot sold"></span> Sold</div>
+    <div class="legend-item"><span class="user-hold" style="display:inline-block"></span> Your holding</div>
+    <div class="legend-item" style="margin-left:auto; color:var(--text-faint)">Click row to expand</div>
+  </div>
+
+  <!-- Fund Overview -->
+  <div class="fund-grid">
+    <div class="fund-card">
+      <div class="fund-name">Coatue Management</div>
+      <div class="fund-manager">Philippe Laffont</div>
+      <div class="aum-row">
+        <span class="aum">$48.6B</span>
+        <span class="aum-change positive">+67.4%</span>
+      </div>
+      <div class="positions">62 &rarr; 66 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Tiger Global</div>
+      <div class="fund-manager">Chase Coleman</div>
+      <div class="aum-row">
+        <span class="aum">$24.0B</span>
+        <span class="aum-change positive">+5.0%</span>
+      </div>
+      <div class="positions">54 &rarr; 46 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Viking Global</div>
+      <div class="fund-manager">Andreas Halvorsen</div>
+      <div class="aum-row">
+        <span class="aum">$35.1B</span>
+        <span class="aum-change negative">-1.9%</span>
+      </div>
+      <div class="positions">77 &rarr; 90 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Altimeter Capital</div>
+      <div class="fund-manager">Brad Gerstner</div>
+      <div class="aum-row">
+        <span class="aum">$9.8B</span>
+        <span class="aum-change positive">+72.5%</span>
+      </div>
+      <div class="positions">13 &rarr; 20 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Lone Pine Capital</div>
+      <div class="fund-manager">Stephen Mandel</div>
+      <div class="aum-row">
+        <span class="aum">$16.4B</span>
+        <span class="aum-change positive">+30.4%</span>
+      </div>
+      <div class="positions">36 &rarr; 34 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Appaloosa</div>
+      <div class="fund-manager">David Tepper</div>
+      <div class="aum-row">
+        <span class="aum">$7.7B</span>
+        <span class="aum-change positive">+30.2%</span>
+      </div>
+      <div class="positions">31 &rarr; 27 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Soros Fund</div>
+      <div class="fund-manager">Dawn Fitzpatrick</div>
+      <div class="aum-row">
+        <span class="aum">$8.1B</span>
+        <span class="aum-change negative">-10.7%</span>
+      </div>
+      <div class="positions">255 &rarr; 258 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Duquesne Family Office</div>
+      <div class="fund-manager">Stanley Druckenmiller</div>
+      <div class="aum-row">
+        <span class="aum">$5.2B</span>
+        <span class="aum-change positive">+54.3%</span>
+      </div>
+      <div class="positions">68 &rarr; 90 positions</div>
+    </div>
+    <div class="fund-card">
+      <div class="fund-name">Bridgewater</div>
+      <div class="fund-manager">Ray Dalio (founded)</div>
+      <div class="aum-row">
+        <span class="aum">$24.4B</span>
+        <span class="aum-change positive">+8.8%</span>
+      </div>
+      <div class="positions">993 &rarr; 997 positions</div>
+    </div>
+  </div>
+
+  <!-- Key Signals -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h3>Consensus Bullish</h3>
+      <ul class="summary-list">
+        <li><span class="s-ticker positive">SPACEX</span> 6 funds new build <span class="s-count">(Coatue 6.5%, Altimeter 3.1%, Viking, Tiger, Appaloosa, Bridgewater)</span></li>
+        <li><span class="s-ticker positive">CBRS</span> 4 funds new build <span class="s-count">(Cerebras IPO: Altimeter 16.2%, Coatue 3.2%, Tiger 2.8%, Soros)</span></li>
+        <li><span class="s-ticker positive">INTC</span> 4 new/add vs 1 sold <span class="s-count">(Coatue new $1.7B, Tiger +160%)</span></li>
+        <li><span class="s-ticker positive">AMD</span> 4 new/add vs 2 cut <span class="s-count">(Tiger new $392M, Coatue new, Soros +47%, Druck new)</span></li>
+        <li><span class="s-ticker positive">AMZN</span> 5 add vs 2 cut <span class="s-count">(Coatue +49%, Viking +210%, Druck +307%)</span></li>
+        <li><span class="s-ticker positive">SMCI</span> 2 new/add, 0 cut <span class="s-count">(Soros new $111M)</span></li>
+        <li><span class="s-ticker positive">NBIS</span> 2 new vs 1 sold <span class="s-count">(Lone Pine new $1.18B = 7.2%!)</span></li>
+        <li><span class="s-ticker positive">STX</span> 4 add vs 1 cut <span class="s-count">(Seagate: Lone Pine new $965M, Tiger new $275M)</span></li>
+      </ul>
+    </div>
+    <div class="summary-card">
+      <h3>Consensus Bearish</h3>
+      <ul class="summary-list">
+        <li><span class="s-ticker negative">META</span> 5 cut vs 3 add <span class="s-count">(Altimeter -31%, Bridgewater -62%, Soros -37%)</span></li>
+        <li><span class="s-ticker negative">NOW</span> 2 cut vs 1 new <span class="s-count">(Tiger -42%, Soros -69%)</span></li>
+        <li><span class="s-ticker negative">MSFT</span> 5 cut vs 2 add <span class="s-count">(Viking -37%, Bridgewater -34%, Appaloosa sold)</span></li>
+        <li><span class="s-ticker negative">ARM</span> 2 cut vs 0 add <span class="s-count">(Bridgewater -99%)</span></li>
+        <li><span class="s-ticker negative">LITE</span> 4 cut vs 2 add <span class="s-count">(Lone Pine -41%, Tiger sold, Soros -15%)</span></li>
+        <li><span class="s-ticker negative">VRT</span> 2 cut, 0 add <span class="s-count">(Coatue -18%, Bridgewater -83%)</span></li>
+        <li><span class="s-ticker negative">NFLX</span> 3 cut vs 0 add <span class="s-count">(Coatue -32%, Tiger sold)</span></li>
+        <li><span class="s-ticker negative">TEAM</span> 2 cut, 0 add <span class="s-count">(Soros -14%, Bridgewater sold)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- YOUR HOLDINGS -->
+  <div class="category">
+    <div class="category-header">
+      <h2>Your Holdings</h2>
+      <span class="cat-label">Portfolio</span>
+    </div>
+
+    <div class="ticker-block" id="tb-panw">
+      <div class="ticker-header" onclick="toggle('tb-panw')">
+        <span class="ticker-symbol">PANW<span class="user-hold"></span></span>
+        <span class="ticker-name">Palo Alto Networks</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge mixed">Mixed</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares</th><th>% Port</th></tr>
+          <tr><td>Duquesne</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$39.8M</td><td class="pct-cell"></td><td class="pct-cell">0.8%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$2.1M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-now">
+      <div class="ticker-header" onclick="toggle('tb-now')">
+        <span class="ticker-symbol">NOW<span class="user-hold"></span></span>
+        <span class="ticker-name">ServiceNow</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag cut">CUT -42%</span></td><td class="val-cell">$156.8M</td><td class="arrow">&rarr;</td><td class="val-cell">$86.7M</td><td class="pct-cell negative">-42%</td><td class="pct-cell">0.4%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$63.1M</td><td class="pct-cell"></td><td class="pct-cell">0.3%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -69%</span></td><td class="val-cell">$16.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$4.8M</td><td class="pct-cell negative">-69%</td><td class="pct-cell">0.1%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-msft">
+      <div class="ticker-header" onclick="toggle('tb-msft')">
+        <span class="ticker-symbol">MSFT<span class="user-hold"></span></span>
+        <span class="ticker-name">Microsoft</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag add">ADD +18%</span></td><td class="val-cell">$918.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,095.3M</td><td class="pct-cell positive">+18%</td><td class="pct-cell">2.2%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag add">ADD +7%</span></td><td class="val-cell">$438.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$473.0M</td><td class="pct-cell positive">+7%</td><td class="pct-cell">4.8%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag cut">CUT -9%</span></td><td class="val-cell">$925.4M</td><td class="arrow">&rarr;</td><td class="val-cell">$845.6M</td><td class="pct-cell negative">-9%</td><td class="pct-cell">3.5%</td></tr>
+          <tr><td>Viking</td><td><span class="action-tag cut">CUT -37%</span></td><td class="val-cell">$854.9M</td><td class="arrow">&rarr;</td><td class="val-cell">$544.1M</td><td class="pct-cell negative">-37%</td><td class="pct-cell">1.6%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -34%</span></td><td class="val-cell">$401.6M</td><td class="arrow">&rarr;</td><td class="val-cell">$265.6M</td><td class="pct-cell negative">-34%</td><td class="pct-cell">1.1%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -10%</span></td><td class="val-cell">$78.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$70.9M</td><td class="pct-cell negative">-10%</td><td class="pct-cell">0.9%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$33.3M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-snow">
+      <div class="ticker-header" onclick="toggle('tb-snow')">
+        <span class="ticker-symbol">SNOW<span class="user-hold"></span></span>
+        <span class="ticker-name">Snowflake</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot add"></span><span class="signal-dot hold"></span><span class="signal-dot hold"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$290.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$490.2M</td><td class="pct-cell">~0%</td><td class="pct-cell">5.0%</td></tr>
+          <tr><td>Viking</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$244.4M</td><td class="pct-cell"></td><td class="pct-cell">0.7%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag add">ADD +186%</span></td><td class="val-cell">$7.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$34.8M</td><td class="pct-cell positive">+186%</td><td class="pct-cell">0.4%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$1.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$1.8M</td><td class="pct-cell">~0%</td><td class="pct-cell">0.0%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-team">
+      <div class="ticker-header" onclick="toggle('tb-team')">
+        <span class="ticker-symbol">TEAM<span class="user-hold"></span></span>
+        <span class="ticker-name">Atlassian</span>
+        <div class="signal-bar"><span class="signal-dot cut"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -14%</span></td><td class="val-cell">$36.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$35.7M</td><td class="pct-cell negative">-14%</td><td class="pct-cell">0.4%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$1.1M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Q1: Coatue also sold (清仓)。Workflow 板块整体机构兴趣降低</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-ddog">
+      <div class="ticker-header" onclick="toggle('tb-ddog')">
+        <span class="ticker-symbol">DDOG<span class="user-hold"></span></span>
+        <span class="ticker-name">Datadog</span>
+        <div class="signal-bar"><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -90%</span></td><td class="val-cell">$12.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$2.5M</td><td class="pct-cell negative">-90%</td><td class="pct-cell">0.0%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-veev">
+      <div class="ticker-header" onclick="toggle('tb-veev')">
+        <span class="ticker-symbol">VEEV<span class="user-hold"></span></span>
+        <span class="ticker-name">Veeva Systems</span>
+        <div class="signal-bar"><span class="signal-dot new"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$5.4M</td><td class="pct-cell"></td><td class="pct-cell">0.0%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-zs">
+      <div class="ticker-header" onclick="toggle('tb-zs')">
+        <span class="ticker-symbol">ZS<span class="user-hold"></span></span>
+        <span class="ticker-name">Zscaler</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$221.6M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$2.4M</td><td class="pct-cell"></td><td class="pct-cell">0.0%</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Tiger Global 清仓 ZS $221.6M。信号偏空，但 Bridgewater 小额新建仓</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-tsla">
+      <div class="ticker-header" onclick="toggle('tb-tsla')">
+        <span class="ticker-symbol">TSLA<span class="user-hold"></span></span>
+        <span class="ticker-name">Tesla</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot new"></span><span class="signal-dot hold"></span><span class="signal-dot cut"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge mixed">Mixed</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Viking</td><td><span class="action-tag cut">CUT -78%</span></td><td class="val-cell">$927.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$230.4M</td><td class="pct-cell negative">-78%</td><td class="pct-cell">0.7%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag add">ADD +64%</span></td><td class="val-cell">$19.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$36.5M</td><td class="pct-cell positive">+64%</td><td class="pct-cell">0.5%</td></tr>
+          <tr><td>Coatue</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$21.9M</td><td class="arrow">&rarr;</td><td class="val-cell">$25.2M</td><td class="pct-cell">+2%</td><td class="pct-cell">0.1%</td></tr>
+          <tr><td>Duquesne</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$53.0M</td><td class="pct-cell"></td><td class="pct-cell">1.0%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$0.7M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-ba">
+      <div class="ticker-header" onclick="toggle('tb-ba')">
+        <span class="ticker-symbol">BA<span class="user-hold"></span></span>
+        <span class="ticker-name">Boeing</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot hold"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Viking</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$636.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$708.9M</td><td class="pct-cell">+2%</td><td class="pct-cell">2.0%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$173.2M</td><td class="pct-cell"></td><td class="pct-cell">2.2%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$1.1M</td><td class="pct-cell"></td><td class="pct-cell">0.0%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-oust">
+      <div class="ticker-header" onclick="toggle('tb-oust')">
+        <span class="ticker-symbol">OUST<span class="user-hold"></span></span>
+        <span class="ticker-name">Ouster</span>
+        <div class="signal-bar"><span class="signal-dot new"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$11.5M</td><td class="pct-cell"></td><td class="pct-cell">0.1%</td></tr>
+        </table>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- AI CHIPS -->
+  <div class="category">
+    <div class="category-header">
+      <h2>AI Chips</h2>
+      <span class="cat-label">Compute</span>
+    </div>
+
+    <div class="ticker-block" id="tb-nvda">
+      <div class="ticker-header" onclick="toggle('tb-nvda')">
+        <span class="ticker-symbol">NVDA</span>
+        <span class="ticker-name">NVIDIA &mdash; GPU monopoly, Blackwell ramp</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot hold"></span><span class="signal-dot hold"></span><span class="signal-dot hold"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge mixed">Mixed</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag cut">CUT -7%</span></td><td class="val-cell">$2,094.8M</td><td class="arrow">&rarr;</td><td class="val-cell">$2,240.8M</td><td class="pct-cell negative">-7%</td><td class="pct-cell">9.3%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$1,628.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,883.6M</td><td class="pct-cell">+1%</td><td class="pct-cell">19.2%</td></tr>
+          <tr><td>Coatue</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$1,104.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,211.6M</td><td class="pct-cell">-4%</td><td class="pct-cell">2.5%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -18%</span></td><td class="val-cell">$818.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$773.6M</td><td class="pct-cell negative">-18%</td><td class="pct-cell">3.2%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$256.6M</td><td class="arrow">&rarr;</td><td class="val-cell">$305.1M</td><td class="pct-cell">+4%</td><td class="pct-cell">4.0%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag add">ADD +36%</span></td><td class="val-cell">$187.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$293.1M</td><td class="pct-cell positive">+36%</td><td class="pct-cell">3.6%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-amd">
+      <div class="ticker-header" onclick="toggle('tb-amd')">
+        <span class="ticker-symbol">AMD</span>
+        <span class="ticker-name">Advanced Micro Devices &mdash; MI350/400, GPU challenger</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot add"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag new">NEW $392M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$392.0M</td><td class="pct-cell"></td><td class="pct-cell">1.6%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag cut">CUT -11%</span></td><td class="val-cell">$45.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$114.7M</td><td class="pct-cell negative">-11%</td><td class="pct-cell">1.5%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -58%</span></td><td class="val-cell">$263.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$312.9M</td><td class="pct-cell negative">-58%</td><td class="pct-cell">1.3%</td></tr>
+          <tr><td>Coatue</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$55.8M</td><td class="pct-cell"></td><td class="pct-cell">0.1%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag add">ADD +47%</span></td><td class="val-cell">$7.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$29.5M</td><td class="pct-cell positive">+47%</td><td class="pct-cell">0.4%</td></tr>
+          <tr><td>Duquesne</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$42.3M</td><td class="pct-cell"></td><td class="pct-cell">0.8%</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Tiger Global, Coatue, Druckenmiller 三家同时新建仓。你 $494 清仓后他们在买入</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-avgo">
+      <div class="ticker-header" onclick="toggle('tb-avgo')">
+        <span class="ticker-symbol">AVGO</span>
+        <span class="ticker-name">Broadcom &mdash; Custom ASIC + Networking + VMware</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot new"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot sold"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag add">ADD +6%</span></td><td class="val-cell">$1,703.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$2,208.6M</td><td class="pct-cell positive">+6%</td><td class="pct-cell">4.5%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag cut">CUT -51%</span></td><td class="val-cell">$1,109.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$662.6M</td><td class="pct-cell negative">-51%</td><td class="pct-cell">2.8%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -28%</span></td><td class="val-cell">$568.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$497.8M</td><td class="pct-cell negative">-28%</td><td class="pct-cell">2.0%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag add">ADD +7%</span></td><td class="val-cell">$48.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$62.4M</td><td class="pct-cell positive">+7%</td><td class="pct-cell">0.8%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$56.7M</td><td class="pct-cell"></td><td class="pct-cell">0.7%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$20.8M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+          <tr><td>Duquesne</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$60.6M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-mu">
+      <div class="ticker-header" onclick="toggle('tb-mu')">
+        <span class="ticker-symbol">MU</span>
+        <span class="ticker-name">Micron &mdash; HBM/DRAM, AI memory</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot new"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge mixed">Mixed</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag add">ADD +1794%</span></td><td class="val-cell">$56.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$3,627.1M</td><td class="pct-cell positive">+1794%</td><td class="pct-cell">7.5%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag cut">CUT -41%</span></td><td class="val-cell">$562.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,125.4M</td><td class="pct-cell negative">-41%</td><td class="pct-cell">14.6%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag new">NEW $242M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$241.8M</td><td class="pct-cell"></td><td class="pct-cell">2.5%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -92%</span></td><td class="val-cell">$498.6M</td><td class="arrow">&rarr;</td><td class="val-cell">$134.7M</td><td class="pct-cell negative">-92%</td><td class="pct-cell">0.6%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag add">ADD +694%</span></td><td class="val-cell">$1.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$25.9M</td><td class="pct-cell positive">+694%</td><td class="pct-cell">0.3%</td></tr>
+          <tr><td>Duquesne</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$7.9M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Coatue 爆买 +1794%，从 $56M 加到 $3.6B（7.5% of port）。HBM 需求确认</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-intc">
+      <div class="ticker-header" onclick="toggle('tb-intc')">
+        <span class="ticker-symbol">INTC</span>
+        <span class="ticker-name">Intel &mdash; Foundry turnaround play</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot add"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag new">NEW $1.69B</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$1,687.3M</td><td class="pct-cell"></td><td class="pct-cell">3.5%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag add">ADD +160%</span></td><td class="val-cell">$72.3M</td><td class="arrow">&rarr;</td><td class="val-cell">$593.8M</td><td class="pct-cell positive">+160%</td><td class="pct-cell">2.5%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$14.0M</td><td class="pct-cell"></td><td class="pct-cell">0.2%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$4.5M</td><td class="pct-cell"></td><td class="pct-cell">0.0%</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Coatue $1.69B 大手笔新建仓（3.5%），Tiger +160%。Intel 18A Foundry turnaround theme</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-mrvl">
+      <div class="ticker-header" onclick="toggle('tb-mrvl')">
+        <span class="ticker-symbol">MRVL</span>
+        <span class="ticker-name">Marvell &mdash; DPU + Custom Silicon</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge mixed">Mixed</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -91%</span></td><td class="val-cell">$193.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$54.0M</td><td class="pct-cell negative">-91%</td><td class="pct-cell">0.2%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$16.1M</td><td class="pct-cell"></td><td class="pct-cell">0.2%</td></tr>
+        </table>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- AI INFRASTRUCTURE -->
+  <div class="category">
+    <div class="category-header">
+      <h2>AI Infrastructure</h2>
+      <span class="cat-label">Optical / Connect / Power</span>
+    </div>
+
+    <div class="ticker-block" id="tb-nbis">
+      <div class="ticker-header" onclick="toggle('tb-nbis')">
+        <span class="ticker-symbol">NBIS</span>
+        <span class="ticker-name">Nebius &mdash; GPU Cloud / AI Compute-as-a-Service</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Lone Pine</td><td><span class="action-tag new">NEW $1.18B</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$1,175.9M</td><td class="pct-cell"></td><td class="pct-cell">7.2%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag new">NEW $86M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$85.6M</td><td class="pct-cell"></td><td class="pct-cell">1.1%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$16.3M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Lone Pine 下重注：$1.18B = 7.2% of port。Nebius = Yandex 分拆的 GPU 云平台</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-ttmi">
+      <div class="ticker-header" onclick="toggle('tb-ttmi')">
+        <span class="ticker-symbol">TTMI</span>
+        <span class="ticker-name">TTM Technologies &mdash; AI PCB</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Lone Pine</td><td><span class="action-tag new">NEW $512M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$512.1M</td><td class="pct-cell"></td><td class="pct-cell">3.1%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$5.8M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Lone Pine $512M 新建仓 = 3.1% of port。验证你对 TTMI 的看法（之前对比中最便宜的 AI 基建股）</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-smci">
+      <div class="ticker-header" onclick="toggle('tb-smci')">
+        <span class="ticker-symbol">SMCI</span>
+        <span class="ticker-name">Super Micro &mdash; AI Server Assembly</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot add"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag new">NEW $111M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$111.5M</td><td class="pct-cell"></td><td class="pct-cell">1.4%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag add">ADD +11%</span></td><td class="val-cell">$1.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$2.4M</td><td class="pct-cell positive">+11%</td><td class="pct-cell">0.0%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-lite">
+      <div class="ticker-header" onclick="toggle('tb-lite')">
+        <span class="ticker-symbol">LITE</span>
+        <span class="ticker-name">Lumentum &mdash; Optical Components</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot hold"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot sold"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Lone Pine</td><td><span class="action-tag cut">CUT -41%</span></td><td class="val-cell">$616.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$343.4M</td><td class="pct-cell negative">-41%</td><td class="pct-cell">2.1%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -15%</span></td><td class="val-cell">$114.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$119.3M</td><td class="pct-cell negative">-15%</td><td class="pct-cell">1.5%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag add">ADD +220%</span></td><td class="val-cell">$4.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$16.0M</td><td class="pct-cell positive">+220%</td><td class="pct-cell">0.1%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$96.1M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Tiger Global Q1 新建仓 $96M，Q2 全部清仓。Lone Pine 也减 41%</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-vrt">
+      <div class="ticker-header" onclick="toggle('tb-vrt')">
+        <span class="ticker-symbol">VRT</span>
+        <span class="ticker-name">Vertiv &mdash; Data Center Power/Cooling</span>
+        <div class="signal-bar"><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag cut">CUT -18%</span></td><td class="val-cell">$246.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$270.1M</td><td class="pct-cell negative">-18%</td><td class="pct-cell">0.6%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -83%</span></td><td class="val-cell">$107.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$23.8M</td><td class="pct-cell negative">-83%</td><td class="pct-cell">0.1%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-cien">
+      <div class="ticker-header" onclick="toggle('tb-cien')">
+        <span class="ticker-symbol">CIEN</span>
+        <span class="ticker-name">Ciena &mdash; Networking Equipment</span>
+        <div class="signal-bar"><span class="signal-dot cut"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -30%</span></td><td class="val-cell">$55.8M</td><td class="arrow">&rarr;</td><td class="val-cell">$49.6M</td><td class="pct-cell negative">-30%</td><td class="pct-cell">0.2%</td></tr>
+          <tr><td>Lone Pine</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$314.3M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- NEW THEMES -->
+  <div class="category">
+    <div class="category-header">
+      <h2>New Consensus Themes</h2>
+      <span class="cat-label">Q2 2026 IPO / Pre-IPO</span>
+    </div>
+
+    <div class="ticker-block open" id="tb-spacex">
+      <div class="ticker-header" onclick="toggle('tb-spacex')">
+        <span class="ticker-symbol">SPACEX</span>
+        <span class="ticker-name">Space Exploration Technologies (Pre-IPO)</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span></div>
+        <span class="consensus-badge bullish">6/6 NEW</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q2 Value</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$3,171.5M</td><td class="pct-cell">6.5%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$303.5M</td><td class="pct-cell">3.1%</td></tr>
+          <tr><td>Viking</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$205.0M</td><td class="pct-cell">0.6%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$64.1M</td><td class="pct-cell">0.3%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$38.4M</td><td class="pct-cell">0.5%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$2.0M</td><td class="pct-cell">0.0%</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">6 家基金同时新建仓 SpaceX。Coatue $3.17B = 6.5% of port。Pre-IPO/二级市场买入。零售投资者无法直接买入</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block open" id="tb-cbrs">
+      <div class="ticker-header" onclick="toggle('tb-cbrs')">
+        <span class="ticker-symbol">CBRS</span>
+        <span class="ticker-name">Cerebras Systems (AI Chip Startup / IPO)</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot new"></span></div>
+        <span class="consensus-badge bullish">4/4 NEW</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q2 Value</th><th>% Port</th></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$1,596.7M</td><td class="pct-cell">16.2%</td></tr>
+          <tr><td>Coatue</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$1,549.4M</td><td class="pct-cell">3.2%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$662.8M</td><td class="pct-cell">2.8%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">$33.2M</td><td class="pct-cell">0.4%</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">Altimeter 重仓 16.2%！Cerebras = Wafer-scale AI 芯片，NVDA 竞争者。IPO 后可关注</div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- Cloud/AI Platform -->
+  <div class="category">
+    <div class="category-header">
+      <h2>Cloud / AI Platform</h2>
+      <span class="cat-label">Mega Cap</span>
+    </div>
+
+    <div class="ticker-block" id="tb-amzn">
+      <div class="ticker-header" onclick="toggle('tb-amzn')">
+        <span class="ticker-symbol">AMZN</span>
+        <span class="ticker-name">Amazon &mdash; AWS / Bedrock</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot hold"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag add">ADD +49%</span></td><td class="val-cell">$1,651.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$2,820.7M</td><td class="pct-cell positive">+49%</td><td class="pct-cell">5.8%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$2,082.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$2,308.0M</td><td class="pct-cell">-3%</td><td class="pct-cell">9.6%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag add">ADD +16%</span></td><td class="val-cell">$899.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,191.7M</td><td class="pct-cell positive">+16%</td><td class="pct-cell">15.4%</td></tr>
+          <tr><td>Viking</td><td><span class="action-tag add">ADD +210%</span></td><td class="val-cell">$249.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$882.1M</td><td class="pct-cell positive">+210%</td><td class="pct-cell">2.5%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag add">ADD +16%</span></td><td class="val-cell">$435.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$578.1M</td><td class="pct-cell positive">+16%</td><td class="pct-cell">5.9%</td></tr>
+          <tr><td>Duquesne</td><td><span class="action-tag add">ADD +307%</span></td><td class="val-cell">$51.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$238.6M</td><td class="pct-cell positive">+307%</td><td class="pct-cell">4.6%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -54%</span></td><td class="val-cell">$914.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$482.8M</td><td class="pct-cell negative">-54%</td><td class="pct-cell">2.0%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -39%</span></td><td class="val-cell">$405.2M</td><td class="arrow">&rarr;</td><td class="val-cell">$281.8M</td><td class="pct-cell negative">-39%</td><td class="pct-cell">3.5%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-meta">
+      <div class="ticker-header" onclick="toggle('tb-meta')">
+        <span class="ticker-symbol">META</span>
+        <span class="ticker-name">Meta Platforms &mdash; Llama / AI Infra CapEx</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot add"></span><span class="signal-dot new"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Viking</td><td><span class="action-tag add">ADD +76%</span></td><td class="val-cell">$607.9M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,052.0M</td><td class="pct-cell positive">+76%</td><td class="pct-cell">3.0%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag add">ADD +55%</span></td><td class="val-cell">$249.7M</td><td class="arrow">&rarr;</td><td class="val-cell">$380.2M</td><td class="pct-cell positive">+55%</td><td class="pct-cell">4.9%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag cut">CUT -9%</span></td><td class="val-cell">$1,766.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,590.3M</td><td class="pct-cell negative">-9%</td><td class="pct-cell">6.6%</td></tr>
+          <tr><td>Coatue</td><td><span class="action-tag cut">CUT -10%</span></td><td class="val-cell">$1,608.9M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,422.9M</td><td class="pct-cell negative">-10%</td><td class="pct-cell">2.9%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag cut">CUT -31%</span></td><td class="val-cell">$1,117.6M</td><td class="arrow">&rarr;</td><td class="val-cell">$763.3M</td><td class="pct-cell negative">-31%</td><td class="pct-cell">7.8%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag cut">CUT -62%</span></td><td class="val-cell">$166.9M</td><td class="arrow">&rarr;</td><td class="val-cell">$62.0M</td><td class="pct-cell negative">-62%</td><td class="pct-cell">0.2%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -37%</span></td><td class="val-cell">$19.8M</td><td class="arrow">&rarr;</td><td class="val-cell">$12.3M</td><td class="pct-cell negative">-37%</td><td class="pct-cell">0.1%</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-pltr">
+      <div class="ticker-header" onclick="toggle('tb-pltr')">
+        <span class="ticker-symbol">PLTR</span>
+        <span class="ticker-name">Palantir &mdash; Data + AI Platform</span>
+        <div class="signal-bar"><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$18.8M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">顶级对冲基金普遍不碰 PLTR（估值太高 Fwd P/E ~85x）。你 watchlist 里的 $130-140 入场区要谨慎</div>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-crwv">
+      <div class="ticker-header" onclick="toggle('tb-crwv')">
+        <span class="ticker-symbol">CRWV</span>
+        <span class="ticker-name">CoreWeave &mdash; GPU Cloud IPO</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot new"></span><span class="signal-dot cut"></span><span class="signal-dot sold"></span><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag add">ADD +35%</span></td><td class="val-cell">$348.5M</td><td class="arrow">&rarr;</td><td class="val-cell">$604.6M</td><td class="pct-cell positive">+35%</td><td class="pct-cell">6.2%</td></tr>
+          <tr><td>Appaloosa</td><td><span class="action-tag new">NEW</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$107.3M</td><td class="pct-cell"></td><td class="pct-cell">1.4%</td></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag cut">CUT -71%</span></td><td class="val-cell">$254.1M</td><td class="arrow">&rarr;</td><td class="val-cell">$94.6M</td><td class="pct-cell negative">-71%</td><td class="pct-cell">1.2%</td></tr>
+          <tr><td>Viking</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$108.3M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$28.2M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="ticker-block" id="tb-crm">
+      <div class="ticker-header" onclick="toggle('tb-crm')">
+        <span class="ticker-symbol">CRM</span>
+        <span class="ticker-name">Salesforce</span>
+        <div class="signal-bar"><span class="signal-dot sold"></span></div>
+        <span class="consensus-badge bearish">Bearish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Soros Fund</td><td><span class="action-tag sold">SOLD</span></td><td class="val-cell">$67.4M</td><td class="arrow">&rarr;</td><td class="val-cell">&mdash;</td><td class="pct-cell"></td><td class="pct-cell">&mdash;</td></tr>
+        </table>
+        <div style="padding:0.5rem 0.75rem;font-size:0.72rem;color:var(--text-faint);">你已清仓 CRM（AI 威胁 per-seat 模式）。Soros 也清仓，验证你的判断</div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- Semi Equipment -->
+  <div class="category">
+    <div class="category-header">
+      <h2>Semi Equipment / EDA</h2>
+      <span class="cat-label">Picks &amp; Shovels</span>
+    </div>
+
+    <div class="ticker-block" id="tb-amat">
+      <div class="ticker-header" onclick="toggle('tb-amat')">
+        <span class="ticker-symbol">AMAT</span>
+        <span class="ticker-name">Applied Materials</span>
+        <div class="signal-bar"><span class="signal-dot new"></span><span class="signal-dot new"></span><span class="signal-dot add"></span><span class="signal-dot hold"></span><span class="signal-dot cut"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge bullish">Bullish</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1</th><th></th><th>Q2</th><th>&Delta;</th><th>%</th></tr>
+          <tr><td>Lone Pine</td><td><span class="action-tag new">NEW $873M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$873.2M</td><td class="pct-cell"></td><td class="pct-cell">5.3%</td></tr>
+          <tr><td>Altimeter</td><td><span class="action-tag new">NEW $189M</span></td><td class="val-cell">&mdash;</td><td class="arrow">&rarr;</td><td class="val-cell">$189.4M</td><td class="pct-cell"></td><td class="pct-cell">1.9%</td></tr>
+          <tr><td>Coatue</td><td><span class="action-tag cut">CUT -20%</span></td><td class="val-cell">$1,793.8M</td><td class="arrow">&rarr;</td><td class="val-cell">$3,046.3M</td><td class="pct-cell negative">-20%</td><td class="pct-cell">6.3%</td></tr>
+          <tr><td>Tiger Global</td><td><span class="action-tag hold">HOLD</span></td><td class="val-cell">$566.3M</td><td class="arrow">&rarr;</td><td class="val-cell">$1,180.1M</td><td class="pct-cell">-1%</td><td class="pct-cell">4.9%</td></tr>
+        </table>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- Robotics -->
+  <div class="category">
+    <div class="category-header">
+      <h2>Robotics</h2>
+      <span class="cat-label">ISRG</span>
+    </div>
+
+    <div class="ticker-block" id="tb-isrg">
+      <div class="ticker-header" onclick="toggle('tb-isrg')">
+        <span class="ticker-symbol">ISRG</span>
+        <span class="ticker-name">Intuitive Surgical &mdash; da Vinci Robotics</span>
+        <div class="signal-bar"><span class="signal-dot add"></span><span class="signal-dot cut"></span></div>
+        <span class="consensus-badge mixed">Mixed</span>
+        <span class="expand-icon">&#9654;</span>
+      </div>
+      <div class="ticker-details"><div class="table-scroll">
+        <table class="detail-table">
+          <tr><th>Fund</th><th>Action</th><th>Q1 Value</th><th></th><th>Q2 Value</th><th>Shares &Delta;</th><th>% Port</th></tr>
+          <tr><td>Coatue</td><td><span class="action-tag cut">CUT -7%</span></td><td class="val-cell">$394.3M</td><td class="arrow">&rarr;</td><td class="val-cell">$315.6M</td><td class="pct-cell negative">-7%</td><td class="pct-cell">0.7%</td></tr>
+          <tr><td>Bridgewater</td><td><span class="action-tag add">ADD +12%</span></td><td class="val-cell">$8.0M</td><td class="arrow">&rarr;</td><td class="val-cell">$7.7M</td><td class="pct-cell positive">+12%</td><td class="pct-cell">0.0%</td></tr>
+        </table>
+      </div></div>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.72rem;color:var(--text-faint);line-height:1.8;">
+    <strong>Data Source:</strong> SEC EDGAR 13F-HR filings, filed 2026-08-14, positions as of 2026-06-30<br>
+    <strong>9 Funds:</strong> Coatue &middot; Tiger Global &middot; Viking &middot; Altimeter &middot; Lone Pine &middot; Appaloosa &middot; Soros Fund &middot; Duquesne &middot; Bridgewater<br>
+    <strong>Note:</strong> 13F reflects Q2 end (Jun 30) positions. Funds may have traded since. Options/short positions not disclosed in 13F.
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>

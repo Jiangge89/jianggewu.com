@@ -1,0 +1,12 @@
+---
+import { href, excerpt, sectionName, dated, formatDate, isSection, type Entry } from '../../lib/blog';
+interface Props { entry: Entry; compact?: boolean }
+const { entry, compact = false } = Astro.props;
+const date = dated(entry);
+---
+<a href={href(entry)} class:list={['entry-card', { compact }]}>
+  <div class="entry-meta"><span>{sectionName(entry)}</span>{date && <time datetime={date.toISOString()}>{formatDate(date)}</time>}{isSection(entry) && <span>Collection</span>}</div>
+  <h3>{entry.data.title}<span aria-hidden="true">↗</span></h3>
+  {!compact && excerpt(entry) && <p>{excerpt(entry)}</p>}
+  {!compact && entry.data.tags.length > 0 && <div class="entry-tags">{entry.data.tags.slice(0, 3).map(tag => <span>{tag}</span>)}</div>}
+</a>

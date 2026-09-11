@@ -1,0 +1,53 @@
+<div class="blog-search" data-blog-search>
+  <label for="blog-search-input">Search the notebook</label>
+  <div class="search-field"><span aria-hidden="true">⌕</span><input id="blog-search-input" type="search" placeholder="Search topics, titles, or a phrase…" autocomplete="off" aria-controls="blog-search-results" /></div>
+  <p class="search-status" aria-live="polite"></p>
+  <div id="blog-search-results" class="search-results" hidden></div>
+</div>
+<script>
+  type SearchEntry = { title: string; url: string; text: string; category: string };
+  let index: Promise<SearchEntry[]> | undefined;
+  function initSearch() {
+    const root = document.querySelector<HTMLElement>('[data-blog-search]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = 'true';
+    const input = root.querySelector('input')!;
+    const results = root.querySelector<HTMLElement>('.search-results')!;
+    const status = root.querySelector<HTMLElement>('.search-status')!;
+    let version = 0;
+    input.addEventListener('input', async () => {
+      const request = ++version;
+      const query = input.value.trim().toLocaleLowerCase();
+      results.replaceChildren();
+      results.hidden = !query;
+      status.textContent = query ? 'Searching…' : '';
+      if (!query) return;
+      try {
+        index ??= fetch('/blog/search.json').then(response => {
+          if (!response.ok) throw new Error('Search unavailable');
+          return response.json();
+        }).catch(error => { index = undefined; throw error; });
+        const entries = await index;
+        if (request !== version) return;
+        const terms = query.split(/\s+/);
+        const matches = entries.filter(entry => terms.every(term => `${entry.title} ${entry.category} ${entry.text}`.toLocaleLowerCase().includes(term)))
+          .sort((a, b) => Number(b.title.toLocaleLowerCase().includes(query)) - Number(a.title.toLocaleLowerCase().includes(query)));
+        status.textContent = matches.length ? `${matches.length} results${matches.length > 20 ? ' · showing the first 20' : ''}` : 'No matches. Try another topic or phrase.';
+        for (const entry of matches.slice(0, 20)) {
+          const link = document.createElement('a');
+          link.href = entry.url;
+          const title = document.createElement('strong');
+          title.textContent = entry.title;
+          const detail = document.createElement('span');
+          detail.textContent = entry.category;
+          link.append(title, detail);
+          results.append(link);
+        }
+      } catch {
+        if (request === version) status.textContent = 'Search could not load. Please try again.';
+      }
+    });
+  }
+  initSearch();
+  document.addEventListener('astro:page-load', initSearch);
+</script>

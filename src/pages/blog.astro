@@ -1,40 +1,56 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import { siteConfig } from '../config/site';
+import EntryCard from '../components/blog/EntryCard.astro';
+import Search from '../components/blog/Search.astro';
+import { blogEntries, visibleEntries, isSection, slug, href, recent, categoryDescriptions } from '../lib/blog';
+import '../styles/blog.css';
+const entries = visibleEntries(await blogEntries());
+const articles = entries.filter(entry => !isSection(entry));
+const categories = entries.filter(entry => isSection(entry) && !slug(entry).includes('/'));
+const primaryOrder = ['tech', 'invest', 'reading'];
+const primary = primaryOrder.map(s => categories.find(entry => slug(entry) === s)).filter(Boolean);
+const others = categories.filter(entry => !primary.includes(entry) && articles.some(a => a.id.startsWith(slug(entry) + '/')));
+const featuredIds = ['tech/interview/system-design/toolbox/_index', 'tech/interview/algo/_index', 'reading/atomic-habits'];
+const featured = featuredIds.map(id => entries.find(entry => entry.id === id)).filter(Boolean);
+const allDated = articles.filter(entry => entry.data.date || entry.data.updated).sort(recent);
+const sectionCount = new Map<string, number>();
+const latest = allDated.filter(entry => {
+  const section = entry.id.split('/')[0];
+  const count = sectionCount.get(section) ?? 0;
+  if (count >= 3) return false;
+  sectionCount.set(section, count + 1);
+  return true;
+}).slice(0, 8);
 ---
-
-<BaseLayout
-  title="Blog"
-  description="Thoughts on backend engineering, system design, and software development by Jiangge Wu."
->
-  <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-    <SectionHeading title="Blog" />
-
-    <div class="space-y-6 text-surface-700 dark:text-surface-300">
-      <p>
-        I write about backend engineering, system design, product development, and things I learn along the way.
-        My blog is a record of my growth as an engineer — a mix of technical deep-dives, project retrospectives,
-        and long-term thinking about software and career.
-      </p>
-
-      <p>
-        Posts are currently hosted on my existing blog. I plan to bring some of them here in the future.
-      </p>
-
-      <div class="mt-8">
-        <a
-          href={siteConfig.blogUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-700"
-        >
-          Visit My Blog
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-          </svg>
+<BaseLayout title="Blog" description="Notes on software, investing, books, and a life of learning. Jiangge Wu’s personal notebook.">
+  <div class="blog-home">
+    <header class="blog-hero">
+      <div class="eyebrow"><span></span> THE PERSONAL NOTEBOOK</div>
+      <h1>Ideas worth<br />coming back to<span class="blue-dot">.</span></h1>
+      <p>Notes on building software, understanding markets, and learning along the way.</p>
+      <p class="hero-chinese" lang="zh">写代码，读世界，记录持续生长的想法。</p>
+      <div class="notebook-stats"><span>{articles.length} notes</span><span>In English & 中文</span><span>Always growing</span></div>
+    </header>
+    <Search />
+    <section class="blog-section" aria-labelledby="explore-title">
+      <div class="section-label"><h2 id="explore-title">Explore by topic</h2><span>A few things I keep thinking about</span></div>
+      <div class="topic-grid">{primary.map((entry, i) => (
+        <a class="topic-card" href={href(entry)}>
+          <div class="topic-top"><span class="topic-symbol" aria-hidden="true">{['⌘', '↗', '↳'][i]}</span><span>{String(i + 1).padStart(2, '0')}</span></div>
+          <h3>{entry.data.title}</h3><p>{categoryDescriptions[slug(entry)]}</p>
+          <div class="topic-bottom"><span>{articles.filter(article => article.id.startsWith(slug(entry) + '/')).length} notes</span><span aria-hidden="true">→</span></div>
         </a>
-      </div>
-    </div>
-  </section>
+      ))}</div>
+      {others.length > 0 && <div class="other-topics"><span>Elsewhere in the notebook</span>{others.map(entry => <a href={href(entry)}>{entry.data.title} ↗</a>)}</div>}
+    </section>
+    <section class="blog-section" aria-labelledby="start-title">
+      <div class="section-label"><h2 id="start-title">Start here</h2><span>A few paths into the notebook</span></div>
+      <div class="featured-grid">{featured.map(entry => entry && <EntryCard entry={entry} />)}</div>
+    </section>
+    <section class="blog-section" aria-labelledby="latest-title">
+      <div class="section-label"><h2 id="latest-title">Recent notes</h2><span>From the dated entries</span></div>
+      <div class="recent-list">{latest.map(entry => <EntryCard entry={entry} compact />)}</div>
+    </section>
+    <div class="garden-note"><span aria-hidden="true">✳</span><p>A notebook, always in progress.<br /><span>Some ideas are polished. Others are still taking shape. All are part of the journey.</span></p></div>
+  </div>
 </BaseLayout>

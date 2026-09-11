@@ -10,7 +10,7 @@ Built with [Astro](https://astro.build), TypeScript, and Tailwind CSS. Deployed 
 - **About** — Background, technical focus, work philosophy
 - **Projects** — Detailed project cards with problem/approach/result
 - **Experience** — Professional timeline (reverse chronological)
-- **Blog** — Link to external blog
+- **Blog** — Integrated Markdown notebook with topic navigation and full-text search
 - **Contact** — Email, GitHub, LinkedIn, location
 
 ## Local Development
@@ -20,7 +20,7 @@ Built with [Astro](https://astro.build), TypeScript, and Tailwind CSS. Deployed 
 npm install
 
 # Start dev server
-npm run dev
+npm run dev -- --background
 
 # Build for production
 npm run build
@@ -84,13 +84,25 @@ githubUrl: 'https://github.com/your-username',
 linkedinUrl: 'https://linkedin.com/in/your-profile',
 ```
 
-### Blog URL
+### Blog content
 
-Edit `src/config/site.ts` and replace:
+Articles live in `src/content/blog/`. Keep the topic directory structure; `_index.md`
+defines a collection page, and regular `.md` files define notes. Frontmatter supports
+`title`, `description`, `date`, `updated`, `weight`, `tags`, and `draft`. Dates are
+optional; undated notes stay accessible through topics and search. Use `updated`
+only when an actual update date is known. Drafts are excluded from pages and search.
 
-```typescript
-blogUrl: 'https://your-actual-blog-url.com',
-```
+For example, `src/content/blog/tech/notes/example.md` becomes
+`/blog/tech/notes/example/`. Use absolute `/blog/.../` links between notes.
+Empty collections keep their URLs but are hidden from navigation. Markdown files
+with content in `_index.md` keep that content on the collection page.
+
+After editing, run `npm run build` and `python3 scripts/check-blog.py`.
+Preview with `npm run dev -- --background` (add `--port 4323` if needed).
+Manage the background server with `npm run astro -- dev status`,
+`npm run astro -- dev logs`, and `npm run astro -- dev stop`.
+
+See [migration notes](docs/blog-migration.md) for the jacksite import details.
 
 ### Work Experience
 

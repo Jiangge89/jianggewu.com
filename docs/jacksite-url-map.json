@@ -1,0 +1,598 @@
+[
+  {
+    "old": "/jacksite/docs/",
+    "new": "/blog/"
+  },
+  {
+    "old": "/jacksite/docs/about/",
+    "new": "/blog/about/"
+  },
+  {
+    "old": "/jacksite/docs/health/",
+    "new": "/blog/health/"
+  },
+  {
+    "old": "/jacksite/docs/health/physical/",
+    "new": "/blog/health/physical/"
+  },
+  {
+    "old": "/jacksite/docs/health/psychological/",
+    "new": "/blog/health/psychological/"
+  },
+  {
+    "old": "/jacksite/docs/health/psychological/parenting/",
+    "new": "/blog/health/psychological/parenting/"
+  },
+  {
+    "old": "/jacksite/docs/health/psychological/relationships/",
+    "new": "/blog/health/psychological/relationships/"
+  },
+  {
+    "old": "/jacksite/docs/health/psychological/self-exploration/",
+    "new": "/blog/health/psychological/self-exploration/"
+  },
+  {
+    "old": "/jacksite/docs/invest/",
+    "new": "/blog/invest/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/",
+    "new": "/blog/invest/data/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/actions/",
+    "new": "/blog/invest/data/actions/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/fulltime-criteria/",
+    "new": "/blog/invest/data/fulltime-criteria/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/learning-roadmap/",
+    "new": "/blog/invest/data/learning-roadmap/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/portfolio/",
+    "new": "/blog/invest/data/portfolio/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/track-record/",
+    "new": "/blog/invest/data/track-record/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/trades/",
+    "new": "/blog/invest/data/trades/"
+  },
+  {
+    "old": "/jacksite/docs/invest/data/watchlist/",
+    "new": "/blog/invest/data/watchlist/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-03/",
+    "new": "/blog/invest/journal/2026-07-03/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-04/",
+    "new": "/blog/invest/journal/2026-07-04/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-07/",
+    "new": "/blog/invest/journal/2026-07-07/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-08/",
+    "new": "/blog/invest/journal/2026-07-08/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-09/",
+    "new": "/blog/invest/journal/2026-07-09/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-10/",
+    "new": "/blog/invest/journal/2026-07-10/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-11/",
+    "new": "/blog/invest/journal/2026-07-11/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-14/",
+    "new": "/blog/invest/journal/2026-07-14/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-15/",
+    "new": "/blog/invest/journal/2026-07-15/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-17/",
+    "new": "/blog/invest/journal/2026-07-17/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-20/",
+    "new": "/blog/invest/journal/2026-07-20/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-22/",
+    "new": "/blog/invest/journal/2026-07-22/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-24/",
+    "new": "/blog/invest/journal/2026-07-24/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-26/",
+    "new": "/blog/invest/journal/2026-07-26/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-28/",
+    "new": "/blog/invest/journal/2026-07-28/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-29/",
+    "new": "/blog/invest/journal/2026-07-29/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-30/",
+    "new": "/blog/invest/journal/2026-07-30/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-07-31/",
+    "new": "/blog/invest/journal/2026-07-31/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-01/",
+    "new": "/blog/invest/journal/2026-08-01/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-04/",
+    "new": "/blog/invest/journal/2026-08-04/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-06/",
+    "new": "/blog/invest/journal/2026-08-06/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-07/",
+    "new": "/blog/invest/journal/2026-08-07/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-08/",
+    "new": "/blog/invest/journal/2026-08-08/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-11/",
+    "new": "/blog/invest/journal/2026-08-11/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/2026-08-25/",
+    "new": "/blog/invest/journal/2026-08-25/"
+  },
+  {
+    "old": "/jacksite/docs/invest/journal/",
+    "new": "/blog/invest/journal/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/",
+    "new": "/blog/invest/reports/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/AAOI-2026-08-06-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/AAOI-2026-08-06-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/ABNB-2026-08-06-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/ABNB-2026-08-06-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/AMD-2026-07-26-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/AMD-2026-07-26-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/AMD-2026-08-03-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/AMD-2026-08-03-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/DDOG-2026-07-30-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/DDOG-2026-07-30-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/DDOG-2026-08-02-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/DDOG-2026-08-02-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/META-2026-07-23-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/META-2026-07-23-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/PLTR-2026-08-02-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/PLTR-2026-08-02-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/SNOW-2026-08-11-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/SNOW-2026-08-11-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/TSLA-2026-07-10-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/TSLA-2026-07-10-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/TTMI-2026-08-05-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/TTMI-2026-08-05-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/VEEV-2026-08-11-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/VEEV-2026-08-11-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/VEEV-2026-08-18-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/VEEV-2026-08-18-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/VEEV-2026-08-22-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/VEEV-2026-08-22-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/ZS-2026-08-11-earnings-preview/",
+    "new": "/blog/invest/reports/earnings/ZS-2026-08-11-earnings-preview/"
+  },
+  {
+    "old": "/jacksite/docs/invest/reports/earnings/",
+    "new": "/blog/invest/reports/earnings/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/13f/",
+    "new": "/blog/invest/research/13f/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/13f/q2-2026/",
+    "new": "/blog/invest/research/13f/q2-2026/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/",
+    "new": "/blog/invest/research/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/ai-compute/",
+    "new": "/blog/invest/research/ai-compute/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/ai-investment-framework/",
+    "new": "/blog/invest/research/ai-investment-framework/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/cloud/",
+    "new": "/blog/invest/research/cloud/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/cyber/",
+    "new": "/blog/invest/research/cyber/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/macro/",
+    "new": "/blog/invest/research/macro/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/robotics/",
+    "new": "/blog/invest/research/robotics/"
+  },
+  {
+    "old": "/jacksite/docs/invest/research/workflow/",
+    "new": "/blog/invest/research/workflow/"
+  },
+  {
+    "old": "/jacksite/docs/invest/rules/",
+    "new": "/blog/invest/rules/"
+  },
+  {
+    "old": "/jacksite/docs/invest/rules/day-trading/",
+    "new": "/blog/invest/rules/day-trading/"
+  },
+  {
+    "old": "/jacksite/docs/invest/rules/trading-rules/",
+    "new": "/blog/invest/rules/trading-rules/"
+  },
+  {
+    "old": "/jacksite/docs/life/",
+    "new": "/blog/life/"
+  },
+  {
+    "old": "/jacksite/docs/life/goals/",
+    "new": "/blog/life/goals/"
+  },
+  {
+    "old": "/jacksite/docs/life/habits/",
+    "new": "/blog/life/habits/"
+  },
+  {
+    "old": "/jacksite/docs/life/review/",
+    "new": "/blog/life/review/"
+  },
+  {
+    "old": "/jacksite/docs/reading/",
+    "new": "/blog/reading/"
+  },
+  {
+    "old": "/jacksite/docs/reading/atomic-habits/",
+    "new": "/blog/reading/atomic-habits/"
+  },
+  {
+    "old": "/jacksite/docs/reading/booklist/",
+    "new": "/blog/reading/booklist/"
+  },
+  {
+    "old": "/jacksite/docs/running/",
+    "new": "/blog/running/"
+  },
+  {
+    "old": "/jacksite/docs/tech/",
+    "new": "/blog/tech/"
+  },
+  {
+    "old": "/jacksite/docs/tech/ai/",
+    "new": "/blog/tech/ai/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/",
+    "new": "/blog/tech/interview/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/",
+    "new": "/blog/tech/interview/algo/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/capability-map/",
+    "new": "/blog/tech/interview/algo/capability-map/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/capability-map/go/",
+    "new": "/blog/tech/interview/algo/capability-map/go/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/capability-map/python/",
+    "new": "/blog/tech/interview/algo/capability-map/python/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/essentials/",
+    "new": "/blog/tech/interview/algo/essentials/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/essentials/binary-search/",
+    "new": "/blog/tech/interview/algo/essentials/binary-search/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/toolbox/",
+    "new": "/blog/tech/interview/algo/toolbox/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/",
+    "new": "/blog/tech/interview/algo/top-questions/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/binary-search/",
+    "new": "/blog/tech/interview/algo/top-questions/binary-search/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/binary-tree-level-order-traversal/",
+    "new": "/blog/tech/interview/algo/top-questions/binary-tree-level-order-traversal/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/climbing-stairs/",
+    "new": "/blog/tech/interview/algo/top-questions/climbing-stairs/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/clone-graph/",
+    "new": "/blog/tech/interview/algo/top-questions/clone-graph/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/coin-change/",
+    "new": "/blog/tech/interview/algo/top-questions/coin-change/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/container-with-most-water/",
+    "new": "/blog/tech/interview/algo/top-questions/container-with-most-water/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/count-divisors/",
+    "new": "/blog/tech/interview/algo/top-questions/count-divisors/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/course-schedule/",
+    "new": "/blog/tech/interview/algo/top-questions/course-schedule/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/group-anagrams/",
+    "new": "/blog/tech/interview/algo/top-questions/group-anagrams/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/house-robber/",
+    "new": "/blog/tech/interview/algo/top-questions/house-robber/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/kth-largest-element/",
+    "new": "/blog/tech/interview/algo/top-questions/kth-largest-element/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/longest-consecutive-sequence/",
+    "new": "/blog/tech/interview/algo/top-questions/longest-consecutive-sequence/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/longest-increasing-subsequence/",
+    "new": "/blog/tech/interview/algo/top-questions/longest-increasing-subsequence/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/longest-substring-without-repeating/",
+    "new": "/blog/tech/interview/algo/top-questions/longest-substring-without-repeating/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/lowest-common-ancestor/",
+    "new": "/blog/tech/interview/algo/top-questions/lowest-common-ancestor/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/max-counters/",
+    "new": "/blog/tech/interview/algo/top-questions/max-counters/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/maximum-subarray/",
+    "new": "/blog/tech/interview/algo/top-questions/maximum-subarray/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/meeting-rooms-ii/",
+    "new": "/blog/tech/interview/algo/top-questions/meeting-rooms-ii/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/merge-intervals/",
+    "new": "/blog/tech/interview/algo/top-questions/merge-intervals/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/minimum-window-substring/",
+    "new": "/blog/tech/interview/algo/top-questions/minimum-window-substring/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/number-of-islands/",
+    "new": "/blog/tech/interview/algo/top-questions/number-of-islands/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/prefix-sums/",
+    "new": "/blog/tech/interview/algo/top-questions/prefix-sums/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/product-of-array-except-self/",
+    "new": "/blog/tech/interview/algo/top-questions/product-of-array-except-self/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/search-in-rotated-sorted-array/",
+    "new": "/blog/tech/interview/algo/top-questions/search-in-rotated-sorted-array/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/top-k-frequent-elements/",
+    "new": "/blog/tech/interview/algo/top-questions/top-k-frequent-elements/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/trapping-rain-water/",
+    "new": "/blog/tech/interview/algo/top-questions/trapping-rain-water/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/two-sum/",
+    "new": "/blog/tech/interview/algo/top-questions/two-sum/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/algo/top-questions/unique-paths/",
+    "new": "/blog/tech/interview/algo/top-questions/unique-paths/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/assessment/2026-08-08/",
+    "new": "/blog/tech/interview/assessment/2026-08-08/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/assessment/",
+    "new": "/blog/tech/interview/assessment/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/behavioral/",
+    "new": "/blog/tech/interview/behavioral/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/deep-dive/",
+    "new": "/blog/tech/interview/deep-dive/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/",
+    "new": "/blog/tech/interview/system-design/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/all-in-one/",
+    "new": "/blog/tech/interview/system-design/all-in-one/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/",
+    "new": "/blog/tech/interview/system-design/toolbox/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/cassandra-mongodb/",
+    "new": "/blog/tech/interview/system-design/toolbox/cassandra-mongodb/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/cdc/",
+    "new": "/blog/tech/interview/system-design/toolbox/cdc/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/consistent-hash/",
+    "new": "/blog/tech/interview/system-design/toolbox/consistent-hash/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/elasticsearch/",
+    "new": "/blog/tech/interview/system-design/toolbox/elasticsearch/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/idempotency/",
+    "new": "/blog/tech/interview/system-design/toolbox/idempotency/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/isolation-level/",
+    "new": "/blog/tech/interview/system-design/toolbox/isolation-level/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/kafka/",
+    "new": "/blog/tech/interview/system-design/toolbox/kafka/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/object-storage/",
+    "new": "/blog/tech/interview/system-design/toolbox/object-storage/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/optimistic-lock/",
+    "new": "/blog/tech/interview/system-design/toolbox/optimistic-lock/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/outbox-pattern/",
+    "new": "/blog/tech/interview/system-design/toolbox/outbox-pattern/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/pagination/",
+    "new": "/blog/tech/interview/system-design/toolbox/pagination/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/pessimistic-lock/",
+    "new": "/blog/tech/interview/system-design/toolbox/pessimistic-lock/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/rdbms/",
+    "new": "/blog/tech/interview/system-design/toolbox/rdbms/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/redis/",
+    "new": "/blog/tech/interview/system-design/toolbox/redis/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/rest/",
+    "new": "/blog/tech/interview/system-design/toolbox/rest/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/saga/",
+    "new": "/blog/tech/interview/system-design/toolbox/saga/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/sse/",
+    "new": "/blog/tech/interview/system-design/toolbox/sse/"
+  },
+  {
+    "old": "/jacksite/docs/tech/interview/system-design/toolbox/websocket/",
+    "new": "/blog/tech/interview/system-design/toolbox/websocket/"
+  },
+  {
+    "old": "/jacksite/docs/tech/my-products/",
+    "new": "/blog/tech/my-products/"
+  },
+  {
+    "old": "/jacksite/docs/tech/notes/",
+    "new": "/blog/tech/notes/"
+  },
+  {
+    "old": "/jacksite/docs/tech/open-source/",
+    "new": "/blog/tech/open-source/"
+  },
+  {
+    "old": "/jacksite/docs/timeline/",
+    "new": "/blog/timeline/"
+  }
+]

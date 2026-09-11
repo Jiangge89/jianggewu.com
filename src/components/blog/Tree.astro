@@ -1,0 +1,18 @@
+---
+import { href, slug, parent, isSection, type Entry } from '../../lib/blog';
+interface Props { entries: Entry[]; root?: string; current: string }
+const { entries, root = '', current } = Astro.props;
+const children = entries.filter(entry => parent(entry) === root);
+---
+<ul class="blog-tree">
+  {children.map(entry => (
+    <li>
+      {isSection(entry) && entries.some(child => parent(child) === slug(entry)) ? (
+        <details open={current === slug(entry) || current.startsWith(slug(entry) + '/')}>
+          <summary><a href={href(entry)} aria-current={current === slug(entry) ? 'page' : undefined}>{entry.data.title}</a></summary>
+          <Astro.self entries={entries} root={slug(entry)} current={current} />
+        </details>
+      ) : <a href={href(entry)} aria-current={current === slug(entry) ? 'page' : undefined}>{entry.data.title}</a>}
+    </li>
+  ))}
+</ul>
