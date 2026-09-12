@@ -29,6 +29,7 @@ const sections = [
   ...(hasChallenges ? [{ id: 'challenges', label: 'Challenges' }] : []),
   { id: 'result', label: 'Result' },
   { id: 'lessons', label: 'What I Learned' },
+  ...(project.futureDirection ? [{ id: 'future-direction', label: 'Future Direction' }] : []),
 ];
 const summaryItems = [
   { label: 'Problem', text: project.summary.problem },
@@ -224,6 +225,17 @@ const summaryItems = [
           <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
         ))}
       </section>
+      {project.futureDirection && (
+        <section id="future-direction" class="scroll-mt-24">
+          <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Future Direction</h2>
+          {project.futureDiagram && (
+            <MermaidDiagram chart={project.futureDiagram.mermaid} title={project.futureDiagram.title} />
+          )}
+          {toParas(project.futureDirection).map((p, i) => (
+            <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
+          ))}
+        </section>
+      )}
     </div>
 
     <hr class="my-8 border-surface-200 dark:border-surface-700" />

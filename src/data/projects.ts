@@ -30,6 +30,8 @@ export interface Project {
   techStack: string[];
   result: TextBlock;
   learned: TextBlock;
+  futureDirection?: TextBlock;
+  futureDiagram?: ProjectDiagram;
   summary: { problem: string; role: string; result: string };
   featured: boolean;
   highlighted?: boolean;
@@ -296,8 +298,33 @@ export const projects: Project[] = [
       'Capacity governance requires asymmetric safety strategies because different actions introduce different types of production risk — scale-down must protect users while scale-up must protect the platform.',
       'Automation should be conservative when inputs are uncertain: predictions are signals, not ground truth, and no action is preferable to unsafe action. The blast radius of automated decisions must be constrained at multiple levels.',
       'Production rollout includes people — a system can be technically ready before the organization and its users are ready for it.',
-      'If I were evolving the system further, I would separate policy evaluation from quota execution with a durable execution layer, making individual operations independently recoverable with idempotent updates and bounded retries.',
     ],
+    futureDirection: [
+      'The current pipeline is synchronous. A proposed Kafka-based architecture would keep prediction validation and quota decisions in the governance server, while moving ticket creation and notifications to asynchronous workers.',
+      'Benefits: slow or failed ticketing and messaging requests would no longer block policy evaluation. Kafka would buffer pending events, and workers could scale independently with bounded concurrency to protect downstream services.',
+      'Tradeoffs: completion becomes eventually consistent, and Kafka adds operational overhead. Workers would need idempotency and per-step progress to avoid duplicate tickets or messages, bounded retries with a dead-letter queue, and lag monitoring. Events should be ordered per bucket and checked for stale quota decisions before execution; existing approval gates would still apply.',
+    ],
+    futureDiagram: {
+      title: 'Proposed Async Architecture',
+      mermaid: `flowchart TD
+    subgraph Server["Governance Server · Policy Evaluation"]
+        Pred[Fetch Prediction Data] --> Validate[Validate Data]
+        Validate --> Eligible[Whitelist Filtering & Gradual-Rollout Checks]
+        Eligible --> Compute[Calculate Target Quota]
+        Compute --> Event[Create Bucket Adjustment Event]
+    end
+    Event -->|Publish durably| Kafka[(Kafka)]
+    subgraph Workers["Worker Consumer Group · Independent Scaling"]
+        W1[Worker 1]
+        W2[Worker 2]
+        WN[Worker N]
+    end
+    Kafka --> W1 & W2 & WN
+    W1 & W2 & WN --> Ticket[Create Ticket · Preserve Approval Gates]
+    Ticket --> Message[Send Lark Message]
+    Ticket -. Failed operation .-> Retry[Bounded Retry / Dead-Letter Queue]
+    Message -. Failed operation .-> Retry`,
+    },
     featured: true,
     diagrams: [
       {
