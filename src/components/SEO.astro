@@ -1,12 +1,18 @@
 ---
 import { siteConfig } from '../config/site';
 
-interface Props {
+export interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
   ogImage?: string;
-  ogType?: string;
+  ogType?: 'website' | 'article';
+  lang?: 'en' | 'zh-CN';
+  noindex?: boolean;
+  pageType?: 'WebPage' | 'ProfilePage' | 'CollectionPage' | 'ContactPage';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  breadcrumbs?: { name: string; url: string }[];
 }
 
 const {
@@ -15,18 +21,56 @@ const {
   canonicalUrl = new URL(Astro.url.pathname, siteConfig.url).href,
   ogImage = new URL(siteConfig.ogImage, siteConfig.url).href,
   ogType = 'website',
+  lang = 'en',
+  noindex = false,
+  pageType = 'WebPage',
+  publishedTime,
+  modifiedTime,
+  breadcrumbs = [],
 } = Astro.props;
 
 const fullTitle = title === siteConfig.title ? title : `${title} — ${siteConfig.name}`;
 
+const imageUrl = new URL(ogImage, siteConfig.url).href;
+const personId = `${siteConfig.url}/#person`;
+const websiteId = `${siteConfig.url}/#website`;
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: siteConfig.name,
-  url: siteConfig.url,
-  jobTitle: siteConfig.role,
-  worksFor: { '@type': 'Organization', name: 'TikTok' },
-  sameAs: [siteConfig.githubUrl, siteConfig.linkedinUrl].filter(Boolean),
+  '@graph': [
+    {
+      '@type': 'Person', '@id': personId,
+      name: siteConfig.name, url: siteConfig.url,
+      jobTitle: siteConfig.role,
+      sameAs: [siteConfig.githubUrl, siteConfig.linkedinUrl].filter(Boolean),
+    },
+    {
+      '@type': 'WebSite', '@id': websiteId,
+      name: siteConfig.name, url: `${siteConfig.url}/`,
+      publisher: { '@id': personId }, inLanguage: ['en', 'zh-CN'],
+    },
+    {
+      '@type': pageType, '@id': `${canonicalUrl}#webpage`,
+      url: canonicalUrl, name: fullTitle, description, inLanguage: lang,
+      isPartOf: { '@id': websiteId },
+      ...(pageType === 'ProfilePage' ? { mainEntity: { '@id': personId } } : {}),
+      ...(breadcrumbs.length ? { breadcrumb: { '@id': `${canonicalUrl}#breadcrumb` } } : {}),
+    },
+    ...(ogType === 'article' ? [{
+      '@type': 'BlogPosting', '@id': `${canonicalUrl}#article`,
+      headline: title, description, image: [imageUrl], inLanguage: lang,
+      mainEntityOfPage: { '@id': `${canonicalUrl}#webpage` },
+      author: { '@id': personId }, publisher: { '@id': personId },
+      datePublished: publishedTime?.toISOString(),
+      dateModified: (modifiedTime ?? publishedTime)?.toISOString(),
+    }] : []),
+    ...(breadcrumbs.length ? [{
+      '@type': 'BreadcrumbList', '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: breadcrumbs.map((crumb, index) => ({
+        '@type': 'ListItem', position: index + 1, name: crumb.name,
+        item: new URL(crumb.url, siteConfig.url).href,
+      })),
+    }] : []),
+  ],
 };
 ---
 
@@ -37,7 +81,9 @@ const jsonLd = {
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <meta name="author" content={siteConfig.author} />
-<link rel="canonical" href={canonicalUrl} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+{!noindex && <link rel="canonical" href={canonicalUrl} />}
+<link rel="sitemap" href="/sitemap-index.xml" />
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -46,17 +92,21 @@ const jsonLd = {
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={ogImage} />
+<meta property="og:image" content={imageUrl} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:site_name" content={siteConfig.name} />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={lang === 'zh-CN' ? 'zh_CN' : 'en_US'} />
+
+<meta property="og:image:alt" content={`${siteConfig.name} — ${siteConfig.role}`} />
+{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image" content={imageUrl} />
 
 <!-- Structured Data -->
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+{!noindex && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}

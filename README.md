@@ -88,7 +88,7 @@ linkedinUrl: 'https://linkedin.com/in/your-profile',
 
 Articles live in `src/content/blog/`. Keep the topic directory structure; `_index.md`
 defines a collection page, and regular `.md` files define notes. Frontmatter supports
-`title`, `description`, `date`, `updated`, `weight`, `tags`, and `draft`. Dates are
+`title`, `description`, `lang`, `date`, `updated`, `weight`, `tags`, and `draft`. Dates are
 optional; undated notes stay accessible through topics and search. Use `updated`
 only when an actual update date is known. Drafts are excluded from pages and search.
 
@@ -97,7 +97,8 @@ For example, `src/content/blog/tech/notes/example.md` becomes
 Empty collections keep their URLs but are hidden from navigation. Markdown files
 with content in `_index.md` keep that content on the collection page.
 
-After editing, run `npm run build` and `python3 scripts/check-blog.py`.
+After editing, run `npm run build`, `python3 scripts/check-blog.py`, and
+`python3 scripts/check-seo.py`. Both validators also run before deployment.
 Preview with `npm run dev -- --background` (add `--port 4323` if needed).
 Manage the background server with `npm run astro -- dev status`,
 `npm run astro -- dev logs`, and `npm run astro -- dev stop`.
@@ -135,3 +136,24 @@ Replace `public/images/og-default.png` with a 1200x630 image for social media pr
 - **Tailwind CSS v4** — Utility-first styling
 - **GitHub Pages** — Hosting
 - **GitHub Actions** — CI/CD
+
+## SEO
+
+Shared metadata lives in `src/components/SEO.astro` and is passed through
+`BaseLayout`. Pages include canonical URLs, social previews, and linked Person,
+WebSite, and WebPage structured data. Articles add BlogPosting and breadcrumbs;
+only dates provided in frontmatter are published or used for sitemap `lastmod`.
+
+Write a specific `description` for each note when possible; otherwise an excerpt
+is generated from its content. Set `lang: en` or `lang: zh-CN` in frontmatter to
+specify the primary content language. Older notes infer it from the relative
+amount of Chinese text and English words; explicitly set it for mixed-language
+notes when that heuristic is unsuitable.
+
+Empty collections and TODO project pages remain accessible with `noindex` and
+are excluded from the generated sitemap. The 404 page also uses `noindex`.
+Adding content automatically makes an empty collection eligible for indexing.
+
+After deployment, submit `https://jianggewu.com/sitemap-index.xml` in Google
+Search Console for the verified domain. Search Console verification and sitemap
+submission are account operations, separate from this repository's build.

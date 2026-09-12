@@ -30,3 +30,12 @@ export const categoryDescriptions: Record<string, string> = {
   about: 'A little more about the person behind these notes.',
   timeline: 'Milestones and reflections along the way.',
 };
+
+// Explicit frontmatter wins; older bilingual notes infer language from prose.
+export function entryLanguage(entry: Entry): 'en' | 'zh-CN' {
+  if (entry.data.lang) return entry.data.lang;
+  const text = plainText(entry.body);
+  const chinese = (text.match(/\p{Script=Han}/gu) ?? []).length;
+  const latinWords = (text.match(/[a-zA-Z]+/g) ?? []).length;
+  return chinese > latinWords ? 'zh-CN' : 'en';
+}

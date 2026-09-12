@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Tree from '../../components/blog/Tree.astro';
 import EntryCard from '../../components/blog/EntryCard.astro';
-import { blogEntries, visibleEntries, slug, href, parent, isSection, excerpt, dated, formatDate, sectionName, categoryDescriptions } from '../../lib/blog';
+import { blogEntries, visibleEntries, slug, href, parent, isSection, excerpt, dated, formatDate, sectionName, categoryDescriptions, entryLanguage } from '../../lib/blog';
 import '../../styles/blog.css';
 export async function getStaticPaths() {
   const all = await blogEntries();
@@ -24,7 +24,15 @@ const ancestors = current.split('/').slice(0, -1).map((_, i) => entries.find(ite
 const toc = headings.filter(heading => heading.depth <= 3);
 const date = dated(entry);
 ---
-<BaseLayout title={entry.data.title} description={excerpt(entry) || categoryDescriptions[current] || `Explore ${entry.data.title} in Jiangge Wu’s notebook.`}>
+<BaseLayout
+  lang={entryLanguage(entry)}
+  noindex={section && !entries.some(item => item.id === entry.id)}
+  pageType={section ? 'CollectionPage' : 'WebPage'}
+  ogType={section ? 'website' : 'article'}
+  publishedTime={entry.data.date}
+  modifiedTime={entry.data.updated}
+  breadcrumbs={[{ name: 'Blog', url: '/blog/' }, ...ancestors.flatMap(ancestor => ancestor ? [{ name: ancestor.data.title, url: href(ancestor) }] : []), { name: entry.data.title, url: href(entry) }]}
+  title={entry.data.title} description={excerpt(entry) || categoryDescriptions[current] || `Explore ${entry.data.title} in Jiangge Wu’s notebook.`}>
   <div class="blog-reading">
     <aside class="reading-sidebar">
       <a class="back-blog" href="/blog/">← The notebook</a>

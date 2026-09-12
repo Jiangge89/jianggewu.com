@@ -38,6 +38,8 @@ const summaryItems = [
 ---
 
 <BaseLayout
+  noindex={isTodo}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Projects', url: '/projects/' }, { name: project.title, url: `/projects/${project.slug}/` }]}
   title={project.title}
   description={project.description}
 >

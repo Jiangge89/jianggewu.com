@@ -3,12 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 ---
 
-<BaseLayout
+<BaseLayout pageType="ProfilePage"
   title="About"
   description="Learn about Jiangge Wu — a senior backend engineer based in Singapore with 10+ years of backend engineering experience, including roles at TikTok and Shopee."
 >
   <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-    <SectionHeading title="About Me" />
+    <SectionHeading as="h1" title="About Me" />
 
     <div class="space-y-6 text-surface-700 leading-relaxed dark:text-surface-300">
       <p>

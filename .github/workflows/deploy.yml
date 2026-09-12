@@ -33,6 +33,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Validate SEO and blog links
+        run: |
+          python3 scripts/check-seo.py
+          python3 scripts/check-blog.py
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
