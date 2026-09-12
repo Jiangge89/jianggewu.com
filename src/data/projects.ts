@@ -14,7 +14,12 @@ export interface ProjectImage {
   caption?: string;
 }
 
-export type TextBlock = string | string[];
+export interface TextGroup {
+  title: string;
+  items: string[];
+}
+
+export type TextBlock = string | (string | TextGroup)[];
 
 export interface Project {
   slug: string;
@@ -30,6 +35,7 @@ export interface Project {
   techStack: string[];
   result: TextBlock;
   learned: TextBlock;
+  bulletSections?: boolean;
   futureDirection?: TextBlock;
   futureDiagram?: ProjectDiagram;
   summary: { problem: string; role: string; result: string };
@@ -46,6 +52,7 @@ export const projects: Project[] = [
   // --- TikTok ---
   {
     slug: 'tos-metadata-control-plane',
+    highlighted: true,
     summary: {
       problem: "Keep object-storage metadata available under heavy read traffic and backend failures.",
       role: "Owned TMeta, including cache design, credential security, and the RDS-to-KV migration.",
@@ -240,69 +247,101 @@ export const projects: Project[] = [
   },
   {
     slug: 'quota-automation-traffic-governance',
+    bulletSections: true,
     outcome: '~60k buckets · 3 main regions',
     summary: {
-      problem: "Reclaim excess quota safely while reducing manual requests and cluster oversubscription risk.",
-      role: "Led the service’s evolution and design across multiple versions, including safety policies, production rollout, and customer onboarding. Another internal team provided the prediction model.",
-      result: "Onboarded ~60k buckets across CN, SG, and US, reducing excess allocated quota.",
+      problem: 'Reclaim excess quota safely while reducing manual requests and cluster oversubscription risk.',
+      role: 'Led service design, safety policies, rollout, and customer onboarding across versions. Another team supplied the prediction model.',
+      result: 'Onboarded ~60k buckets across CN, SG, and US, reducing excess allocated quota.',
     },
     highlighted: true,
     title: 'Quota Automation & Traffic Governance',
     company: 'TikTok',
     description:
-      'Designed and built an automated capacity-governance system from scratch to address TOS throughput oversubscription risk. The system gradually reclaimed unused quota through conservative prediction validation, asymmetric scale-down/scale-up policies, progressive rollout with customer onboarding, and tidal throttling for peak-hour protection.',
+      'Built TOS capacity governance from scratch to reduce throughput oversubscription: conservative prediction validation, gradual quota reclamation, asymmetric scaling policies, progressive customer onboarding, and peak-hour tidal throttling.',
     problem: [
-      'The storage platform had accumulated a large amount of historically allocated quota. As customer workloads evolved, many buckets retained significantly more quota than their actual traffic required. Eventually, the sum of allocated quota exceeded the physical capacity that the storage clusters could safely support.',
-      'At the same time, frequent quota adjustment requests from users had to be processed manually by the TOS team, creating a significant and growing operational burden.',
-      'The core challenge was not simply identifying underutilized buckets. Customer traffic could fluctuate significantly, and some buckets carried critical workloads. A prediction that underestimated legitimate peak traffic could result in an automated quota reduction that affected production traffic. At the same time, automatically increasing quota too aggressively could worsen the existing oversubscription.',
-      'This created two asymmetric risks: scale-down risk (reducing quota too aggressively could affect customer traffic) and scale-up risk (increasing quota too aggressively could increase pressure on an already oversubscribed cluster). The system needed to optimize for safe automation rather than maximum automation coverage.',
+      {
+        title: 'Capacity & Operations',
+        items: [
+          'Excess allocation: evolving workloads left many buckets with more quota than needed; total allocated quota exceeded safe physical cluster capacity.',
+          'Manual overhead: frequent user quota requests created a growing operational burden for the TOS team.',
+        ],
+      },
+      {
+        title: 'Asymmetric Risks',
+        items: [
+          'Scale-down: variable traffic and critical workloads made underestimated peaks dangerous — automated reductions could disrupt production traffic.',
+          'Scale-up: aggressive increases could worsen cluster oversubscription. Safe automation mattered more than maximum coverage.',
+        ],
+      },
     ],
-    role:
-      'Led the service’s evolution and design across multiple versions, including safety policies, production rollout, and customer onboarding. The traffic prediction model (based on 21-day historical data) was provided by another internal team. I designed and implemented the service-side logic, including prediction validation, policy evaluation, guardrails, execution, notification, and tidal throttling.',
+    role: [
+      'Ownership: led service evolution, design, safety policies, production rollout, and customer onboarding across versions.',
+      'Implementation: built prediction validation, policy evaluation, guardrails, execution, notifications, and tidal throttling.',
+      'Model boundary: another internal team supplied the prediction model, based on 21-day historical data.',
+    ],
     approach: [
-      'Built a daily scheduled quota-governance service that consumed 21-day traffic predictions, validated them against recent observed traffic, applied asymmetric policies for scale-down vs. scale-up, and enforced quota changes with bounded blast radius.',
-      'Predictions were treated as a signal rather than ground truth. Each prediction was compared against the maximum traffic observed in the previous 7 days. If the prediction fell below this floor, the adjustment was skipped. Missing or stale prediction data was handled similarly — the bucket was skipped rather than acting on unreliable input. This intentionally conservative approach preferred reclaiming slightly less capacity over incorrectly throttling valid customer traffic.',
-      'For scale-down, quota was reduced by at most 5% per day — an operational threshold chosen to keep each adjustment small enough to limit customer impact while remaining meaningful and observable, creating time for monitoring and customer feedback before further reductions.',
-      'For scale-up, the system applied tiered review gates: small buckets could auto-approve increases within ~20%, while larger increases or larger buckets required human review. The objective was not to automate every possible change, but to automate changes where the blast radius was well understood.',
-      'The system was rolled out progressively: V1 validated the architecture on internal test buckets including ones I owned directly; V2 introduced production scale-down with batch onboarding starting from lower-criticality workloads, requiring customer communication, documentation, and exemption processes; V3 expanded to controlled scale-up with stricter thresholds.',
-      'Beyond static quota automation, the system included tidal traffic governance to temporarily restrict quota for high-throughput buckets during predictable peak periods — addressing acute traffic pressure that long-term quota governance alone could not handle.',
+      'Daily pipeline: consume 21-day traffic predictions → validate against recent traffic → evaluate asymmetric scaling policies → execute bounded quota changes.',
+      {
+        title: 'Progressive Rollout',
+        items: [
+          'V1: validate the architecture on internal test buckets, including my own.',
+          'V2: introduce production scale-down in batches, starting with lower-criticality workloads; include customer communication, documentation, and exemptions.',
+          'V3: extend to controlled scale-up with stricter thresholds.',
+        ],
+      },
     ],
     keyDesign: [
-      'Prediction validation: compare 21-day traffic prediction against 7-day observed max traffic; skip adjustment if prediction falls below the floor — prefer no action over unsafe action',
-      'Gradual scale-down: at most 5% reduction per day — an operational threshold balancing meaningful progress with bounded customer impact, creating time for monitoring and feedback',
-      'Tiered scale-up: small-traffic buckets auto-approve increases ≤20%; larger increases or larger buckets require human review — automate where blast radius is understood, review where it is not',
-      'Whitelist exemption: bucket owners can opt out of automatic adjustment for workloads that should not participate',
-      'Tidal throttling: temporarily lower quota for high-throughput buckets during configurable peak-hour windows, with alerts on restoration failures',
-      'Lark notification to bucket owners on every quota change with before/after values',
-      'Bucket-level metrics and monitoring for quota decisions, adjustments, and errors',
+      'Prediction validation: skip buckets with missing or stale predictions, or predictions below the previous 7-day traffic maximum; accept less reclamation to protect valid traffic.',
+      'Gradual scale-down: reduce quota by at most 5% per day, keeping changes meaningful and observable while limiting impact and allowing monitoring and customer feedback.',
+      'Tiered scale-up: auto-approve increases ≤20% for small-traffic buckets; larger increases or larger buckets require human review.',
+      'Whitelist exemption: owners can opt workloads out of automatic adjustment.',
+      'Tidal throttling: temporarily lower high-throughput bucket quotas during configurable, predictable peak windows to address acute pressure beyond long-term governance; alert on restoration failures.',
+      'Notifications: send bucket owners a Lark message for every quota change, with before/after values.',
+      'Observability: track bucket-level decisions, adjustments, and errors.',
     ],
     keyDecisions: [
-      'Treated predictions as signals, not ground truth — conservative validation against recent observed traffic to avoid acting on anomalous forecasts',
-      'Applied asymmetric risk policies: scale-down protected customers (gradual, rate-limited), scale-up protected the platform (tiered review gates)',
-      'Constrained blast radius at multiple levels: daily adjustment limits, bucket-size tiers, manual review thresholds, whitelist exemptions, and progressive rollout',
-      'Deliberately chose not to automate every decision — low-risk changes were automated, high-risk changes remained under human review',
-      'Production rollout included people: customer communication, documentation, exemption processes, and operational onboarding were part of productionizing the system, not afterthoughts',
+      'Conservative inputs: treat predictions as signals, not ground truth; validate against observed traffic to avoid anomalous forecasts.',
+      'Asymmetric protection: gradual, rate-limited scale-down protects customers; tiered scale-up review protects the platform.',
+      'Bounded impact: combine daily limits, bucket-size tiers, manual review, whitelist exemptions, and progressive rollout.',
+      'Selective automation: automate low-risk changes with understood impact; keep high-risk changes under human review.',
+      'Operational readiness: make customer communication, documentation, exemptions, and onboarding part of production rollout.',
     ],
     challenges: [
-      'The hardest part was not implementing the automation, but deciding what we could safely automate under uncertain traffic demand and imperfect predictions',
-      'Rolling out a system that could automatically modify customer quota required organizational readiness beyond technical readiness — contacting bucket owners, explaining the governance mechanism, preparing documentation, and handling exemption requests',
-      'Balancing automation coverage against safety: maximizing reclaimed quota would increase the chance of disrupting legitimate traffic, while being too conservative would fail to address the oversubscription risk',
-      'Failure handling favored skipping over retrying — individual execution failures were skipped since the daily job would re-evaluate; tidal throttling restoration failures triggered alerts for manual intervention',
+      'Safety boundaries: deciding what to automate under uncertain demand and imperfect predictions was harder than implementation.',
+      'Organizational readiness: contact owners, explain governance, prepare documentation, and handle exemptions before changing customer quotas.',
+      'Coverage vs. safety: aggressive reclamation risks legitimate traffic; excessive caution leaves oversubscription unresolved.',
+      'Failure handling: skip individual execution failures for daily re-evaluation rather than retry; alert for manual intervention if tidal quota restoration fails.',
     ],
     techStack: ['Go', 'Distributed Rate Limiter', 'Kafka', 'Lark API', 'Object Storage'],
     result: [
-      'Onboarded ~60k buckets across three major regions (CN ~40k, SG ~10k, US ~10k) into automated quota governance. Reduced the total amount of unnecessarily allocated quota and progressively mitigated storage-cluster oversubscription risk.',
-      'Transformed quota governance from a largely manual and reactive process into a continuous automated mechanism with conservative prediction validation, gradual quota adjustment, bounded automatic scale-up, human override and review, progressive rollout, bucket-level observability, and customer-facing operational processes. Tidal throttling provided additional layered defense against acute traffic pressure during peak periods.',
+      'Scale: onboarded ~60k buckets across CN (~40k), SG (~10k), and US (~10k).',
+      'Capacity: reduced unnecessary allocation and progressively mitigated storage-cluster oversubscription risk.',
+      'Operations: replaced largely manual, reactive governance with continuous automation, conservative validation, gradual scale-down, bounded scale-up, and human review and override.',
+      'Production safeguards: combined progressive rollout, bucket-level observability, customer-facing processes, and tidal throttling for layered peak-hour protection.',
     ],
     learned: [
-      'Capacity governance requires asymmetric safety strategies because different actions introduce different types of production risk — scale-down must protect users while scale-up must protect the platform.',
-      'Automation should be conservative when inputs are uncertain: predictions are signals, not ground truth, and no action is preferable to unsafe action. The blast radius of automated decisions must be constrained at multiple levels.',
-      'Production rollout includes people — a system can be technically ready before the organization and its users are ready for it.',
+      'Asymmetric safety: scale-down must protect users; scale-up must protect platform capacity.',
+      'Conservative automation: uncertain predictions favor no action over unsafe action, with impact constrained at multiple levels.',
+      'People matter: technical readiness can precede organizational and customer readiness.',
     ],
     futureDirection: [
-      'The current pipeline is synchronous. A proposed Kafka-based architecture would keep prediction validation and quota decisions in the governance server, while moving ticket creation and notifications to asynchronous workers.',
-      'Benefits: slow or failed ticketing and messaging requests would no longer block policy evaluation. Kafka would buffer pending events, and workers could scale independently with bounded concurrency to protect downstream services.',
-      'Tradeoffs: completion becomes eventually consistent, and Kafka adds operational overhead. Workers would need idempotency and per-step progress to avoid duplicate tickets or messages, bounded retries with a dead-letter queue, and lag monitoring. Events should be ordered per bucket and checked for stale quota decisions before execution; existing approval gates would still apply.',
+      'Proposed change: evolve the synchronous pipeline by retaining validation and quota decisions in the server, and moving ticket creation and notifications to Kafka workers.',
+      {
+        title: 'Benefits',
+        items: [
+          'Failure isolation: slow or failed ticketing and messaging requests would no longer block policy evaluation; Kafka would buffer pending work.',
+          'Independent scaling: scale workers with bounded concurrency to protect downstream services.',
+        ],
+      },
+      {
+        title: 'Tradeoffs',
+        items: [
+          'Consistency and operations: completion becomes eventually consistent, with additional Kafka operational overhead.',
+          'Recovery: require idempotency and per-step progress to prevent duplicate tickets or messages, bounded retries, a dead-letter queue, and lag monitoring.',
+          'Decision safety: preserve per-bucket ordering, check for stale quota decisions before execution, and retain existing approval gates.',
+        ],
+      },
     ],
     futureDiagram: {
       title: 'Proposed Async Architecture',
@@ -441,6 +480,7 @@ export const projects: Project[] = [
   // --- Shopee ---
   {
     slug: 'promotion-gateway-cache',
+    highlighted: true,
     summary: {
       problem: "Reduce backend fan-out and latency spikes during homepage flash sales.",
       role: "Worked on the gateway API and designed and optimized its two-layer caching strategy.",

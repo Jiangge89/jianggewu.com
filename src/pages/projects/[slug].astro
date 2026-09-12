@@ -2,10 +2,8 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MermaidDiagram from '../../components/MermaidDiagram.astro';
-import { projects, type TextBlock } from '../../data/projects';
-
-const toParas = (text: TextBlock): string[] =>
-  Array.isArray(text) ? text : [text];
+import ProjectText from '../../components/ProjectText.astro';
+import { projects } from '../../data/projects';
 
 export const getStaticPaths: GetStaticPaths = () => {
   return projects.map((project) => ({
@@ -133,23 +131,17 @@ const summaryItems = [
     <div class="space-y-8">
       <section id="problem" class="scroll-mt-24">
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Problem</h2>
-        {toParas(project.problem).map((p, i) => (
-          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
-        ))}
+        <ProjectText text={project.problem} bullets={project.bulletSections} />
       </section>
 
       <section id="my-role" class="scroll-mt-24">
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">My Role</h2>
-        {toParas(project.role).map((p, i) => (
-          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
-        ))}
+        <ProjectText text={project.role} bullets={project.bulletSections} />
       </section>
 
       <section id="approach" class="scroll-mt-24">
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Architecture / Approach</h2>
-        {toParas(project.approach).map((p, i) => (
-          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
-        ))}
+        <ProjectText text={project.approach} bullets={project.bulletSections} />
         {project.keyDesign.length > 0 && (
           <ul class="mt-3 list-inside list-disc space-y-1.5 text-surface-600 dark:text-surface-400">
             {project.keyDesign.map((item) => (
@@ -214,16 +206,12 @@ const summaryItems = [
 
       <section id="result" class="scroll-mt-24">
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">Result</h2>
-        {toParas(project.result).map((p, i) => (
-          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
-        ))}
+        <ProjectText text={project.result} bullets={project.bulletSections} />
       </section>
 
       <section id="lessons" class="scroll-mt-24">
         <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-100">What I Learned</h2>
-        {toParas(project.learned).map((p, i) => (
-          <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
-        ))}
+        <ProjectText text={project.learned} bullets={project.bulletSections} />
       </section>
       {project.futureDirection && (
         <section id="future-direction" class="scroll-mt-24">
@@ -231,9 +219,7 @@ const summaryItems = [
           {project.futureDiagram && (
             <MermaidDiagram chart={project.futureDiagram.mermaid} title={project.futureDiagram.title} />
           )}
-          {toParas(project.futureDirection).map((p, i) => (
-            <p class={`${i === 0 ? 'mt-2' : 'mt-3'} leading-relaxed text-surface-600 dark:text-surface-400`}>{p}</p>
-          ))}
+          <ProjectText text={project.futureDirection} bullets={project.bulletSections} />
         </section>
       )}
     </div>
