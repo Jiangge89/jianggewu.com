@@ -134,7 +134,7 @@ export const projects: Project[] = [
     slug: 'rds-to-kv-online-migration',
     outcome: 'Zero downtime · Dozens of regions',
     summary: {
-      problem: "Move critical metadata from RDS to KV without downtime or data loss.",
+      problem: "Migrate metadata from RDS to KV — aligning with the ToB storage stack for consistency and lower operational complexity, and leveraging KV's natural fit for bucket-name lookups — without downtime or data loss.",
       role: "Led the system design and implementation, partnered with SRE on the production rollout, and monitored system health throughout the migration.",
       result: "Completed the online migration on clusters across dozens of regions, with zero downtime and rollback safety throughout.",
     },
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     description:
       'Migrated the metadata backend from RDS to KV without downtime using a 6-stage rollout strategy with dual-write, backfill, consistency verification, and rollback safety at every phase.',
     problem:
-      'The metadata control plane needed to migrate its persistence layer from RDS to KV for better scalability, but the service was a critical dependency for object access — any downtime or data loss was unacceptable.',
+      'The metadata control plane needed to migrate from RDS to KV for two reasons: aligning with the ToB storage product stack for consistency and lower operational complexity, and because looking up bucket metadata by bucket name was a natural fit for KV storage. However, the service was a critical dependency for object access — any downtime or data loss was unacceptable.',
     role:
       'Led the system design and implementation, partnered with SRE on the production rollout, and monitored system health throughout the migration.',
     approach:
@@ -286,7 +286,7 @@ export const projects: Project[] = [
         title: 'Progressive Rollout',
         items: [
           'V1: validate the architecture on internal test buckets, including my own.',
-          'V2: introduce production scale-down in batches, starting with lower-criticality workloads; include customer communication, documentation, and exemptions.',
+          'V2: introduce production scale-down in batches, starting with lower-criticality workloads. For each batch: create a dedicated communication group with bucket owners, send group announcements explaining the rollout, provide detailed user-facing documentation, and offer a whitelist opt-out before enabling auto-adjustment.',
           'V3: extend to controlled scale-up with stricter thresholds.',
         ],
       },
