@@ -444,7 +444,7 @@ export const projects: Project[] = [
       'Rollback support at every phase before full enforcement',
     ],
     keyDecisions: [
-      'Selected ZTI over DPS for better infrastructure standardization, ownership, and service identity support',
+      'Selected ZTI over DPS: DPS was non-standard (required manually installing and maintaining its agent on every new machine), no longer actively maintained (no dedicated team for support if issues arose), and had sparse, outdated documentation with no clear integration steps or observability guidance — ZTI meant lower operational complexity as a standard infrastructure component',
       'Used compatibility mode before enforcement to prevent access disruption',
       'Maintained rollback capability during gradual rollout',
     ],
