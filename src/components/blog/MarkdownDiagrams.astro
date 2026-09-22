@@ -1,0 +1,72 @@
+<script>
+  async function renderMarkdownDiagrams() {
+    const blocks = document.querySelectorAll<HTMLPreElement>(
+      '.blog-prose pre[data-language="mermaid"]:not([data-diagram-ready])',
+    );
+    if (!blocks.length) return;
+
+    const { default: mermaid } = await import('mermaid');
+    // A fixed light canvas keeps exported-looking diagrams readable in both themes.
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      theme: 'default',
+      flowchart: { htmlLabels: false, useMaxWidth: true },
+      sequence: { useMaxWidth: true, wrap: true },
+    });
+
+    for (const [index, block] of Array.from(blocks).entries()) {
+      if (!block.isConnected || block.dataset.diagramReady) continue;
+      block.dataset.diagramReady = 'pending';
+      const source = block.textContent ?? '';
+      const id = `blog-diagram-${Date.now()}-${index}`;
+      try {
+        const { svg } = await mermaid.render(id, source);
+        if (!block.isConnected) continue;
+        const figure = document.createElement('figure');
+        figure.className = 'blog-diagram';
+        const canvas = document.createElement('div');
+        canvas.className = 'blog-diagram-canvas';
+        canvas.tabIndex = 0;
+        canvas.setAttribute('role', 'region');
+        canvas.setAttribute('aria-label', document.documentElement.lang.startsWith('zh') ? '系统设计图，可横向滚动' : 'System design diagram, horizontally scrollable');
+        canvas.innerHTML = svg;
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = document.documentElement.lang.startsWith('zh') ? '查看 Mermaid 源码' : 'View Mermaid source';
+        block.replaceWith(figure);
+        details.append(summary, block);
+        figure.append(canvas, details);
+        block.dataset.diagramReady = 'true';
+      } catch (error) {
+        // Keep the original Markdown visible if a diagram cannot be rendered.
+        block.dataset.diagramReady = 'error';
+        document.getElementById(`d${id}`)?.remove();
+        console.error('Unable to render Markdown diagram', error);
+      }
+    }
+  }
+
+  renderMarkdownDiagrams();
+  document.addEventListener('astro:page-load', renderMarkdownDiagrams);
+</script>
+
+<style is:global>
+  .blog-prose .blog-diagram { margin: 1.5em 0; }
+  .blog-prose .blog-diagram-canvas {
+    overflow-x: auto;
+    border: 1px solid var(--blog-line);
+    border-radius: 9px;
+    padding: 20px;
+    background: #fff;
+    color: #1f2937;
+  }
+  .blog-prose .blog-diagram-canvas svg {
+    display: block;
+    margin: 0 auto;
+    min-width: 560px;
+    height: auto;
+  }
+  .blog-prose .blog-diagram details { margin: 8px 0 0; font-size: 12px; }
+  .blog-prose .blog-diagram details pre { margin: 0 0 12px; }
+</style>
