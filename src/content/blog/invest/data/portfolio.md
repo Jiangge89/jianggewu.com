@@ -5,121 +5,69 @@ weight: 1
 
 # Portfolio
 
-## Current Share Count Snapshot
+## Current Holdings Snapshot
 
-Updated: 2026-08-28（用户确认；成交价、最新均价、现金及总权益待更新）
+Updated: 2026-10-10（用户截图确认）
 
-| Ticker | Shares |
-|--------|-------:|
-| MSFT | 28 |
-| NOW | 100 |
-| BA | 60 |
-| ABAT | 4,000 |
-| TSLA | 30 |
-| VEEV | 30 |
-| PANW | 20 |
-| ZS | 40 |
-| TEAM | 40 |
-| SNOW | 20 |
-| CCXI | 400 |
-| CBRS | 10 |
+### Account Summary
 
-> This share-count snapshot supersedes the quantities in the older August 14 table below. Current average cost, market value, portfolio weight, cash, and total equity are not available and must not be inferred from the stale snapshot.
+Total Equity: $140,456.06
+Securities Market Value: $180,190.36
+Margin Used: -$39,734.30
+Remaining Liquidity: $67,579.04
+Risk Status: 安全
 
-Updated: 2026-08-14（基于 Futu 截图校准）
+### Holdings (14)
 
-## Account Summary
+| Ticker | Shares | Avg Cost | Price | Market Value | P&L $ | P&L % | % of Equity |
+|--------|--------|----------|-------|-------------|-------|-------|-------------|
+| ZS | 110 | 194.648 | 233.73 | 25,710.30 | +4,299 | +20.1% | 18.3% |
+| MSFT | 48 | 463.435 | 535.07 | 25,683.36 | +3,438 | +15.4% | 18.3% |
+| PANW | 40 | 227.361 | 418.78 | 16,751.20 | +7,657 | +84.2% | 11.9% |
+| TSLA | 40 | 366.529 | 382.70 | 15,308.00 | +647 | +4.4% | 10.9% |
+| SNOW | 40 | 326.20 | 368.89 | 14,755.60 | +1,708 | +13.1% | 10.5% |
+| TEAM | 70 | 172.129 | 206.79 | 14,475.30 | +2,426 | +20.1% | 10.3% |
+| NOW | 100 | 110.837 | 140.86 | 14,086.00 | +3,002 | +27.1% | 10.0% |
+| VEEV | 40 | 232.626 | 296.13 | 11,845.20 | +2,540 | +27.3% | 8.4% |
+| BA | 60 | 107.323 | 190.37 | 11,422.20 | +4,983 | +77.4% | 8.1% |
+| CBRS | 60 | 226.24 | 164.17 | 9,850.20 | -3,724 | -27.4% | 7.0% |
+| ABAT | 5,000 | -0.1248 | 1.97 | 9,850.00 | +10,474 | 零成本+ | 7.0% |
+| AMD | 10 | 620.815 | 608.10 | 6,081.00 | -127 | -2.1% | 4.3% |
+| CCXI | 400 | 15.188 | 10.93 | 4,372.00 | -1,703 | -28.0% | 3.1% |
+| GTTCW | 24 | 4.819 | — | 0.00 | — | — | 0.0% |
 
-Total Equity: $141,615.86
+### Sector Exposure
 
-Cash: $31,313.06（冻结 $3,272.91，可用 $28,040.15）
+| Sector | Tickers | Combined % | Cap (25%) |
+|--------|---------|------------|-----------|
+| Cyber | ZS + PANW | 30.2% | 25% |
+| Workflow | TEAM + NOW | 20.3% | 25% |
+| Cloud | MSFT | 18.3% | 25% |
+| Robotics | TSLA | 10.9% | 25% |
+| Data | SNOW | 10.5% | 25% |
+| 垂直 AI | VEEV | 8.4% | 25% |
+| Aerospace | BA | 8.1% | — |
+| AI Chip | CBRS + AMD | 11.3% | 25% |
+| Battery | ABAT | 7.0% | 25% |
+| Biotech | CCXI | 3.1% | 25% |
 
-Maximum Position: 10%
+### 待成交订单
 
-Sector Cap: 25%
+| Ticker | 操作 | 数量 | 限价 | 备注 |
+|--------|------|------|------|------|
+| ABAT | 卖出 | — | $4.50 | 远期目标价减仓 |
+| CCXI | 卖出 | 400 股 | $20 | 清仓 |
 
-## Current Holdings
-
-| Ticker | Shares | Avg Cost | Price | Value | % of Equity | Sector | Status |
-|--------|--------|----------|-------|-------|-------------|--------|--------|
-| PANW | 40 | 244.565 | 395.89 | 15,835.60 | 11.2% | Cyber | Full+。ATH 区。财报 Sep 1 |
-| NOW | 120 | 108.165 | 127.21 | 15,265.20 | 10.8% | Workflow | Full+ |
-| MSFT | 28 | 434.984 | 495.55 | 13,875.40 | 9.8% | Cloud | Full-（Aug 14 加仓 8 股）|
-| NVAX | 1,000 | 8.265 | 8.11 | 8,110.00 | 5.7% | Biotech | Half |
-| ABAT | 3,000 | -1.8473 | 2.51 | 7,530.00 | 5.3% | Battery | 零成本+ |
-| VEEV | 30 | 219.508 | 251.00 | 7,530.00 | 5.3% | 垂直 AI / Healthcare IT | Half（Aug 12 加仓 15 股）|
-| ZS | 40 | 202.643 | 188.05 | 7,522.00 | 5.3% | Cyber | 浮亏 -7.2%。财报 Sep 2-3 |
-| TSLA | 20 | 372.983 | 339.87 | 6,797.40 | 4.8% | Robotics | 浮亏 -8.9% |
-| SNOW | 20 | 318.20 | 337.45 | 6,749.00 | 4.8% | Data | Half。财报 Sep 2 |
-| CCXI | 300 | 15.56 | 16.22 | 4,866.00 | 3.4% | Biotech | 梦想仓。挂单 $20 清仓 |
-| BA | 20 | -114.2075 | 230.38 | 4,607.60 | 3.3% | Aerospace | 零成本+（Aug 12 减仓 30 股）|
-| OUST | 100 | 50.465 | 45.09 | 4,509.00 | 3.2% | Robotics | 浮亏 -10.6% |
-| DDOG | 15 | 246.80 | 252.38 | 3,785.70 | 2.7% | Cloud / Observability | Starter（Aug 12 重新建仓）|
-| TEAM | 40 | 156.25 | 162.22 | 6,488.80 | 4.6% | Workflow | Half-（Aug 14 限价单 20 股 @ $163 成交）|
-| GTTCW | 24 | 4.819 | — | 0.00 | 0.0% | Other | Warrant |
-
-**持仓 15 只**（含 GTTCW）。实际活跃 14 只。
-
-## 待成交订单
-
-| Ticker | 操作 | 数量 | 限价 | 金额 | 备注 |
-|--------|------|------|------|------|------|
-| TEAM | ~~买入~~ 已成交 | 20 股 | $163 | $3,260 | Aug 14 限价单成交。40 股 Half |
-| ABAT | 卖出 | 2,000 股 | $4.50 | $9,000 | 远期目标价减仓 |
-| CCXI | 卖出 | 300 股 | $20 | $6,000 | 清仓 |
-
-## 已清仓
+### 已清仓
 
 | Ticker | 清仓日期 | 备注 |
 |--------|----------|------|
-| MNDY | Aug 12 | 50 股 @ $87 清仓。亏损 ~$384（-8.1%）。AI 威胁 per-seat 模式 |
-| AMD | Aug 13 | 5 股 @ $494 清仓。零成本持仓，全利润 ~$2,470 |
-| DDOG | Aug 10 | 30 股 @ $234 清仓。后 Aug 12 重新建仓 15 股 |
-| CRM | Aug 7 | 15 股 @ $188.62 清仓。AI 威胁 per-seat 模式。微盈 +$13 |
-| NVDA | Jul 29 | 30 股 @ $195.3，亏损 ~$561 |
+| DDOG | ~Sep-Oct 2026 | 清仓 |
+| NVAX | ~Sep-Oct 2026 | 清仓 |
+| OUST | ~Aug 2026 | 清仓 |
+| MNDY | Aug 12 | 50 股 @ $87 清仓。亏损 ~$384 |
+| AMD | Aug 13 | 5 股 @ $494 清仓（后 Oct 重新建仓 10 股）|
+| CRM | Aug 7 | 15 股 @ $188.62 清仓 |
+| NVDA | Jul 29 | 30 股 @ $195.3 |
 | MBLY | Jul 6 | Intel持股风险 |
-| GOOG | Jul 7 | 亏损~$350 (-8%) |
-| TSLA Call $435 Jul17 | Jul 7 | 4张全清，亏损$1,117 (-33%) |
-
-## Sector Exposure
-
-| Sector | Tickers | Combined % | Cap (25%) | Status |
-|--------|---------|------------|-----------|--------|
-| Cyber | PANW + ZS | 16.5% | 25% | ✅ |
-| Workflow | NOW + TEAM | 13.1% | 25% | ✅（MNDY 清仓后降低）|
-| Cloud / Observability | MSFT + DDOG | 12.5% | 25% | ✅ |
-| Biotech | NVAX + CCXI | 9.1% | 25% | ✅ |
-| Robotics | TSLA + OUST | 8.0% | 25% | ✅ |
-| Battery | ABAT | 5.3% | 25% | ✅ |
-| 垂直 AI | VEEV | 5.3% | 25% | ✅ |
-| Data | SNOW | 4.8% | 25% | ✅ |
-| Aerospace | BA | 3.3% | — | 零成本+核心仓 |
-
-## P&L Summary
-
-| Ticker | Avg Cost | Price | P&L % |
-|--------|----------|-------|-------|
-| BA | -114.2075 | 230.38 | **零成本+** |
-| PANW | 244.565 | 395.89 | **+61.9%** |
-| VEEV | 219.508 | 251.00 | **+14.3%** |
-| MSFT | 434.984 | 495.55 | **+13.9%** |
-| NOW | 108.165 | 127.21 | **+17.6%** |
-| TEAM | 149.50 | 166.00 | **+11.0%** |
-| SNOW | 318.20 | 337.45 | **+6.0%** |
-| CCXI | 15.56 | 16.22 | +4.2% |
-| DDOG | 246.80 | 252.38 | **+2.3%** |
-| ABAT | -1.8473 | 2.51 | 零成本+ |
-| NVAX | 8.265 | 8.11 | **-1.9%** |
-| ZS | 202.643 | 188.05 | **-7.2%** |
-| TSLA | 372.983 | 339.87 | **-8.9%** |
-| OUST | 50.465 | 45.09 | **-10.6%** |
-
-## Risk Flags
-
-1. ⚠️ PANW 11.2%、NOW 10.8%：超 Full 线
-2. ⚠️ OUST -10.6%：接近 -15% 警戒线
-3. ⚠️ TSLA -8.9%：浮亏偏高
-4. ZS -7.2%：浮亏收窄中。Sep 2-3 财报
-5. 持仓 14 只活跃（精简中）
-6. Cash 22%（$31,313）— 弹药充足
-7. 近期催化：VEEV 财报 Aug 26 | PANW 财报 Sep 1 | SNOW 财报 Sep 2 | ZS 财报 Sep 2-3
+| GOOG | Jul 7 | 亏损~$350 |
