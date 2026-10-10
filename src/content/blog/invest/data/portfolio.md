@@ -5,6 +5,27 @@ weight: 1
 
 # Portfolio
 
+## Current Share Count Snapshot
+
+Updated: 2026-08-28（用户确认；成交价、最新均价、现金及总权益待更新）
+
+| Ticker | Shares |
+|--------|-------:|
+| MSFT | 28 |
+| NOW | 100 |
+| BA | 60 |
+| ABAT | 4,000 |
+| TSLA | 30 |
+| VEEV | 30 |
+| PANW | 20 |
+| ZS | 40 |
+| TEAM | 40 |
+| SNOW | 20 |
+| CCXI | 400 |
+| CBRS | 10 |
+
+> This share-count snapshot supersedes the quantities in the older August 14 table below. Current average cost, market value, portfolio weight, cash, and total equity are not available and must not be inferred from the stale snapshot.
+
 Updated: 2026-08-14（基于 Futu 截图校准）
 
 ## Account Summary

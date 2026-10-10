@@ -1,5 +1,5 @@
 ---
-title: "DDOG Earnings Preview 2026-07-30"
+title: DDOG Earnings Preview 2026-07-30
 weight: 20260730
 ---
 

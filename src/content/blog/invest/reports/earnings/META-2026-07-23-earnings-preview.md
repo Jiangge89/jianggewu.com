@@ -1,5 +1,5 @@
 ---
-title: "META Earnings Preview 2026-07-23"
+title: META Earnings Preview 2026-07-23
 weight: 20260723
 ---
 

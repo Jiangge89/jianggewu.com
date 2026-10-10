@@ -1,5 +1,5 @@
 ---
-title: "AMD Earnings Preview 2026-07-26"
+title: AMD Earnings Preview 2026-07-26
 weight: 20260726
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "AAOI Earnings Preview 2026-08-06"
+title: AAOI Earnings Preview 2026-08-06
 weight: 20260806
 ---
 

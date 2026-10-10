@@ -1,5 +1,5 @@
 ---
-title: "VEEV Earnings Preview 2026-08-22"
+title: VEEV Earnings Preview 2026-08-22
 weight: 20260822
 ---
 

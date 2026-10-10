@@ -1,5 +1,5 @@
 ---
-title: "TSLA Earnings Preview 2026-07-10"
+title: TSLA Earnings Preview 2026-07-10
 weight: 20260710
 ---
 

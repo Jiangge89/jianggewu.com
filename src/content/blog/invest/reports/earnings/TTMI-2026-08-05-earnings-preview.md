@@ -1,5 +1,5 @@
 ---
-title: "TTMI Earnings Preview 2026-08-05"
+title: TTMI Earnings Preview 2026-08-05
 weight: 20260805
 ---
 

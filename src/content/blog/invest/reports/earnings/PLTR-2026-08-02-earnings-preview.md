@@ -1,5 +1,5 @@
 ---
-title: "PLTR Earnings Preview 2026-08-02"
+title: PLTR Earnings Preview 2026-08-02
 weight: 20260802
 ---
 
