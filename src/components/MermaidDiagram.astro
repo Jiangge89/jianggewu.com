@@ -66,6 +66,7 @@ const { chart, title } = Astro.props;
 
     mermaid.initialize({
       startOnLoad: false,
+      look: 'handDrawn',
       theme: 'base',
       themeVariables: isDark ? darkTheme : lightTheme,
       flowchart: {

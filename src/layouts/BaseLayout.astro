@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import SEO from '../components/SEO.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import StarfieldBackground from '../components/StarfieldBackground.astro';
 import '../styles/global.css';
 
 type Props = import('../components/SEO.astro').Props;
@@ -24,8 +25,9 @@ const { lang = 'en' } = Astro.props;
     </script>
   </head>
   <body id="top" class="flex min-h-screen flex-col">
+    <StarfieldBackground />
     <Header />
-    <main class="flex-1">
+    <main class="relative z-[1] flex-1" transition:animate="fade">
       <slot />
     </main>
     <Footer />
@@ -52,6 +54,23 @@ const { lang = 'en' } = Astro.props;
       }
       initThemeToggle();
       document.addEventListener('astro:after-swap', initThemeToggle);
+    </script>
+    <script>
+      function initReveal() {
+        const els = document.querySelectorAll('.reveal:not(.revealed)');
+        if (!els.length) return;
+        const observer = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              (e.target as HTMLElement).classList.add('revealed');
+              observer.unobserve(e.target);
+            }
+          }
+        }, { threshold: 0.15 });
+        els.forEach((el) => observer.observe(el));
+      }
+      initReveal();
+      document.addEventListener('astro:after-swap', initReveal);
     </script>
   </body>
 </html>

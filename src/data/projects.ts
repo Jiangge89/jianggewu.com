@@ -21,6 +21,11 @@ export interface TextGroup {
 
 export type TextBlock = string | (string | TextGroup)[];
 
+export interface ProjectMetric {
+  value: string;
+  label: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -42,6 +47,7 @@ export interface Project {
   featured: boolean;
   highlighted?: boolean;
   outcome?: string;
+  metrics?: ProjectMetric[];
   icon?: string;
   links?: ProjectLink[];
   diagrams?: ProjectDiagram[];
@@ -88,6 +94,11 @@ export const projects: Project[] = [
     learned:
       'Deepened understanding of cache design trade-offs at scale — defending against the classic cache failure modes (avalanche, breakdown, penetration), knowing when to serve stale data, and how to build degradation strategies that keep services available during partial outages.',
     featured: true,
+    metrics: [
+      { value: '~160k', label: 'Reads/s per region' },
+      { value: 'Dozens', label: 'Virtual regions' },
+      { value: '<1k/s', label: 'Write traffic' },
+    ],
     diagrams: [
       {
         title: 'Metadata Control Plane Architecture',
@@ -172,6 +183,11 @@ export const projects: Project[] = [
     learned:
       'Gained deep experience in online migration patterns — dual-write, staged rollout, consistency verification, and the importance of rollback-safe design in mission-critical systems.',
     featured: true,
+    metrics: [
+      { value: 'Zero', label: 'Downtime' },
+      { value: '6', label: 'Migration stages' },
+      { value: 'Dozens', label: 'Regions migrated' },
+    ],
     diagrams: [
       {
         title: 'Migration Rollout Stages',
@@ -231,6 +247,10 @@ export const projects: Project[] = [
     learned:
       'Learned the value of backward-compatible security rollouts — applying encryption incrementally with always-on decryption avoids the fragility of big-bang security migrations.',
     featured: false,
+    metrics: [
+      { value: 'Zero', label: 'Downtime' },
+      { value: 'Dozens', label: 'Regions deployed' },
+    ],
     diagrams: [
       {
         title: 'Credential Encryption Flow',
@@ -314,6 +334,11 @@ export const projects: Project[] = [
       'Failure handling: skip individual execution failures for daily re-evaluation rather than retry; alert for manual intervention if tidal quota restoration fails.',
     ],
     techStack: ['Go', 'Distributed Rate Limiter', 'Kafka', 'Lark API', 'Object Storage'],
+    metrics: [
+      { value: '~60k', label: 'Buckets managed' },
+      { value: '3', label: 'Main regions' },
+      { value: '≤5%', label: 'Daily scale-down cap' },
+    ],
     result: [
       'Scale: onboarded ~60k buckets across CN (~40k), SG (~10k), and US (~10k).',
       'Capacity: reduced unnecessary allocation and progressively mitigated storage-cluster oversubscription risk.',
@@ -459,6 +484,10 @@ export const projects: Project[] = [
     learned:
       'Reinforced the pattern of staged security rollouts — compatibility mode before enforcement is essential for zero-downtime security changes in production systems.',
     featured: false,
+    metrics: [
+      { value: 'Zero', label: 'Downtime' },
+      { value: 'Dozens', label: 'Regions deployed' },
+    ],
     diagrams: [
       {
         title: 'Staged Authentication Rollout',
@@ -513,6 +542,9 @@ export const projects: Project[] = [
     learned:
       'Learned the effectiveness of multi-layer caching for high-traffic scenarios — local memory cache absorbs burst traffic that would otherwise overwhelm even distributed caches.',
     featured: false,
+    metrics: [
+      { value: '2', label: 'Cache layers' },
+    ],
     diagrams: [
       {
         title: 'Promotion Gateway Architecture',

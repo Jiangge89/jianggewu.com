@@ -1,0 +1,243 @@
+---
+const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s', 'gRPC', 'Linux'];
+---
+
+<div id="cosmos" aria-hidden="true">
+  <canvas id="starfield-cv"></canvas>
+  {techs.map((tech, i) => (
+    <span class="cnode" data-i={String(i)}>{tech}</span>
+  ))}
+</div>
+
+<style>
+  #cosmos {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  #starfield-cv {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cnode {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    will-change: transform, opacity;
+    pointer-events: none;
+    user-select: none;
+    color: var(--color-surface-400);
+  }
+
+  .cnode.visible {
+    opacity: 0.1;
+  }
+
+  .cnode.attracted {
+    opacity: 0.55;
+    color: var(--color-primary-500);
+  }
+
+  :where(.dark) .cnode.visible {
+    opacity: 0.2;
+    color: var(--color-primary-400);
+  }
+
+  :where(.dark) .cnode.attracted {
+    opacity: 0.75;
+    color: var(--color-primary-300);
+    text-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
+  }
+</style>
+
+<script>
+  function initCosmos() {
+    const container = document.getElementById('cosmos');
+    const canvas = document.getElementById('starfield-cv') as HTMLCanvasElement;
+    if (!container || !canvas) return;
+
+    const ctx = canvas.getContext('2d')!;
+    const nodeEls = Array.from(container.querySelectorAll('.cnode')) as HTMLElement[];
+
+    function mulberry32(a: number) {
+      return () => {
+        a |= 0; a = a + 0x6D2B79F5 | 0;
+        let t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    const homes: [number, number][] = [
+      [0.04, 0.13], [0.93, 0.09], [0.06, 0.43], [0.95, 0.36],
+      [0.03, 0.71], [0.91, 0.66], [0.05, 0.89], [0.94, 0.86],
+      [0.32, 0.04], [0.70, 0.96],
+    ];
+
+    const state = nodeEls.map((el, i) => ({
+      el,
+      hx: homes[i]?.[0] ?? 0.5,
+      hy: homes[i]?.[1] ?? 0.5,
+      x: 0,
+      y: 0,
+      attached: false,
+    }));
+
+    let mouseX = -9999;
+    let mouseY = -9999;
+    let vw = 0;
+    let vh = 0;
+    let rafId = 0;
+    let stars: { x: number; y: number; r: number; a: number; twinkle: boolean }[] = [];
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function generateStars() {
+      const rand = mulberry32(7);
+      const count = Math.min(Math.floor((vw * vh) / 6000), 350);
+      stars = [];
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: rand() * vw,
+          y: rand() * vh,
+          r: rand() * 1.3 + 0.2,
+          a: rand() * 0.5 + 0.15,
+          twinkle: rand() > 0.65,
+        });
+      }
+    }
+
+    function drawStars(time: number) {
+      const isDark = document.documentElement.classList.contains('dark');
+      ctx.clearRect(0, 0, vw, vh);
+
+      for (const s of stars) {
+        let alpha = s.a;
+        if (s.twinkle && !prefersReduced) {
+          alpha *= 0.4 + 0.6 * Math.sin(time * 0.0008 + s.x * 0.05 + s.y * 0.03);
+        }
+        alpha *= isDark ? 1 : 0.12;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * (isDark ? 1 : 0.6), 0, Math.PI * 2);
+        ctx.fillStyle = isDark
+          ? `rgba(175, 200, 255, ${alpha})`
+          : `rgba(110, 130, 170, ${alpha})`;
+        ctx.fill();
+      }
+    }
+
+    function resize() {
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      const dpr = Math.min(devicePixelRatio, 2);
+      canvas.width = vw * dpr;
+      canvas.height = vh * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      generateStars();
+
+      for (const s of state) {
+        s.x = s.hx * vw;
+        s.y = s.hy * vh;
+        s.el.style.transform = `translate(${s.x}px, ${s.y}px)`;
+        s.el.classList.add('visible');
+      }
+    }
+
+    const ATTRACT_R = 160;
+    const RELEASE_R = 210;
+
+    function tick(time: number) {
+      rafId = requestAnimationFrame(tick);
+      drawStars(time);
+
+      if (prefersReduced) return;
+
+      for (const s of state) {
+        const idx = parseInt(s.el.dataset.i!);
+        const hx = s.hx * vw;
+        const hy = s.hy * vh;
+
+        // Gentle float at home
+        const floatY = Math.sin(time * 0.0006 + idx * 1.8) * 6;
+        const floatX = Math.cos(time * 0.0004 + idx * 2.3) * 3;
+
+        const dxH = mouseX - hx;
+        const dyH = mouseY - hy;
+        const distH = Math.sqrt(dxH * dxH + dyH * dyH);
+
+        if (!s.attached && distH < ATTRACT_R) s.attached = true;
+        else if (s.attached && distH > RELEASE_R) s.attached = false;
+
+        let tx: number, ty: number, lerp: number;
+
+        if (s.attached) {
+          // Orbit around cursor
+          const angle = (idx / nodeEls.length) * Math.PI * 2 + time * 0.0004;
+          const orbitR = 22 + (idx % 3) * 10;
+          tx = mouseX + Math.cos(angle) * orbitR;
+          ty = mouseY + Math.sin(angle) * orbitR;
+          lerp = 0.09;
+        } else {
+          tx = hx + floatX;
+          ty = hy + floatY;
+          lerp = 0.04;
+        }
+
+        const dx = tx - s.x;
+        const dy = ty - s.y;
+
+        if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
+          s.x += dx * lerp;
+          s.y += dy * lerp;
+          s.el.style.transform = `translate(${s.x}px, ${s.y}px)`;
+        }
+
+        s.el.classList.toggle('attracted', s.attached);
+      }
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      mouseX = -9999;
+      mouseY = -9999;
+    });
+
+    // Touch support
+    document.addEventListener('touchmove', (e) => {
+      mouseX = e.touches[0].clientX;
+      mouseY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      mouseX = -9999;
+      mouseY = -9999;
+    });
+
+    window.addEventListener('resize', resize);
+
+    resize();
+    rafId = requestAnimationFrame(tick);
+
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(rafId);
+    }, { once: true });
+  }
+
+  initCosmos();
+  document.addEventListener('astro:after-swap', initCosmos);
+</script>

@@ -42,7 +42,7 @@ const independentProjects = projects.filter((p) => !workCompanies.includes(p.com
                 </span>
               )}
             </div>
-            <h4 class="mt-2 font-semibold text-surface-900 dark:text-surface-100">
+            <h4 class="mt-2 font-semibold text-surface-900 dark:text-surface-100" transition:name={`project-title-${project.slug}`}>
               {project.title}
             </h4>
             <p class="mt-1.5 line-clamp-2 text-sm text-surface-600 dark:text-surface-400">
@@ -93,7 +93,7 @@ const independentProjects = projects.filter((p) => !workCompanies.includes(p.com
                   class="h-8 w-8 shrink-0 rounded-lg"
                 />
               )}
-              <h4 class="font-semibold text-surface-900 dark:text-surface-100">
+              <h4 class="font-semibold text-surface-900 dark:text-surface-100" transition:name={`project-title-${project.slug}`}>
                 {project.title}
               </h4>
             </div>
