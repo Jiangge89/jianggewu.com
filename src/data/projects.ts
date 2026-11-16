@@ -57,17 +57,17 @@ export interface Project {
 export const projects: Project[] = [
   // --- TikTok ---
   {
-    slug: 'tos-metadata-control-plane',
+    slug: 'object-storage-metadata-control-plane',
     highlighted: true,
     summary: {
       problem: "Keep object-storage metadata available under heavy read traffic and backend failures.",
-      role: "Owned TMeta, including cache design, credential security, and the RDS-to-KV migration.",
+      role: "Owned the metadata control plane, including cache design, credential security, and the RDS-to-KV migration.",
       result: "Supported ~160k reads/s per region across dozens of virtual regions.",
     },
-    title: 'TOS Metadata Control Plane',
+    title: 'Object Storage Metadata Control Plane',
     company: 'TikTok',
     description:
-      'Owned and evolved TMeta, the metadata control plane for TikTok Object Storage (TOS), supporting globally distributed storage infrastructure with cache-first serving and graceful degradation.',
+      'Owned and evolved the metadata control plane for TikTok\'s object storage platform, supporting globally distributed storage infrastructure with cache-first serving and graceful degradation.',
     problem:
       'Object storage metadata was a critical dependency for every read/write request. The workload was extremely read-heavy (peaking at ~160k reads/s per region) and write-light (<1k writes/s). The system needed to serve metadata at scale across dozens of virtual regions (US, Southeast Asia, China, Europe) while tolerating backend failures gracefully.',
     role:
@@ -107,7 +107,7 @@ export const projects: Project[] = [
     subgraph Meta[Metadata Control Plane]
         Cache[Local Memory Cache]
         Logic[Metadata APIs / Business Logic]
-        Auth[ZTI Authentication]
+        Auth[Service Identity Auth]
         Encrypt[Credential Encryption]
         Validate[Validation]
         Cache --> Logic
@@ -279,13 +279,13 @@ export const projects: Project[] = [
     title: 'Quota Automation & Traffic Governance',
     company: 'TikTok',
     description:
-      'Built TOS capacity governance from scratch to reduce throughput oversubscription: conservative prediction validation, gradual quota reclamation, asymmetric scaling policies, progressive customer onboarding, and peak-hour tidal throttling.',
+      'Built object-storage capacity governance from scratch to reduce throughput oversubscription: conservative prediction validation, gradual quota reclamation, asymmetric scaling policies, progressive customer onboarding, and peak-hour tidal throttling.',
     problem: [
       {
         title: 'Capacity & Operations',
         items: [
           'Excess allocation: evolving workloads left many buckets with more quota than needed; total allocated quota exceeded safe physical cluster capacity.',
-          'Manual overhead: frequent user quota requests created a growing operational burden for the TOS team.',
+          'Manual overhead: frequent user quota requests created a growing operational burden for the storage team.',
         ],
       },
       {
@@ -448,29 +448,29 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'bytekv-zti-authentication',
+    slug: 'kv-service-identity-authentication',
     summary: {
-      problem: "Replace unauthenticated ByteKV access with secure service identity.",
-      role: "Evaluated authentication options and executed a staged ZTI rollout with rollback support.",
+      problem: "Replace unauthenticated KV store access with secure service identity.",
+      role: "Evaluated authentication options and executed a staged service-identity rollout with rollback support.",
       result: "Rolled out standardized database authentication to clusters across dozens of regions with zero downtime.",
     },
-    title: 'ByteKV ZTI Authentication',
+    title: 'KV Store Service Identity Authentication',
     company: 'TikTok',
     description:
-      'Integrated ZTI-based authentication for ByteKV database access, replacing unauthenticated access with a standardized, identity-based security model via staged online rollout.',
+      'Integrated zero-trust service-identity authentication for KV store access, replacing unauthenticated access with a standardized, identity-based security model via staged online rollout.',
     problem:
-      'ByteKV access originally had no authentication. The metadata service needed standardized and secure database access to meet security requirements.',
+      'Access to the internal KV store originally had no authentication. The metadata service needed standardized and secure database access to meet security requirements.',
     role:
-      'Evaluated authentication solutions (DPS vs ZTI), selected ZTI for infrastructure standardization, and executed the staged rollout with rollback support.',
+      'Evaluated two authentication solutions (a legacy agent-based credential proxy vs the standard zero-trust service identity framework), selected the service identity framework for infrastructure standardization, and executed the staged rollout with rollback support.',
     approach:
-      'Deployed ZTI capability first with authentication disabled, registered service identity, enabled compatibility mode (auth optional), then gradually enforced authentication with rollback support at each phase.',
+      'Deployed the service identity capability first with authentication disabled, registered service identity, enabled compatibility mode (auth optional), then gradually enforced authentication with rollback support at each phase.',
     keyDesign: [
       'Staged rollout: deploy capability → register identity → compatibility mode → gradual enforcement',
       'Compatibility mode allowed both authenticated and unauthenticated access during transition',
       'Rollback support at every phase before full enforcement',
     ],
     keyDecisions: [
-      'Selected ZTI over DPS: DPS was non-standard (required manually installing and maintaining its agent on every new machine), no longer actively maintained (no dedicated team for support if issues arose), and had sparse, outdated documentation with no clear integration steps or observability guidance — ZTI meant lower operational complexity as a standard infrastructure component',
+      'Selected the standard service identity framework over the legacy credential proxy: the proxy was non-standard (required manually installing and maintaining its agent on every new machine), no longer actively maintained (no dedicated team for support if issues arose), and had sparse, outdated documentation with no clear integration steps or observability guidance — the standard framework meant lower operational complexity as a shared infrastructure component',
       'Used compatibility mode before enforcement to prevent access disruption',
       'Maintained rollback capability during gradual rollout',
     ],
@@ -479,9 +479,9 @@ export const projects: Project[] = [
       'Maintaining backward compatibility during rollout',
       'Preventing access disruption to the metadata service',
     ],
-    techStack: ['Go', 'ZTI', 'ByteKV', 'Service Identity'],
+    techStack: ['Go', 'Zero Trust', 'KV Store', 'Service Identity'],
     result:
-      'Standardized ByteKV authentication, improved access security posture, and completed the rollout on clusters across dozens of regions with zero downtime.',
+      'Standardized KV store authentication, improved access security posture, and completed the rollout on clusters across dozens of regions with zero downtime.',
     learned:
       'Reinforced the pattern of staged security rollouts — compatibility mode before enforcement is essential for zero-downtime security changes in production systems.',
     featured: false,
@@ -494,7 +494,7 @@ export const projects: Project[] = [
         title: 'Staged Authentication Rollout',
         mermaid: `flowchart LR
     S0[Stage 0\\nNo Auth]
-    S1[Stage 1\\nDeploy ZTI\\nAuth Disabled]
+    S1[Stage 1\\nDeploy Identity\\nAuth Disabled]
     S2[Stage 2\\nRegister\\nService Identity]
     S3[Stage 3\\nCompatibility Mode\\nAuth Optional]
     S4[Stage 4\\nGradual Rollout]

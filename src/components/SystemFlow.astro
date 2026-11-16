@@ -1,5 +1,5 @@
 ---
-// Animated sketch of the TMeta metadata read path (see /projects/tos-metadata-control-plane/).
+// Animated sketch of the object-storage metadata read path (see /projects/object-storage-metadata-control-plane/).
 // The SVG is drawn client-side so it can switch between a wide and a tall layout.
 const scenarios = [
   {
@@ -443,8 +443,8 @@ const scenarios = [
 
     const frame = rect(L.frame);
     const frameLabel = L.vertical
-      ? text([frame.x + 12, frame.y + 20], 'sf-frame-label', 'TMeta · metadata', 'start')
-      : text([frame.x + 14, frame.y + 20], 'sf-frame-label', 'TMeta · metadata service', 'start');
+      ? text([frame.x + 12, frame.y + 20], 'sf-frame-label', 'Metadata service', 'start')
+      : text([frame.x + 14, frame.y + 20], 'sf-frame-label', 'Metadata control plane', 'start');
 
     const tagPos: Pt = L.vertical ? P(L.cache[0] - 10, c + 118) : P(mid(L.cache), c - L.cache[2] - 12);
     const tagAnchor = L.vertical ? 'end' : 'middle';

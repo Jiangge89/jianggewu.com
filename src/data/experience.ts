@@ -22,7 +22,7 @@ export const experiences: Experience[] = [
     startDate: 'Mar 2022',
     endDate: 'May 2026',
     summary:
-      'Owned and evolved TMeta, the metadata control plane for TikTok Object Storage (TOS), supporting globally distributed storage infrastructure.',
+      'Owned and evolved the metadata control plane for TikTok\'s object storage platform, supporting globally distributed storage infrastructure.',
     responsibilities: [
       'Delivered object storage API features, including storage-class-aware operations and multi-cloud support.',
       'Maintained production storage clusters, improved failover mechanisms, and unified SDKs across services.',
@@ -37,10 +37,10 @@ export const experiences: Experience[] = [
         projects: [{ slug: 'quota-automation-traffic-governance', label: 'Quota Automation & Traffic Governance' }],
       },
       {
-        text: 'Improved metadata security through credential encryption and standardized ByteKV authentication, completing both rollouts on clusters across dozens of regions with zero downtime.',
+        text: 'Improved metadata security through credential encryption and standardized KV store authentication, completing both rollouts on clusters across dozens of regions with zero downtime.',
         projects: [
           { slug: 'credentials-encryption', label: 'Credentials Encryption' },
-          { slug: 'bytekv-zti-authentication', label: 'ByteKV ZTI Authentication' },
+          { slug: 'kv-service-identity-authentication', label: 'KV Store Service Identity Authentication' },
         ],
       },
     ],
