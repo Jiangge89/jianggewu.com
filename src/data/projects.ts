@@ -183,6 +183,7 @@ export const projects: Project[] = [
     learned:
       'Gained deep experience in online migration patterns — dual-write, staged rollout, consistency verification, and the importance of rollback-safe design in mission-critical systems.',
     featured: true,
+    links: [{ label: 'Read the deep dive (中文)', url: '/blog/tech/notes/rds-to-kv-online-migration/' }],
     metrics: [
       { value: 'Zero', label: 'Downtime' },
       { value: '6', label: 'Migration stages' },
