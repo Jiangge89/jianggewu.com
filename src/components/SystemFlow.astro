@@ -1,0 +1,823 @@
+---
+// Animated sketch of the TMeta metadata read path (see /projects/tos-metadata-control-plane/).
+// The SVG is drawn client-side so it can switch between a wide and a tall layout.
+const scenarios = [
+  {
+    id: 'hit',
+    label: 'Cache hit',
+    title: 'Cache-first serving',
+    body: 'Most reads return straight from local memory. Entries past half their TTL are refreshed in the background, so callers never wait on the store.',
+  },
+  {
+    id: 'miss',
+    label: 'Hot-key miss',
+    title: 'Singleflight on expiry',
+    body: 'When a hot key expires, concurrent misses are coalesced: one request reads from KV while the others wait for its result.',
+  },
+  {
+    id: 'outage',
+    label: 'KV outage',
+    title: 'Graceful degradation',
+    body: 'If the store fails, cached entries are extended and served stale. Reads stay available; only writes fail.',
+  },
+];
+---
+
+<div
+  class="sysflow rounded-2xl border border-surface-200 bg-white/85 p-4 shadow-sm backdrop-blur-sm dark:border-surface-800 dark:bg-surface-900/70 sm:p-6"
+  data-sysflow
+>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="sf-tabs" role="group" aria-label="Scenario">
+      {scenarios.map((s, i) => (
+        <button type="button" class="sf-tab" data-scenario={s.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {s.label}
+          <span class="sf-progress" aria-hidden="true"></span>
+        </button>
+      ))}
+    </div>
+    <dl class="sf-stats" aria-hidden="true">
+      <div><dt>requests</dt><dd data-stat="req">0</dd></div>
+      <div><dt>KV calls</dt><dd data-stat="kv">0</dd></div>
+      <div><dt>stale</dt><dd data-stat="stale">0</dd></div>
+    </dl>
+  </div>
+
+  <div
+    class="sf-canvas"
+    data-canvas
+    role="img"
+    aria-label="Diagram: clients send metadata reads through a storage gateway to a local cache in the metadata service, which coalesces misses with singleflight and falls back to a KV store."
+  >
+  </div>
+
+  <div class="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div class="min-h-[4.5rem] max-w-xl">
+      {scenarios.map((s, i) => (
+        <div data-caption={s.id} hidden={i !== 0}>
+          <p class="font-semibold text-surface-900 dark:text-surface-100">{s.title}</p>
+          <p class="mt-1 text-sm leading-relaxed text-surface-600 dark:text-surface-400">{s.body}</p>
+        </div>
+      ))}
+    </div>
+    <ul class="sf-legend" aria-hidden="true">
+      <li><i class="dot req"></i>request</li>
+      <li><i class="dot hit"></i>response</li>
+      <li><i class="dot stale"></i>stale</li>
+      <li><i class="dot bg"></i>refresh</li>
+    </ul>
+  </div>
+</div>
+
+<style is:global>
+  .sysflow {
+    --sf-line: #d4d4d8;
+    --sf-box: #ffffff;
+    --sf-box-stroke: #d4d4d8;
+    --sf-frame: #93c5fd;
+    --sf-frame-fill: rgb(239 246 255 / 0.55);
+    --sf-text: #27272a;
+    --sf-muted: #71717a;
+    --sf-req: #3b82f6;
+    --sf-hit: #10b981;
+    --sf-stale: #f59e0b;
+    --sf-fail: #ef4444;
+    --sf-bg: #60a5fa;
+  }
+
+  :where(.dark) .sysflow {
+    --sf-line: #3f3f46;
+    --sf-box: #18181b;
+    --sf-box-stroke: #3f3f46;
+    --sf-frame: #1e40af;
+    --sf-frame-fill: rgb(30 58 138 / 0.12);
+    --sf-text: #f4f4f5;
+    --sf-muted: #a1a1aa;
+    --sf-req: #60a5fa;
+    --sf-hit: #34d399;
+    --sf-stale: #fbbf24;
+    --sf-fail: #f87171;
+    --sf-bg: #93c5fd;
+  }
+
+  .sf-tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    background: var(--color-surface-100);
+  }
+
+  :where(.dark) .sf-tabs {
+    background: var(--color-surface-800);
+  }
+
+  .sf-tab {
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-surface-600);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .sf-tab:hover {
+    color: var(--color-surface-900);
+  }
+
+  .sf-tab[aria-pressed='true'] {
+    background: #fff;
+    color: var(--color-primary-700);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  }
+
+  :where(.dark) .sf-tab {
+    color: var(--color-surface-400);
+  }
+
+  :where(.dark) .sf-tab:hover {
+    color: var(--color-surface-100);
+  }
+
+  :where(.dark) .sf-tab[aria-pressed='true'] {
+    background: var(--color-surface-950);
+    color: var(--color-primary-300);
+  }
+
+  .sf-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background: var(--sf-req);
+    opacity: 0;
+  }
+
+  .sf-tab[aria-pressed='true'] .sf-progress {
+    opacity: 0.6;
+  }
+
+  .sysflow.is-manual .sf-progress {
+    display: none;
+  }
+
+  .sf-stats {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.75rem;
+    color: var(--sf-muted);
+  }
+
+  .sf-stats div {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .sf-stats dd {
+    min-width: 2ch;
+    text-align: right;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--sf-text);
+  }
+
+  .sf-canvas {
+    width: 100%;
+    margin-top: 0.75rem;
+    aspect-ratio: 760 / 280;
+  }
+
+  @media (max-width: 600px) {
+    .sf-canvas {
+      aspect-ratio: 360 / 524;
+    }
+  }
+
+  .sf-canvas svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .sf-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    font-size: 0.75rem;
+    color: var(--sf-muted);
+  }
+
+  .sf-legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .sf-legend .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+  }
+
+  .sf-legend .req { background: var(--sf-req); }
+  .sf-legend .hit { background: var(--sf-hit); }
+  .sf-legend .stale { background: var(--sf-stale); }
+  .sf-legend .bg { border: 1.5px solid var(--sf-bg); }
+
+  /* SVG parts */
+  .sf-edge {
+    stroke: var(--sf-line);
+    stroke-width: 1.25;
+    stroke-dasharray: 4 5;
+    fill: none;
+  }
+
+  .sf-frame {
+    fill: var(--sf-frame-fill);
+    stroke: var(--sf-frame);
+    stroke-width: 1.25;
+    stroke-dasharray: 6 5;
+  }
+
+  .sf-box,
+  .sf-pill,
+  .sf-kv,
+  .sf-client {
+    fill: var(--sf-box);
+    stroke: var(--sf-box-stroke);
+    stroke-width: 1.5;
+    transition: stroke 0.25s, fill 0.25s;
+  }
+
+  .sf-label {
+    fill: var(--sf-text);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .sf-sub,
+  .sf-frame-label {
+    fill: var(--sf-muted);
+    font-size: 11px;
+  }
+
+  .sf-frame-label {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    fill: var(--sf-req);
+    opacity: 0.85;
+  }
+
+  .sf-tag {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .sf-tag.show { opacity: 1; }
+  .sf-tag.stale { fill: var(--sf-stale); }
+  .sf-tag.miss { fill: var(--sf-stale); }
+
+  .sf-status {
+    fill: var(--sf-fail);
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0;
+  }
+
+  .sf-node-cache.is-hit { stroke: var(--sf-hit); }
+  .sf-node-cache.is-miss,
+  .sf-node-cache.is-stale { stroke: var(--sf-stale); }
+  .sf-node-sf.is-busy { stroke: var(--sf-req); }
+  .sf-node-kv.is-hit { stroke: var(--sf-hit); }
+  .sf-node-kv.is-down { stroke: var(--sf-fail); stroke-dasharray: 5 4; }
+  .sf-node-kv.is-err { fill: rgb(239 68 68 / 0.15); }
+  .sf-down .sf-status { opacity: 1; }
+  .sf-down .sf-kv-label { fill: var(--sf-muted); }
+
+  .pk {
+    stroke-width: 1.5;
+    animation: sf-pk-in 0.15s ease-out;
+  }
+
+  .pk-req { fill: var(--sf-req); }
+  .pk-hit { fill: var(--sf-hit); }
+  .pk-stale { fill: var(--sf-stale); }
+  .pk-bg { fill: var(--sf-box); stroke: var(--sf-bg); }
+  .pk-wait { animation: sf-pk-wait 0.9s ease-in-out infinite; }
+
+  .pk-fail {
+    fill: none;
+    stroke: var(--sf-fail);
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sf-pk-fail 0.6s ease-out forwards;
+  }
+
+  @keyframes sf-pk-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes sf-pk-wait {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  @keyframes sf-pk-fail {
+    from { transform: scale(0.6); opacity: 1; }
+    to { transform: scale(2.6); opacity: 0; }
+  }
+</style>
+
+<script>
+  type Pt = [number, number];
+  type Span = [number, number, number]; // start and end along the flow axis, half-width across it
+
+  interface Layout {
+    w: number;
+    h: number;
+    c: number;
+    vertical: boolean;
+    clientA: number;
+    clientR: number;
+    clients: number[];
+    gw: Span;
+    frame: Span;
+    cache: Span;
+    sf: Span;
+    kv: Span;
+  }
+
+  const WIDE: Layout = {
+    w: 760, h: 280, c: 150, vertical: false,
+    clientA: 46, clientR: 11, clients: [86, 150, 214],
+    gw: [140, 250, 32], frame: [310, 580, 96], cache: [338, 458, 32], sf: [490, 556, 18], kv: [640, 724, 38],
+  };
+
+  const TALL: Layout = {
+    w: 360, h: 524, c: 180, vertical: true,
+    clientA: 40, clientR: 11, clients: [112, 180, 248],
+    gw: [92, 144, 62], frame: [180, 382, 128], cache: [214, 270, 78], sf: [306, 342, 52], kv: [424, 496, 54],
+  };
+
+  const LANE = 5;
+  const SPEED = 0.2; // viewBox units per ms
+  const SCENARIO_MS = 10000;
+  const SCENARIOS = ['hit', 'miss', 'outage'] as const;
+  type Scenario = (typeof SCENARIOS)[number];
+  const CLIENT_ORDER = [1, 0, 2, 1, 2, 0];
+
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function geometry(L: Layout) {
+    const { c } = L;
+    const P = (a: number, cross: number): Pt => (L.vertical ? [cross, a] : [a, cross]);
+    const mid = (s: Span) => (s[0] + s[1]) / 2;
+    const rect = (s: Span) =>
+      L.vertical
+        ? { x: c - s[2], y: s[0], w: s[2] * 2, h: s[1] - s[0] }
+        : { x: s[0], y: c - s[2], w: s[1] - s[0], h: s[2] * 2 };
+
+    const req = c - LANE;
+    const res = c + LANE;
+    const cacheIn = L.cache[0] + 8;
+    const cacheOut = L.cache[1] - 8;
+    const kvIn = L.kv[0] + 4;
+    const clientPt = (i: number, lane: number) => P(L.clientA + L.clientR + 2, L.clients[i] + lane);
+
+    const spot = (k: number): Pt =>
+      L.vertical ? P(mid(L.sf), c - 24 + k * 12) : P(L.sf[0] + 10 + k * 11.5, c);
+
+    return {
+      P, mid, rect,
+      toCache: (i: number): Pt[] => [clientPt(i, -LANE), P(L.gw[0], req), P(L.gw[1], req), P(cacheIn, req)],
+      fromCache: (i: number): Pt[] => [P(cacheIn, res), P(L.gw[1], res), P(L.gw[0], res), clientPt(i, LANE)],
+      cacheToKv: (): Pt[] => [P(cacheOut, req), P(L.cache[1], req), P(L.sf[0], req), P(L.sf[1], req), P(kvIn, req)],
+      kvToCache: (): Pt[] => [P(kvIn, res), P(L.sf[1], res), P(L.sf[0], res), P(L.cache[1], res), P(cacheOut, res)],
+      cacheToSpot: (k: number): Pt[] => [P(cacheIn, req), P(L.cache[1], req), P(L.sf[0], req), spot(k)],
+      spotToKv: (k: number): Pt[] => [spot(k), P(L.sf[1], req), P(kvIn, req)],
+      kvToSpot: (k: number): Pt[] => [P(kvIn, res), P(L.sf[1], res), spot(k)],
+      spotToClient: (k: number, i: number): Pt[] => [
+        spot(k), P(L.sf[0], res), P(L.cache[1], res), P(cacheIn, res), P(L.gw[1], res), P(L.gw[0], res), clientPt(i, LANE),
+      ],
+      kvPoint: (): Pt => P(kvIn, req),
+    };
+  }
+
+  function renderSvg(L: Layout): string {
+    const g = geometry(L);
+    const { P, mid, rect, } = g;
+    const { c } = L;
+    const line = (a: Pt, b: Pt) => `<line class="sf-edge" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;
+    const box = (s: Span, cls: string, rx: number) => {
+      const r = rect(s);
+      return `<rect class="${cls}" x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="${rx}"/>`;
+    };
+    const text = (p: Pt, cls: string, content: string, anchor = 'middle', extra = '') =>
+      `<text class="${cls}" x="${p[0]}" y="${p[1]}" text-anchor="${anchor}" ${extra}>${content}</text>`;
+
+    // Two-line labels sit above and below the request/response lanes in the wide layout.
+    const labels = (s: Span, title: string, sub: string) =>
+      L.vertical
+        ? text(P(mid(s) - 4, c), 'sf-label', title) + text(P(mid(s) + 12, c), 'sf-sub', sub)
+        : text(P(mid(s), c - 15), 'sf-label', title) + text(P(mid(s), c + 25), 'sf-sub', sub);
+
+    const kv = rect(L.kv);
+    const ry = 8;
+    const cylinder =
+      `<path class="sf-kv sf-node-kv" d="M${kv.x},${kv.y + ry} a${kv.w / 2},${ry} 0 0 1 ${kv.w},0 v${kv.h - ry * 2} a${kv.w / 2},${ry} 0 0 1 ${-kv.w},0 Z"/>` +
+      `<path class="sf-edge" style="stroke-dasharray:none" d="M${kv.x},${kv.y + ry} a${kv.w / 2},${ry} 0 0 0 ${kv.w},0"/>`;
+
+    const frame = rect(L.frame);
+    const frameLabel = L.vertical
+      ? text([frame.x + 12, frame.y + 20], 'sf-frame-label', 'TMeta · metadata', 'start')
+      : text([frame.x + 14, frame.y + 20], 'sf-frame-label', 'TMeta · metadata service', 'start');
+
+    const tagPos: Pt = L.vertical ? P(L.cache[0] - 10, c + 118) : P(mid(L.cache), c - L.cache[2] - 12);
+    const tagAnchor = L.vertical ? 'end' : 'middle';
+    const sfLabel = L.vertical
+      ? text([c + L.sf[2] + 10, mid(L.sf) + 4], 'sf-sub', 'singleflight', 'start')
+      : text(P(mid(L.sf), c + L.sf[2] + 16), 'sf-sub', 'singleflight');
+    const statusPos: Pt = L.vertical ? P(L.kv[1] + 18, c) : P(mid(L.kv), c + L.kv[2] + 20);
+    const clientsLabel = L.vertical
+      ? text([L.clients[0] - 20, L.clientA + 4], 'sf-sub', 'Clients', 'end')
+      : text([L.clientA, L.clients[0] - 20], 'sf-sub', 'Clients');
+
+    return `<svg xmlns="${SVG_NS}" viewBox="0 0 ${L.w} ${L.h}" aria-hidden="true" focusable="false">
+      <rect class="sf-frame" x="${frame.x}" y="${frame.y}" width="${frame.w}" height="${frame.h}" rx="16"/>
+      ${frameLabel}
+      ${L.clients.map((cr) => line(P(L.clientA + L.clientR, cr), P(L.gw[0], c))).join('')}
+      ${line(P(L.gw[1], c), P(L.cache[0], c))}
+      ${line(P(L.cache[1], c), P(L.sf[0], c))}
+      ${line(P(L.sf[1], c), P(L.kv[0], c))}
+      ${L.clients.map((cr) => { const p = P(L.clientA, cr); return `<circle class="sf-client" cx="${p[0]}" cy="${p[1]}" r="${L.clientR}"/>`; }).join('')}
+      ${clientsLabel}
+      ${box(L.gw, 'sf-box', 10)}
+      ${labels(L.gw, 'Gateway', 'auth · routing')}
+      ${box(L.cache, 'sf-box sf-node-cache', 10)}
+      ${labels(L.cache, 'Local cache', 'TTL + jitter')}
+      ${box(L.sf, 'sf-pill sf-node-sf', Math.min(L.sf[2], (L.sf[1] - L.sf[0]) / 2))}
+      ${sfLabel}
+      <g class="sf-kv-group">
+        ${cylinder}
+        ${text(P(mid(L.kv), c + 4), 'sf-label sf-kv-label', 'KV store')}
+        ${text(statusPos, 'sf-status', 'unavailable')}
+      </g>
+      ${text(tagPos, 'sf-tag', '', tagAnchor, 'data-tag')}
+      <g data-packets></g>
+    </svg>`;
+  }
+
+  interface Packet {
+    el: SVGCircleElement;
+    pts: Pt[];
+    cum: number[];
+    total: number;
+    start: number;
+    keep: boolean;
+    resolve: (el: SVGCircleElement) => void;
+  }
+
+  class Engine {
+    clock = 0;
+    running = false;
+    gen = 0;
+    private raf = 0;
+    private last = 0;
+    private timers: { at: number; gen: number; fn: () => void }[] = [];
+    private packets = new Set<Packet>();
+    layer: SVGGElement | null = null;
+    onTick: (() => void) | null = null;
+
+    start() {
+      if (this.raf) return;
+      this.last = performance.now();
+      const loop = (now: number) => {
+        const dt = Math.min(now - this.last, 50);
+        this.last = now;
+        if (this.running) this.step(dt);
+        this.raf = requestAnimationFrame(loop);
+      };
+      this.raf = requestAnimationFrame(loop);
+    }
+
+    stop() {
+      cancelAnimationFrame(this.raf);
+      this.raf = 0;
+    }
+
+    reset(layer: SVGGElement) {
+      this.gen++;
+      this.timers = [];
+      this.packets.clear();
+      this.layer = layer;
+    }
+
+    sleep(ms: number): Promise<void> {
+      const gen = this.gen;
+      return new Promise((resolve) => this.timers.push({ at: this.clock + ms, gen, fn: resolve }));
+    }
+
+    after(ms: number, fn: () => void) {
+      this.timers.push({ at: this.clock + ms, gen: this.gen, fn });
+    }
+
+    move(pts: Pt[], kind: string, opts: { keep?: boolean; el?: SVGCircleElement } = {}): Promise<SVGCircleElement> {
+      const el = opts.el ?? (document.createElementNS(SVG_NS, 'circle') as SVGCircleElement);
+      el.setAttribute('r', '4.5');
+      el.setAttribute('class', `pk pk-${kind}`);
+      el.setAttribute('cx', String(pts[0][0]));
+      el.setAttribute('cy', String(pts[0][1]));
+      if (!el.parentNode) this.layer?.appendChild(el);
+      const cum = [0];
+      for (let i = 1; i < pts.length; i++) {
+        cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+      }
+      return new Promise((resolve) => {
+        this.packets.add({ el, pts, cum, total: cum[cum.length - 1], start: this.clock, keep: !!opts.keep, resolve });
+      });
+    }
+
+    burst(p: Pt) {
+      const el = document.createElementNS(SVG_NS, 'circle');
+      el.setAttribute('class', 'pk-fail');
+      el.setAttribute('cx', String(p[0]));
+      el.setAttribute('cy', String(p[1]));
+      el.setAttribute('r', '6');
+      this.layer?.appendChild(el);
+      this.after(650, () => el.remove());
+    }
+
+    private step(dt: number) {
+      this.clock += dt;
+      const due = this.timers.filter((t) => t.at <= this.clock);
+      if (due.length) {
+        this.timers = this.timers.filter((t) => t.at > this.clock);
+        for (const t of due) if (t.gen === this.gen) t.fn();
+      }
+      for (const p of this.packets) {
+        const d = (this.clock - p.start) * SPEED;
+        if (d >= p.total) {
+          const end = p.pts[p.pts.length - 1];
+          p.el.setAttribute('cx', String(end[0]));
+          p.el.setAttribute('cy', String(end[1]));
+          this.packets.delete(p);
+          if (!p.keep) p.el.remove();
+          p.resolve(p.el);
+          continue;
+        }
+        let i = 1;
+        while (p.cum[i] < d) i++;
+        const t = (d - p.cum[i - 1]) / (p.cum[i] - p.cum[i - 1] || 1);
+        const a = p.pts[i - 1];
+        const b = p.pts[i];
+        p.el.setAttribute('cx', (a[0] + (b[0] - a[0]) * t).toFixed(1));
+        p.el.setAttribute('cy', (a[1] + (b[1] - a[1]) * t).toFixed(1));
+      }
+      this.onTick?.();
+    }
+  }
+
+  function initSystemFlow(root: HTMLElement) {
+    const canvas = root.querySelector<HTMLElement>('[data-canvas]')!;
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-scenario]'));
+    const captions = Array.from(root.querySelectorAll<HTMLElement>('[data-caption]'));
+    const statEls = {
+      req: root.querySelector<HTMLElement>('[data-stat="req"]')!,
+      kv: root.querySelector<HTMLElement>('[data-stat="kv"]')!,
+      stale: root.querySelector<HTMLElement>('[data-stat="stale"]')!,
+    };
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const engine = new Engine();
+
+    let layout: Layout = WIDE;
+    let scenario: Scenario = 'hit';
+    let scenarioStart = 0;
+    let auto = !reduceMotion;
+    let visible = false;
+    const stats = { req: 0, kv: 0, stale: 0 };
+
+    const bump = (key: keyof typeof stats) => {
+      stats[key]++;
+      statEls[key].textContent = String(stats[key]);
+    };
+
+    const pickLayout = () => (canvas.clientWidth < 560 ? TALL : WIDE);
+
+    function updateRunning() {
+      engine.running = visible && !document.hidden && !reduceMotion;
+    }
+
+    function start(next: Scenario) {
+      scenario = next;
+      layout = pickLayout();
+      canvas.style.aspectRatio = `${layout.w} / ${layout.h}`;
+      canvas.innerHTML = renderSvg(layout);
+      const svg = canvas.querySelector('svg')!;
+      engine.reset(svg.querySelector<SVGGElement>('[data-packets]')!);
+      scenarioStart = engine.clock;
+      for (const key of Object.keys(stats) as (keyof typeof stats)[]) {
+        stats[key] = 0;
+        statEls[key].textContent = '0';
+      }
+      tabs.forEach((t) => {
+        t.setAttribute('aria-pressed', String(t.dataset.scenario === next));
+        t.querySelector<HTMLElement>('.sf-progress')!.style.width = '0';
+      });
+      captions.forEach((cap) => (cap.hidden = cap.dataset.caption !== next));
+
+      const g = geometry(layout);
+      const node = (sel: string) => svg.querySelector<SVGElement>(sel)!;
+      const cache = node('.sf-node-cache');
+      const sf = node('.sf-node-sf');
+      const kv = node('.sf-node-kv');
+      const tag = node('[data-tag]');
+
+      if (next === 'outage') {
+        kv.classList.add('is-down');
+        node('.sf-kv-group').classList.add('sf-down');
+      }
+      if (reduceMotion) return;
+
+      const gen = engine.gen;
+      const alive = () => engine.gen === gen;
+      const flash = (el: SVGElement, cls: string, ms = 300) => {
+        el.classList.add(cls);
+        engine.after(ms, () => el.classList.remove(cls));
+      };
+      const showTag = (label: string, cls: string, ms = 900) => {
+        tag.textContent = label;
+        tag.setAttribute('class', `sf-tag show ${cls}`);
+        engine.after(ms, () => tag.classList.remove('show'));
+      };
+
+      const hitRequest = async (i: number, refresh = false) => {
+        await engine.move(g.toCache(i), 'req');
+        bump('req');
+        flash(cache, 'is-hit');
+        if (refresh) backgroundRefresh();
+        await engine.move(g.fromCache(i), 'hit');
+      };
+
+      const backgroundRefresh = async () => {
+        await engine.move(g.cacheToKv(), 'bg');
+        bump('kv');
+        flash(kv, 'is-hit');
+        await engine.move(g.kvToCache(), 'bg');
+      };
+
+      const runHit = async () => {
+        for (let n = 0; alive(); n++) {
+          hitRequest(CLIENT_ORDER[n % CLIENT_ORDER.length], n % 5 === 3);
+          await engine.sleep(420);
+        }
+      };
+
+      const runMiss = async () => {
+        while (alive()) {
+          let leaderTaken = false;
+          let release!: () => void;
+          const loaded = new Promise<void>((r) => (release = r));
+          showTag('expired → miss', 'miss', 1200);
+
+          for (let k = 0; k < 5; k++) {
+            const i = CLIENT_ORDER[k];
+            (async () => {
+              await engine.move(g.toCache(i), 'req');
+              bump('req');
+              flash(cache, 'is-miss', 500);
+              const dot = await engine.move(g.cacheToSpot(k), 'req', { keep: true });
+              dot.classList.add('pk-wait');
+              sf.classList.add('is-busy');
+              if (!leaderTaken) {
+                leaderTaken = true;
+                await engine.move(g.spotToKv(k), 'req', { el: dot, keep: true });
+                bump('kv');
+                flash(kv, 'is-hit');
+                await engine.move(g.kvToSpot(k), 'hit', { el: dot, keep: true });
+                sf.classList.remove('is-busy');
+                release();
+              } else {
+                await loaded;
+                await engine.sleep(k * 70);
+              }
+              await engine.move(g.spotToClient(k, i), 'hit', { el: dot });
+            })();
+            await engine.sleep(90);
+          }
+
+          await loaded;
+          await engine.sleep(1500);
+          for (let n = 0; n < 4 && alive(); n++) {
+            hitRequest(CLIENT_ORDER[(n + 2) % CLIENT_ORDER.length]);
+            await engine.sleep(380);
+          }
+          await engine.sleep(1400);
+        }
+      };
+
+      const failedRefresh = async () => {
+        await engine.move(g.cacheToKv(), 'req');
+        bump('kv');
+        engine.burst(g.kvPoint());
+        flash(kv, 'is-err', 400);
+        showTag('TTL extended', 'stale', 1100);
+      };
+
+      const runOutage = async () => {
+        (async () => {
+          await engine.sleep(600);
+          while (alive()) {
+            failedRefresh();
+            await engine.sleep(2400);
+          }
+        })();
+        for (let n = 0; alive(); n++) {
+          const i = CLIENT_ORDER[n % CLIENT_ORDER.length];
+          (async () => {
+            await engine.move(g.toCache(i), 'req');
+            bump('req');
+            bump('stale');
+            flash(cache, 'is-stale');
+            await engine.move(g.fromCache(i), 'stale');
+          })();
+          await engine.sleep(480);
+        }
+      };
+
+      ({ hit: runHit, miss: runMiss, outage: runOutage })[next]();
+    }
+
+    engine.onTick = () => {
+      if (!auto) return;
+      const elapsed = engine.clock - scenarioStart;
+      const active = tabs.find((t) => t.dataset.scenario === scenario);
+      const bar = active?.querySelector<HTMLElement>('.sf-progress');
+      if (bar) bar.style.width = `${Math.min(elapsed / SCENARIO_MS, 1) * 100}%`;
+      if (elapsed >= SCENARIO_MS) {
+        start(SCENARIOS[(SCENARIOS.indexOf(scenario) + 1) % SCENARIOS.length]);
+      }
+    };
+
+    tabs.forEach((tab) =>
+      tab.addEventListener('click', () => {
+        auto = false;
+        root.classList.add('is-manual');
+        start(tab.dataset.scenario as Scenario);
+      }),
+    );
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        updateRunning();
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(root);
+
+    const onVisibility = () => updateRunning();
+    document.addEventListener('visibilitychange', onVisibility);
+
+    const ro = new ResizeObserver(() => {
+      if (pickLayout() !== layout) start(scenario);
+    });
+    ro.observe(canvas);
+
+    if (reduceMotion) root.classList.add('is-manual');
+    start('hit');
+    engine.start();
+
+    return () => {
+      engine.stop();
+      engine.gen++;
+      io.disconnect();
+      ro.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }
+
+  let cleanups: (() => void)[] = [];
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-sysflow]').forEach((root) => cleanups.push(initSystemFlow(root)));
+  });
+
+  document.addEventListener('astro:before-swap', () => {
+    cleanups.forEach((fn) => fn());
+    cleanups = [];
+  });
+</script>

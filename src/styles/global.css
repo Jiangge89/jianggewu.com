@@ -135,3 +135,37 @@ body {
   width: 100%;
   height: auto;
 }
+
+/* Homepage hero backdrop */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(#d4d4d8 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 75% 65% at 55% 40%, #000 25%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 55% 40%, #000 25%, transparent 75%);
+  opacity: 0.7;
+}
+
+:where(.dark) .hero-grid {
+  background-image: radial-gradient(#3f3f46 1px, transparent 1px);
+  opacity: 0.6;
+}
+
+.hero-glow {
+  position: absolute;
+  z-index: -1;
+  top: -6rem;
+  right: max(2rem, calc(50% - 30rem));
+  width: 28rem;
+  height: 28rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgb(59 130 246 / 0.16), transparent 65%);
+}
+
+:where(.dark) .hero-glow {
+  background: radial-gradient(circle, rgb(59 130 246 / 0.22), transparent 65%);
+}
