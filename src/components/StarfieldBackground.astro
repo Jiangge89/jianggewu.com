@@ -12,9 +12,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 </div>
 
 <div id="butterfly-sky" aria-hidden="true">
-  <div id="butterfly-scroll">
-    <div class="butterfly-flight" id="butterfly-flight"><Butterfly /></div>
-  </div>
+  <div class="butterfly-flight" id="butterfly-flight"><Butterfly /></div>
 </div>
 
 <style>
@@ -310,8 +308,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 
   function tryFlight() {
     const el = document.getElementById('butterfly-flight');
-    const layer = document.getElementById('butterfly-scroll');
-    if (!el || !layer) return;
+    if (!el) return;
     const home = onButterflyPage();
     const isDark = document.documentElement.classList.contains('dark');
 
@@ -320,12 +317,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
       return;
     }
 
-    const duration = flyButterfly(el, layer);
-    if (duration === null) {
-      // No open route on screen right now; try again after a scroll or resize.
-      butterflyTimer = window.setTimeout(tryFlight, home ? HOME_RETRY_MS : RETRY_MS);
-      return;
-    }
+    const duration = flyButterfly(el);
 
     if (home) {
       butterflyTimer = window.setTimeout(tryFlight, duration + between(...HOME_GAP_MS));
