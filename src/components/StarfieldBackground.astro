@@ -235,7 +235,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 
     resize();
     rafId = requestAnimationFrame(tick);
-    const butterflyTimer = scheduleButterfly(prefersReduced);
+    scheduleButterfly(prefersReduced);
 
     document.addEventListener('astro:before-swap', () => {
       cancelAnimationFrame(rafId);
@@ -243,56 +243,126 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
     }, { once: true });
   }
 
-  // A dark-violet butterfly crosses the night sky at most once per visit,
-  // and only in dark mode. If the page is light when its moment comes, it
-  // waits for a later page instead of being used up.
-  const FLOWN_KEY = 'butterfly-flown';
+  // A dark-violet butterfly crosses the night sky now and then: first a few
+  // seconds after arrival, then every 3-5 minutes while the visitor stays.
+  // It only flies in dark mode with the tab in front; otherwise it checks
+  // again shortly. The schedule lives in sessionStorage so navigating
+  // between pages neither resets it nor makes it fly early.
+  const NEXT_KEY = 'butterfly-next-at';
+  const FIRST_DELAY_MS: [number, number] = [6_000, 16_000];
+  const INTERVAL_MS: [number, number] = [180_000, 300_000];
+  const RETRY_MS = 20_000;
 
-  function scheduleButterfly(prefersReduced: boolean) {
-    if (prefersReduced) return 0;
+  let butterflyTimer = 0;
+  let memoryNextAt = 0; // Fallback when storage is blocked.
+
+  const between = (min: number, max: number) => min + Math.random() * (max - min);
+
+  function readNextAt() {
     try {
-      if (sessionStorage.getItem(FLOWN_KEY)) return 0;
+      const stored = Number(sessionStorage.getItem(NEXT_KEY));
+      if (stored) return stored;
     } catch {
-      // Storage blocked: still allow one flight on this page.
+      // Fall through to the in-memory value.
     }
-    return window.setTimeout(flyButterfly, 6000 + Math.random() * 10000);
+    return memoryNextAt;
   }
 
-  function flyButterfly() {
-    const el = document.getElementById('butterfly-flight');
-    const isDark = document.documentElement.classList.contains('dark');
-    if (!el || !isDark || document.hidden) return;
+  function writeNextAt(time: number) {
+    memoryNextAt = time;
     try {
-      sessionStorage.setItem(FLOWN_KEY, '1');
+      sessionStorage.setItem(NEXT_KEY, String(time));
     } catch {
-      // Ignore; worst case it flies again on the next page.
+      // In-memory value still works within this page.
     }
+  }
 
+  function scheduleButterfly(prefersReduced: boolean) {
+    clearTimeout(butterflyTimer);
+    if (prefersReduced) return;
+    let nextAt = readNextAt();
+    if (!nextAt) {
+      nextAt = Date.now() + between(...FIRST_DELAY_MS);
+      writeNextAt(nextAt);
+    }
+    // Never launch the instant a page appears.
+    const delay = Math.max(nextAt - Date.now(), between(3_000, 8_000));
+    butterflyTimer = window.setTimeout(tryFlight, delay);
+  }
+
+  function tryFlight() {
+    const el = document.getElementById('butterfly-flight');
+    if (!el) return;
+    const isDark = document.documentElement.classList.contains('dark');
+    if (!isDark || document.hidden) {
+      butterflyTimer = window.setTimeout(tryFlight, RETRY_MS);
+      return;
+    }
+    flyButterfly(el);
+    const interval = between(...INTERVAL_MS);
+    writeNextAt(Date.now() + interval);
+    butterflyTimer = window.setTimeout(tryFlight, interval);
+  }
+
+  // The path has a clear heading from one edge to a point higher on the
+  // other, but wanders around it the way butterflies do: slow sideways
+  // drifts, a quick bob with each wingbeat, and moments where it lingers
+  // before pushing on.
+  function flyButterfly(el: HTMLElement) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const baseY = vh * (0.2 + Math.random() * 0.45);
     const rtl = Math.random() < 0.5;
-    const steps = 8;
-    const points: [number, number][] = [];
+    const margin = 50;
+    const y0 = vh * between(0.3, 0.75);
+    const y1 = y0 - vh * between(0.1, 0.3);
+    const sx = rtl ? vw + margin : -margin;
+    const ex = rtl ? -margin : vw + margin;
+    const dx = ex - sx;
+    const dy = y1 - y0;
+    const len = Math.hypot(dx, dy);
+    const nx = -dy / len;
+    const ny = dx / len;
+
+    const TAU = Math.PI * 2;
+    const drift = { a: vh * between(0.05, 0.08), f: between(1.1, 1.6), p: Math.random() * TAU };
+    const sway = { a: vh * between(0.02, 0.035), f: between(2.6, 3.4), p: Math.random() * TAU };
+    const bob = { a: between(5, 9), f: between(16, 22), p: Math.random() * TAU };
+    const lingers = Math.random() < 0.5 ? 2 : 3;
+
+    // Monotonic time warp: progress along the main line slows down
+    // `lingers` times but never reverses.
+    const progress = (t: number) => t + (0.55 * Math.sin(TAU * lingers * t)) / (TAU * lingers);
+
+    const position = (t: number, withBob: boolean) => {
+      const envelope = Math.sin(Math.PI * t);
+      let offset =
+        drift.a * Math.sin(TAU * drift.f * t + drift.p) +
+        sway.a * Math.sin(TAU * sway.f * t + sway.p);
+      if (withBob) offset += bob.a * Math.sin(TAU * bob.f * t + bob.p);
+      offset *= envelope;
+      const s = progress(t);
+      return [sx + dx * s + nx * offset, y0 + dy * s + ny * offset];
+    };
+
+    const steps = 90;
+    const keyframes = [];
     for (let i = 0; i <= steps; i++) {
       const t = i / steps;
-      const x = -40 + t * (vw + 80);
-      const y = baseY + Math.sin(t * Math.PI * 3) * vh * 0.06 - t * vh * 0.12;
-      points.push([rtl ? vw - x : x, y]);
+      const [x, y] = position(t, true);
+      const [ax, ay] = position(Math.max(t - 0.01, 0), false);
+      const [bx, by] = position(Math.min(t + 0.01, 1), false);
+      const heading = (Math.atan2(by - ay, bx - ax) * 180) / Math.PI + 90;
+      const tilt = 8 * Math.sin(TAU * 9 * t);
+      const opacity = 0.7 * Math.min(1, t / 0.04, (1 - t) / 0.04);
+      keyframes.push({
+        transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${(heading + tilt).toFixed(1)}deg)`,
+        opacity,
+      });
     }
 
-    const keyframes = points.map(([x, y], i) => {
-      const [nx, ny] = points[Math.min(i + 1, steps)];
-      const [px, py] = points[Math.max(i - 1, 0)];
-      const angle = (Math.atan2(ny - py, nx - px) * 180) / Math.PI + 90;
-      const t = i / steps;
-      const opacity = t === 0 || t === 1 ? 0 : 0.7;
-      return { transform: `translate(${x}px, ${y}px) rotate(${angle}deg)`, opacity };
-    });
-
     el.animate(keyframes, {
-      duration: Math.max(12000, vw * 14),
-      easing: 'ease-in-out',
+      duration: Math.min(22_000, Math.max(13_000, len * 13)),
+      easing: 'linear',
       fill: 'forwards',
     });
   }
