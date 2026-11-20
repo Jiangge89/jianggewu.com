@@ -68,7 +68,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 </style>
 
 <script>
-  import { flyButterfly, stopButterfly } from '../lib/butterfly-flight';
+  import { flyButterfly, residentButterfly, stopButterfly } from '../lib/butterfly-flight';
 
   function initCosmos() {
     const container = document.getElementById('cosmos');
@@ -255,14 +255,12 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
   // again shortly. The schedule lives in sessionStorage so navigating
   // between pages neither resets it nor makes it fly early.
   //
-  // On the butterfly's own page (marked data-butterfly-home) it is always
-  // around, in either theme: each flight is followed by the next.
+  // On the butterfly's own page (marked data-butterfly-home) it lives on
+  // the page instead, in either theme: see residentButterfly().
   const NEXT_KEY = 'butterfly-next-at';
   const FIRST_DELAY_MS: [number, number] = [6_000, 16_000];
   const INTERVAL_MS: [number, number] = [180_000, 300_000];
-  const HOME_GAP_MS: [number, number] = [1_500, 4_000];
   const RETRY_MS = 20_000;
-  const HOME_RETRY_MS = 5_000;
 
   let butterflyTimer = 0;
   let memoryNextAt = 0; // Fallback when storage is blocked.
@@ -293,7 +291,10 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
     clearTimeout(butterflyTimer);
     if (prefersReduced) return;
     if (onButterflyPage()) {
-      butterflyTimer = window.setTimeout(tryFlight, between(800, 2_000));
+      butterflyTimer = window.setTimeout(() => {
+        const el = document.getElementById('butterfly-flight');
+        if (el) void residentButterfly(el);
+      }, between(800, 2_000));
       return;
     }
     let nextAt = readNextAt();
@@ -309,20 +310,13 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
   function tryFlight() {
     const el = document.getElementById('butterfly-flight');
     if (!el) return;
-    const home = onButterflyPage();
     const isDark = document.documentElement.classList.contains('dark');
-
-    if (document.hidden || (!home && !isDark)) {
-      butterflyTimer = window.setTimeout(tryFlight, home ? HOME_RETRY_MS : RETRY_MS);
+    if (document.hidden || !isDark) {
+      butterflyTimer = window.setTimeout(tryFlight, RETRY_MS);
       return;
     }
 
-    const duration = flyButterfly(el);
-
-    if (home) {
-      butterflyTimer = window.setTimeout(tryFlight, duration + between(...HOME_GAP_MS));
-      return;
-    }
+    flyButterfly(el);
     const interval = between(...INTERVAL_MS);
     writeNextAt(Date.now() + interval);
     butterflyTimer = window.setTimeout(tryFlight, interval);
