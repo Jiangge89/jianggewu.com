@@ -72,5 +72,20 @@ const { lang = 'en' } = Astro.props;
       initReveal();
       document.addEventListener('astro:after-swap', initReveal);
     </script>
+    <script>
+      // For whoever opens the console. Module scripts run once per visit.
+      console.log(
+        [
+          '%c',
+          '  ___     ___',
+          ' /███\\ | /▒▒▒\\',
+          ' \\███/ | \\▒▒▒/',
+          '  /█/  |  \\▒\\',
+          '',
+          'You looked a little closer. → /butterfly/',
+        ].join('\n'),
+        'color:#7c3aed;font-family:ui-monospace,Menlo,monospace;line-height:1.3',
+      );
+    </script>
   </body>
 </html>

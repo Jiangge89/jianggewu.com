@@ -1,0 +1,46 @@
+---
+// Faceted black-and-violet butterfly. Left wing near-black, right wing deep
+// violet; the asymmetry is deliberate. No ids inside, so it can be rendered
+// many times on one page.
+interface Props {
+  class?: string;
+  title?: string;
+}
+
+const { class: className, title } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 64 64"
+  class={className}
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  <g stroke-linejoin="round" stroke-width=".6">
+    <g stroke="#3b2752">
+      <polygon points="31,32 22,15 7,9" fill="#140b1f" />
+      <polygon points="31,32 7,9 5,19" fill="#0b0612" />
+      <polygon points="31,32 5,19 14,27" fill="#1e1230" />
+      <polygon points="31,35 15,38 13,49" fill="#140b1f" />
+      <polygon points="31,35 13,49 23,53" fill="#0b0612" />
+    </g>
+    <g stroke="#7c3aed">
+      <polygon points="33,32 42,15 57,9" fill="#3b0f8c" />
+      <polygon points="33,32 57,9 59,19" fill="#2e1065" />
+      <polygon points="33,32 59,19 50,27" fill="#5b21b6" />
+      <polygon points="33,35 49,38 51,49" fill="#4c1d95" />
+      <polygon points="33,35 51,49 41,53" fill="#2e1065" />
+    </g>
+  </g>
+  <rect x="31" y="27" width="2" height="20" rx="1" fill="#1a0f26" stroke="#4c1d95" stroke-width=".5" />
+  <path
+    d="M32 28L28 18L25 15M32 28L36 18L39 15"
+    fill="none"
+    stroke="#4c1d95"
+    stroke-width=".9"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

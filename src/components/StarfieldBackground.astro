@@ -1,4 +1,6 @@
 ---
+import Butterfly from './Butterfly.astro';
+
 const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s', 'gRPC', 'Linux'];
 ---
 
@@ -7,6 +9,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
   {techs.map((tech, i) => (
     <span class="cnode" data-i={String(i)}>{tech}</span>
   ))}
+  <div class="butterfly-flight" id="butterfly-flight"><Butterfly /></div>
 </div>
 
 <style>
@@ -232,10 +235,66 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 
     resize();
     rafId = requestAnimationFrame(tick);
+    const butterflyTimer = scheduleButterfly(prefersReduced);
 
     document.addEventListener('astro:before-swap', () => {
       cancelAnimationFrame(rafId);
+      clearTimeout(butterflyTimer);
     }, { once: true });
+  }
+
+  // A dark-violet butterfly crosses the night sky at most once per visit,
+  // and only in dark mode. If the page is light when its moment comes, it
+  // waits for a later page instead of being used up.
+  const FLOWN_KEY = 'butterfly-flown';
+
+  function scheduleButterfly(prefersReduced: boolean) {
+    if (prefersReduced) return 0;
+    try {
+      if (sessionStorage.getItem(FLOWN_KEY)) return 0;
+    } catch {
+      // Storage blocked: still allow one flight on this page.
+    }
+    return window.setTimeout(flyButterfly, 6000 + Math.random() * 10000);
+  }
+
+  function flyButterfly() {
+    const el = document.getElementById('butterfly-flight');
+    const isDark = document.documentElement.classList.contains('dark');
+    if (!el || !isDark || document.hidden) return;
+    try {
+      sessionStorage.setItem(FLOWN_KEY, '1');
+    } catch {
+      // Ignore; worst case it flies again on the next page.
+    }
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const baseY = vh * (0.2 + Math.random() * 0.45);
+    const rtl = Math.random() < 0.5;
+    const steps = 8;
+    const points: [number, number][] = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const x = -40 + t * (vw + 80);
+      const y = baseY + Math.sin(t * Math.PI * 3) * vh * 0.06 - t * vh * 0.12;
+      points.push([rtl ? vw - x : x, y]);
+    }
+
+    const keyframes = points.map(([x, y], i) => {
+      const [nx, ny] = points[Math.min(i + 1, steps)];
+      const [px, py] = points[Math.max(i - 1, 0)];
+      const angle = (Math.atan2(ny - py, nx - px) * 180) / Math.PI + 90;
+      const t = i / steps;
+      const opacity = t === 0 || t === 1 ? 0 : 0.7;
+      return { transform: `translate(${x}px, ${y}px) rotate(${angle}deg)`, opacity };
+    });
+
+    el.animate(keyframes, {
+      duration: Math.max(12000, vw * 14),
+      easing: 'ease-in-out',
+      fill: 'forwards',
+    });
   }
 
   initCosmos();

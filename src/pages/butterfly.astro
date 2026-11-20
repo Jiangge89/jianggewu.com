@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Butterfly from '../components/Butterfly.astro';
+---
+
+<BaseLayout
+  noindex
+  lang="zh-CN"
+  title="蝴蝶"
+  description="一只黑紫色的蝴蝶，和它为什么在这里。"
+>
+  <section class="mx-auto max-w-2xl px-4 py-20 sm:px-6 sm:py-28">
+    <div class="flex justify-center">
+      <Butterfly class="butterfly-hero h-36 w-36 sm:h-44 sm:w-44" title="黑紫色的切面蝴蝶" />
+    </div>
+
+    <h1 class="mt-10 text-center text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-100">
+      你找到了它
+    </h1>
+
+    <div class="mt-10 space-y-6 text-[15px] leading-8 text-surface-700 dark:text-surface-300">
+      <p>
+        它藏在页脚的角落，偶尔在夜色里飞过。白天几乎看不见，只有愿意多看一眼的人才会注意到。
+      </p>
+      <p>
+        <span class="font-semibold text-surface-900 dark:text-surface-100">左边那只翅膀是黑色的。</span>
+        那是原始的生命力：愤怒、欲望、不肯妥协的坚持。很长一段时间里，我以为它们需要被藏起来。后来才明白，它们不该被压下去，而是要被认出来、被收编，变成推着自己往前走的力量。
+      </p>
+      <p>
+        <span class="font-semibold text-violet-700 dark:text-violet-400">右边那只翅膀是紫色的。</span>
+        那是后来学会的东西：结构、理性，以及和这个世界协作的方式。它不是伪装，而是让内心的东西能被别人理解的语言。
+      </p>
+      <p>
+        两只翅膀不一样，但长在同一副身体上。它是由切面拼成的：感受被认真看过、拆开、理解之后，就有了棱角和结构，也就不再只是一团雾。
+      </p>
+      <p>
+        蝴蝶是蜕变之后的样子。破茧不是变成另一个人，而是把原来的自己完整地带出来。
+      </p>
+      <p class="text-surface-500 dark:text-surface-400">
+        如果你读到了这里，大概你也是会多看一眼的人。谢谢你。
+      </p>
+    </div>
+
+    <div class="mt-14 flex justify-center">
+      <a
+        href="/"
+        class="text-sm font-medium text-surface-500 transition-colors hover:text-violet-700 dark:text-surface-400 dark:hover:text-violet-400"
+      >
+        ← 回到首页
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* The svg is rendered by Butterfly.astro, so scoped selectors would miss it. */
+  :global(.butterfly-hero) {
+    filter: drop-shadow(0 8px 24px rgb(76 29 149 / 0.25));
+    animation: butterfly-rest 6s ease-in-out infinite;
+  }
+
+  :global(.dark .butterfly-hero) {
+    filter: drop-shadow(0 0 28px rgb(124 58 237 / 0.35));
+  }
+
+  @keyframes butterfly-rest {
+    0%, 100% { transform: translateY(0) scaleX(1); }
+    45% { transform: translateY(-6px) scaleX(1); }
+    50% { transform: translateY(-6px) scaleX(0.82); }
+    55% { transform: translateY(-6px) scaleX(1); }
+  }
+</style>
