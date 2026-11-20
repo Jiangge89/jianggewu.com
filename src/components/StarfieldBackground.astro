@@ -9,7 +9,12 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
   {techs.map((tech, i) => (
     <span class="cnode" data-i={String(i)}>{tech}</span>
   ))}
-  <div class="butterfly-flight" id="butterfly-flight"><Butterfly /></div>
+</div>
+
+<div id="butterfly-sky" aria-hidden="true">
+  <div id="butterfly-scroll">
+    <div class="butterfly-flight" id="butterfly-flight"><Butterfly /></div>
+  </div>
 </div>
 
 <style>
@@ -65,6 +70,8 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 </style>
 
 <script>
+  import { flyButterfly, stopButterfly } from '../lib/butterfly-flight';
+
   function initCosmos() {
     const container = document.getElementById('cosmos');
     const canvas = document.getElementById('starfield-cv') as HTMLCanvasElement;
@@ -240,6 +247,7 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
     document.addEventListener('astro:before-swap', () => {
       cancelAnimationFrame(rafId);
       clearTimeout(butterflyTimer);
+      stopButterfly();
     }, { once: true });
   }
 
@@ -248,15 +256,21 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
   // It only flies in dark mode with the tab in front; otherwise it checks
   // again shortly. The schedule lives in sessionStorage so navigating
   // between pages neither resets it nor makes it fly early.
+  //
+  // On the butterfly's own page (marked data-butterfly-home) it is always
+  // around, in either theme: each flight is followed by the next.
   const NEXT_KEY = 'butterfly-next-at';
   const FIRST_DELAY_MS: [number, number] = [6_000, 16_000];
   const INTERVAL_MS: [number, number] = [180_000, 300_000];
+  const HOME_GAP_MS: [number, number] = [1_500, 4_000];
   const RETRY_MS = 20_000;
+  const HOME_RETRY_MS = 5_000;
 
   let butterflyTimer = 0;
   let memoryNextAt = 0; // Fallback when storage is blocked.
 
   const between = (min: number, max: number) => min + Math.random() * (max - min);
+  const onButterflyPage = () => document.querySelector('[data-butterfly-home]') !== null;
 
   function readNextAt() {
     try {
@@ -280,6 +294,10 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
   function scheduleButterfly(prefersReduced: boolean) {
     clearTimeout(butterflyTimer);
     if (prefersReduced) return;
+    if (onButterflyPage()) {
+      butterflyTimer = window.setTimeout(tryFlight, between(800, 2_000));
+      return;
+    }
     let nextAt = readNextAt();
     if (!nextAt) {
       nextAt = Date.now() + between(...FIRST_DELAY_MS);
@@ -292,79 +310,30 @@ const techs = ['Go', 'Redis', 'Kafka', 'Docker', 'Java', 'Python', 'MySQL', 'K8s
 
   function tryFlight() {
     const el = document.getElementById('butterfly-flight');
-    if (!el) return;
+    const layer = document.getElementById('butterfly-scroll');
+    if (!el || !layer) return;
+    const home = onButterflyPage();
     const isDark = document.documentElement.classList.contains('dark');
-    if (!isDark || document.hidden) {
-      butterflyTimer = window.setTimeout(tryFlight, RETRY_MS);
+
+    if (document.hidden || (!home && !isDark)) {
+      butterflyTimer = window.setTimeout(tryFlight, home ? HOME_RETRY_MS : RETRY_MS);
       return;
     }
-    flyButterfly(el);
+
+    const duration = flyButterfly(el, layer);
+    if (duration === null) {
+      // No open route on screen right now; try again after a scroll or resize.
+      butterflyTimer = window.setTimeout(tryFlight, home ? HOME_RETRY_MS : RETRY_MS);
+      return;
+    }
+
+    if (home) {
+      butterflyTimer = window.setTimeout(tryFlight, duration + between(...HOME_GAP_MS));
+      return;
+    }
     const interval = between(...INTERVAL_MS);
     writeNextAt(Date.now() + interval);
     butterflyTimer = window.setTimeout(tryFlight, interval);
-  }
-
-  // The path has a clear heading from one edge to a point higher on the
-  // other, but wanders around it the way butterflies do: slow sideways
-  // drifts, a quick bob with each wingbeat, and moments where it lingers
-  // before pushing on.
-  function flyButterfly(el: HTMLElement) {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const rtl = Math.random() < 0.5;
-    const margin = 50;
-    const y0 = vh * between(0.3, 0.75);
-    const y1 = y0 - vh * between(0.1, 0.3);
-    const sx = rtl ? vw + margin : -margin;
-    const ex = rtl ? -margin : vw + margin;
-    const dx = ex - sx;
-    const dy = y1 - y0;
-    const len = Math.hypot(dx, dy);
-    const nx = -dy / len;
-    const ny = dx / len;
-
-    const TAU = Math.PI * 2;
-    const drift = { a: vh * between(0.05, 0.08), f: between(1.1, 1.6), p: Math.random() * TAU };
-    const sway = { a: vh * between(0.02, 0.035), f: between(2.6, 3.4), p: Math.random() * TAU };
-    const bob = { a: between(5, 9), f: between(16, 22), p: Math.random() * TAU };
-    const lingers = Math.random() < 0.5 ? 2 : 3;
-
-    // Monotonic time warp: progress along the main line slows down
-    // `lingers` times but never reverses.
-    const progress = (t: number) => t + (0.55 * Math.sin(TAU * lingers * t)) / (TAU * lingers);
-
-    const position = (t: number, withBob: boolean) => {
-      const envelope = Math.sin(Math.PI * t);
-      let offset =
-        drift.a * Math.sin(TAU * drift.f * t + drift.p) +
-        sway.a * Math.sin(TAU * sway.f * t + sway.p);
-      if (withBob) offset += bob.a * Math.sin(TAU * bob.f * t + bob.p);
-      offset *= envelope;
-      const s = progress(t);
-      return [sx + dx * s + nx * offset, y0 + dy * s + ny * offset];
-    };
-
-    const steps = 90;
-    const keyframes = [];
-    for (let i = 0; i <= steps; i++) {
-      const t = i / steps;
-      const [x, y] = position(t, true);
-      const [ax, ay] = position(Math.max(t - 0.01, 0), false);
-      const [bx, by] = position(Math.min(t + 0.01, 1), false);
-      const heading = (Math.atan2(by - ay, bx - ax) * 180) / Math.PI + 90;
-      const tilt = 8 * Math.sin(TAU * 9 * t);
-      const opacity = 0.7 * Math.min(1, t / 0.04, (1 - t) / 0.04);
-      keyframes.push({
-        transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${(heading + tilt).toFixed(1)}deg)`,
-        opacity,
-      });
-    }
-
-    el.animate(keyframes, {
-      duration: Math.min(22_000, Math.max(13_000, len * 13)),
-      easing: 'linear',
-      fill: 'forwards',
-    });
   }
 
   initCosmos();

@@ -188,6 +188,20 @@ body {
   opacity: 0.5;
 }
 
+/* Above page content (flights avoid it), below the sticky header. */
+#butterfly-sky {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#butterfly-scroll {
+  position: absolute;
+  inset: 0;
+}
+
 .butterfly-flight {
   position: absolute;
   left: 0;
